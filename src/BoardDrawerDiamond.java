@@ -3,9 +3,9 @@ import java.awt.*;
 import java.awt.event.*;
 import java.net.URL;
 
-public class BoardDrawerFlat extends BoardDrawerBase
+public class BoardDrawerDiamond extends BoardDrawerBase
 {
-    public BoardDrawerFlat()
+    public BoardDrawerDiamond()
     {
 	super();
 	loadBackground("images/wood.png");
@@ -71,7 +71,7 @@ public class BoardDrawerFlat extends BoardDrawerBase
 
         for (int i = 0; i < m_hexagon.length; i++) {
 	    Point p = getLocation(i);
-	    m_hexagon[i] = createVerticalHexagon(p, m_fieldWidth, m_fieldHeight);
+	    m_hexagon[i] = createHorizontalHexagon(p, m_fieldWidth, m_fieldHeight);
         }	
     }
 

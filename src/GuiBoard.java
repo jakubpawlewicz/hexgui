@@ -11,7 +11,7 @@ public class GuiBoard
 
 	initSize(11, 11);
 
-	m_drawer = new BoardDrawerFlat();
+	m_drawer = new BoardDrawerDiamond();
 	setPreferredSize(new Dimension(800, 600));
 
 	setLayout(new BoardLayout());
@@ -110,6 +110,6 @@ public class GuiBoard
     private HexColor m_toMove;
     private Field field[];
 
-    private BoardDrawer m_drawer;
+    private BoardDrawerBase m_drawer;
     private BoardPanel m_boardPanel;
 }

@@ -10,6 +10,19 @@ public abstract class BoardDrawerBase
 	m_background = null;
     }
 
+    public void loadBackground(String filename)
+    {
+        ClassLoader classLoader = getClass().getClassLoader();
+        URL url = classLoader.getResource(filename);
+        if (url == null) {
+	    System.out.println("loadBackground: could not load '" + 
+			       filename + "'!");
+            m_background = null;            
+	} else {
+	    m_background = new ImageIcon(url).getImage();
+	}
+    }
+
     public void setAntiAliasing(Graphics g)
     {
 	if (g instanceof Graphics2D) {
@@ -43,22 +56,21 @@ public abstract class BoardDrawerBase
 	return ret;
     }
 
-    // FIXME!
     public Polygon createHorizontalHexagon(Point p, int width, int height)
     {
 	int xpoints[] = new int[6];
 	int ypoints[] = new int[6];
 
-	int sx = (int)(0.5 * width);
-        int sy = (int)(sx / TAN60DEG);
-	int ly = (int)(0.5 * height);
+	int sy = (int)(0.5 * height);
+        int sx = (int)(sy / TAN60DEG);
+	int lx = (int)(0.5 * width);
 	
-	xpoints[0] = 0;   ypoints[0] = -ly;
-	xpoints[1] = -sx; ypoints[1] = -sy;
-	xpoints[2] = -sx; ypoints[2] = +sy;
-	xpoints[3] = 0;   ypoints[3] = +ly;
-	xpoints[4] = +sx; ypoints[4] = +sy;
-	xpoints[5] = +sx; ypoints[5] = -sy;
+	xpoints[0] = -lx; ypoints[0] = 0;
+	xpoints[1] = -sx; ypoints[1] = +sy;
+	xpoints[2] = +sx; ypoints[2] = +sy;
+	xpoints[3] = +lx; ypoints[3] = 0;
+	xpoints[4] = +sx; ypoints[4] = -sy;
+	xpoints[5] = -sx; ypoints[5] = -sy;
 
 	Polygon ret = new Polygon(xpoints, ypoints, 6);
 	ret.translate(p.x, p.y);
