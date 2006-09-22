@@ -11,7 +11,7 @@ public class GuiBoard
 
 	initSize(11, 11);
 
-	m_drawer = new BoardDrawer();
+	m_drawer = new BoardDrawerFlat();
 	setPreferredSize(new Dimension(800, 600));
 
 	setLayout(new BoardLayout());
