@@ -192,7 +192,6 @@ public abstract class BoardDrawerBase
     protected int m_marginY;
     protected int m_fieldWidth;
     protected int m_fieldHeight;
-    protected int m_vertStep;
     protected Polygon m_hexagon[];
 
     protected static final AlphaComposite COMPOSITE_3

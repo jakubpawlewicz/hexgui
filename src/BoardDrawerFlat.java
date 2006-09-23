@@ -98,4 +98,5 @@ public class BoardDrawerFlat extends BoardDrawerBase
 	}
     }
 
+    protected int m_vertStep;
 }

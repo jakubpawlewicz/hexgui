@@ -15,8 +15,8 @@ public class BoardDrawerDiamond extends BoardDrawerBase
     public Point getLocation(int x, int y)
     {
 	Point ret = new Point();
-	ret.x = m_marginX + y*m_fieldWidth/2 + x*m_fieldWidth;
-	ret.y = m_marginY + y*m_vertStep;
+	ret.x = m_marginX + (y + x)*m_horizStep;
+	ret.y = m_marginY + (m_bheight/2)*m_fieldHeight + (y - x)*m_fieldHeight/2;
 	return ret;
     }
 
@@ -40,31 +40,28 @@ public class BoardDrawerDiamond extends BoardDrawerBase
 
     public void computeFieldPlacement()
     {
+	int sx;
+
 	m_hexagon = new Polygon[m_bwidth*m_bheight+4];
 
-	m_fieldWidth  = (2*m_width) / (2*m_bwidth + m_bheight + 3);
-	m_fieldHeight = (2*m_height - m_bheight*m_fieldWidth) 
-	                   /  (m_bheight + 1);
-
-	// Note: if field dimensions are not even then the inner cell lines
-	// on the board can be doubled up.  
-	if ((m_fieldWidth & 1) != 0) m_fieldWidth++;
+	m_fieldHeight = m_height / (m_bheight + 2);
 	if ((m_fieldHeight & 1) != 0) m_fieldHeight++;
-	
-	// make them equal.  
-        // FIXME: is this ok?
+	sx = (int)((0.5 * m_fieldHeight / TAN60DEG)+0.5);
+
+	m_fieldWidth  = m_width / (m_bwidth + 2 + (m_bheight-1)/2);
+	if ((m_fieldWidth & 1) != 0) m_fieldWidth++;
+
 	if (m_fieldHeight >= (int)(m_fieldWidth * 1.0)) {
 		m_fieldHeight = (int)(m_fieldWidth * 1.0);
 	} else if (m_fieldHeight < (int)(m_fieldWidth * 1.0)) {
 		m_fieldWidth = (int)(m_fieldHeight*1.0);
 	}
 
-	int sy = (int)((0.5 * m_fieldWidth / TAN60DEG)+0.5);
-	m_vertStep = sy + m_fieldHeight/2;
-
-	int bw = m_bwidth*m_fieldWidth + (m_bheight-1)*m_fieldWidth/2;
-	int bh = m_fieldHeight*(m_bheight+1)/2 
-	           + (m_bheight/2)*(2*sy);
+	sx = (int)((0.5 * m_fieldHeight / TAN60DEG)+0.5);
+	m_horizStep = sx + m_fieldWidth/2;
+	
+	int bw = (m_bwidth+m_bheight-1)*m_horizStep;
+	int bh = m_bheight*m_fieldHeight;
 
 	m_marginX = (m_width - bw) / 2 + m_fieldWidth/2;
 	m_marginY = (m_height - bh) / 2 + m_fieldHeight/2;
@@ -81,11 +78,11 @@ public class BoardDrawerDiamond extends BoardDrawerBase
 	g.setColor(Color.black);
 
 	char c = 'A';
-	xoffset = m_fieldWidth/2;
+	xoffset = 0;
 	for (int x=0; x<m_bwidth; x++) {
 	    String string = Character.toString(c);
 	    drawLabel(g, getLocation(x, -1), string, xoffset);
-	    drawLabel(g, getLocation(x-1, m_bheight), string, xoffset);
+	    drawLabel(g, getLocation(x, m_bheight), string, xoffset);
 	    c++;
 	}
 	int n = 1;
@@ -98,4 +95,5 @@ public class BoardDrawerDiamond extends BoardDrawerBase
 	}
     }
 
+    protected int m_horizStep;
 }
