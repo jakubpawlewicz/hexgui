@@ -15,6 +15,24 @@ public class Field
     public Field()
     {
 	setColor(HexColor.EMPTY);
+	clearAttributes();
+    }
+
+    public static final int DRAW_CELL_OUTLINE = 1;
+
+    public void clearAttributes() 
+    {
+	m_attributes = 0;
+    }
+
+    public int getAttributes()
+    {
+	return m_attributes;
+    }
+
+    public void setAttributes(int f)
+    {
+	m_attributes |= f;
     }
 
     public void setColor(HexColor c)
@@ -93,12 +111,12 @@ public class Field
     private int m_height;
     private int m_margin;
     private HexColor m_color;
+    private int m_attributes;
     private Graphics m_graphics;
     private Graphics2D m_graphics2D;
 
     private static final Color COLOR_STONE_BLACK = Color.decode("#030303");
-    private static final Color COLOR_STONE_BLACK_BRIGHT
-        = Color.decode("#666666");
+    private static final Color COLOR_STONE_BLACK_BRIGHT = Color.decode("#666666");
     private static final Color COLOR_STONE_WHITE = Color.decode("#d7d0c9");
     private static final Color COLOR_STONE_WHITE_BRIGHT
 	//        = Color.decode("#f6eee6");

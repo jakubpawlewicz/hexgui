@@ -49,9 +49,10 @@ public class GuiBoard
 	m_west = m_east+1;
 
 	field = new Field[w*h+4];
-	for (int x=0; x<w*h+4; x++) 
+	for (int x=0; x<w*h+4; x++) {
 	    field[x] = new Field();
-
+	    if (x < w*h) field[x].setAttributes(Field.DRAW_CELL_OUTLINE);
+	}
 	clearAll();
 
 	m_toMove = HexColor.BLACK;
@@ -81,11 +82,11 @@ public class GuiBoard
 	{
 	    int width = getWidth();
 	    int height = getHeight();
-	   //  System.out.println("GuiBoard.paintComponent "
-// 			       + graphics.getClipBounds().x + " "
-// 			       + graphics.getClipBounds().y + " "
-// 			       + graphics.getClipBounds().width + " "
-// 			       + graphics.getClipBounds().height);
+	    System.out.println("GuiBoard.paintComponent "
+			       + graphics.getClipBounds().x + " "
+			       + graphics.getClipBounds().y + " "
+			       + graphics.getClipBounds().width + " "
+			       + graphics.getClipBounds().height);
 
 	    Image image = createImage(width, height);
 	    m_drawer.draw(image.getGraphics(), width, height, 

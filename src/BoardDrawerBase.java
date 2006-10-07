@@ -112,11 +112,13 @@ public abstract class BoardDrawerBase
 	    g.drawImage(m_background, 0, 0, m_width, m_height, null);
     }
 
-    protected void drawCells(Graphics g)
+    protected void drawCells(Graphics g, Field field[])
     {
 	g.setColor(Color.black);
-	for (int i=0; i<m_hexagon.length; i++)
-	    g.drawPolygon(m_hexagon[i]);
+	for (int i=0; i<m_hexagon.length; i++) {
+	    if ((field[i].getAttributes() & Field.DRAW_CELL_OUTLINE) != 0)
+		g.drawPolygon(m_hexagon[i]);
+	}
     }
 
     protected void drawLabel(Graphics g, Point p, String string, int xoff)
@@ -175,7 +177,7 @@ public abstract class BoardDrawerBase
 	computeFieldPlacement();
 
 	drawBackground(g);
-	drawCells(g);
+	drawCells(g, field);
 	drawLabels(g);
 	drawShadows(g, field);
 

@@ -45,17 +45,16 @@ public class BoardDrawerDiamond extends BoardDrawerBase
 	m_hexagon = new Polygon[m_bwidth*m_bheight+4];
 
 	m_fieldHeight = m_height / (m_bheight + 2);
-	if ((m_fieldHeight & 1) != 0) m_fieldHeight++;
-	sx = (int)((0.5 * m_fieldHeight / TAN60DEG)+0.5);
-
 	m_fieldWidth  = m_width / (m_bwidth + 2 + (m_bheight-1)/2);
-	if ((m_fieldWidth & 1) != 0) m_fieldWidth++;
 
-	if (m_fieldHeight >= (int)(m_fieldWidth * 1.0)) {
-		m_fieldHeight = (int)(m_fieldWidth * 1.0);
-	} else if (m_fieldHeight < (int)(m_fieldWidth * 1.0)) {
-		m_fieldWidth = (int)(m_fieldHeight*1.0);
+	if (m_fieldHeight >= (int)(m_fieldWidth * (1.0 / ASPECT_RATIO))) {
+		m_fieldHeight = (int)(m_fieldWidth * (1.0 / ASPECT_RATIO));
+	} else if (m_fieldHeight < (int)(m_fieldWidth * ASPECT_RATIO)) {
+		m_fieldWidth = (int)(m_fieldHeight*ASPECT_RATIO);
 	}
+
+	if ((m_fieldHeight & 1) != 0) m_fieldHeight++;
+	if ((m_fieldWidth & 1) != 0) m_fieldWidth++;
 
 	sx = (int)((0.5 * m_fieldHeight / TAN60DEG)+0.5);
 	m_horizStep = sx + m_fieldWidth/2;
@@ -96,4 +95,6 @@ public class BoardDrawerDiamond extends BoardDrawerBase
     }
 
     protected int m_horizStep;
+
+    public static double ASPECT_RATIO = 1.0;
 }
