@@ -8,9 +8,9 @@ public class GuiBoard
 {
     public GuiBoard()
     {
+	m_image = null;
 
 	initSize(11, 11);
-
 	m_drawer = new BoardDrawerDiamond();
 	setPreferredSize(new Dimension(800, 600));
 
@@ -88,24 +88,34 @@ public class GuiBoard
 			       + graphics.getClipBounds().width + " "
 			       + graphics.getClipBounds().height);
 
-	    Image image = createImage(width, height);
-	    m_drawer.draw(image.getGraphics(), width, height, 
+	    if (m_image == null) {
+		System.out.println("Creating new image...");
+		m_image = createImage(width, height);
+	    }
+
+	    m_drawer.draw(m_image.getGraphics(), width, height, 
 			  m_width, m_height, field);
-	    graphics.drawImage(image, 0, 0, null);
+
+	    graphics.drawImage(m_image, 0, 0, null);
 	}
 
-	public void actionPerformed(ActionEvent e) 
+	public void setBounds(int x, int y, int w, int h)
 	{
+	    super.setBounds(x,y,w,h);
+	    System.out.println("Bounds: "+x+" "+y+" "+w+" "+h);
+	    m_image = null;
 	}
-
     }
+    //------------------------------------------------------------
+
     public void mousePressed(MouseEvent e) {}
     public void mouseReleased(MouseEvent e) {}
     public void mouseEntered(MouseEvent e) {}
     public void mouseExited(MouseEvent e) {}
 
-    private int m_width;
-    private int m_height;
+    private Image m_image;
+
+    private int m_width, m_height;
     private int m_north, m_south, m_east, m_west;
 
     private HexColor m_toMove;
