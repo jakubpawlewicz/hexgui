@@ -38,6 +38,8 @@ public class HexGui
 	String cmd = e.getActionCommand();
 	if ("shutdown" == cmd) {
 	    CmdShutdown();
+	} else if ("newgame" == cmd) {
+	    CmdNewGame();
 	} else if ("savegame" == cmd) {
 	    CmdSaveGame();
 	} else if ("loadgame" == cmd) {
@@ -54,6 +56,13 @@ public class HexGui
     {
 	System.out.println("Shuting down...");
 	System.exit(0);
+    }
+
+    public void CmdNewGame()
+    {
+	System.out.println("Newgame");
+	m_board.clearAll();
+	m_board.repaint();
     }
 
     public void CmdSaveGame()

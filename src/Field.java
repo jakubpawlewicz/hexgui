@@ -14,7 +14,7 @@ public class Field
     //------------------------------------------------------------
     public Field()
     {
-	setColor(HexColor.EMPTY);
+	clear();
 	clearAttributes();
     }
 
@@ -47,7 +47,7 @@ public class Field
 
     public void clear()
     {
-
+	setColor(HexColor.EMPTY);
     }
 
     private RadialGradientPaint getPaint(int size,

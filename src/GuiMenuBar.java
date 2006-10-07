@@ -23,6 +23,11 @@ public class GuiMenuBar
 	JMenu menu = new JMenu("File");
 
 	JMenuItem item;
+	item = new JMenuItem("New game...");
+	item.addActionListener(m_listener);
+	item.setActionCommand("newgame");
+ 	menu.add(item);
+
 	item = new JMenuItem("Save game...");
 	item.addActionListener(m_listener);
 	item.setActionCommand("savegame");
