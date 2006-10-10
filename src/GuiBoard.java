@@ -11,6 +11,8 @@ public class GuiBoard
 	m_image = null;
 
 	initSize(11, 11);
+        newGame();
+
 	m_drawer = new BoardDrawerDiamond();
 	setPreferredSize(new Dimension(800, 600));
 
@@ -53,9 +55,6 @@ public class GuiBoard
 	    field[x] = new Field();
 	    if (x < w*h) field[x].setAttributes(Field.DRAW_CELL_OUTLINE);
 	}
-	clearAll();
-
-	m_toMove = HexColor.BLACK;
     }
 
     public void clearAll()
@@ -67,6 +66,12 @@ public class GuiBoard
 	field[m_south].setColor(HexColor.BLACK);
 	field[m_west].setColor(HexColor.WHITE);
 	field[m_east].setColor(HexColor.WHITE);
+    }
+
+    public void newGame()
+    {
+        clearAll();
+	m_toMove = HexColor.BLACK;
     }
 
     //------------------------------------------------------------
@@ -113,11 +118,13 @@ public class GuiBoard
     public void mouseEntered(MouseEvent e) {}
     public void mouseExited(MouseEvent e) {}
 
-    private Image m_image;
+    public int DEFAULT_WIDTH = 11;
+    public int DEFAULT_HEIGHT = 11;    
 
     private int m_width, m_height;
     private int m_north, m_south, m_east, m_west;
 
+    private Image m_image;
     private HexColor m_toMove;
     private Field field[];
 

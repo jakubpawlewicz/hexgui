@@ -11,6 +11,7 @@ public class GuiMenuBar
 	m_listener = listener;
 	m_menuBar.add(createFileMenu());
 	m_menuBar.add(createGameMenu());
+        m_menuBar.add(createEditMenu());
 	m_menuBar.add(createHelpMenu());
     }
 
@@ -70,6 +71,14 @@ public class GuiMenuBar
 
 	item = new JMenuItem("Resign");
 	menu.add(item);
+
+	return menu;
+    }
+
+    private JMenu createEditMenu()
+    {
+	JMenu menu = new JMenu("Edit");
+	menu.setMnemonic(KeyEvent.VK_E);
 
 	return menu;
     }

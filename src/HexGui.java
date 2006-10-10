@@ -31,9 +31,10 @@ public class HexGui
     //------------------------------------------------------------
     public void actionPerformed(ActionEvent e) 
     {
-	//System.out.println("Received Action Event: ");
-	//System.out.println(e.getActionCommand());
-	//System.out.println(e.paramString());
+//      System.out.println("-----------------");
+// 	System.out.println("Received Action Event: ");
+// 	System.out.println(e.getActionCommand());
+// 	System.out.println(e.paramString());
 
 	String cmd = e.getActionCommand();
 	if ("shutdown" == cmd) {
@@ -62,8 +63,8 @@ public class HexGui
 
     public void CmdNewGame()
     {
-	System.out.println("Newgame");
-	m_board.clearAll();
+	System.out.println("newgame");
+        m_board.newGame();
 	m_board.repaint();
     }
 
