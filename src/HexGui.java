@@ -42,6 +42,8 @@ public class HexGui
 	    CmdNewGame();
 	} else if ("savegame" == cmd) {
 	    CmdSaveGame();
+	} else if ("savegameas" == cmd) {
+	    CmdSaveGame();
 	} else if ("loadgame" == cmd) {
 	    CmdLoadGame();
 	} else if ("about" == cmd) {
