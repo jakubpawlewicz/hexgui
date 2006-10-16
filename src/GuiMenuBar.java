@@ -1,3 +1,4 @@
+import java.util.*;
 import javax.swing.*;          
 import java.awt.*;
 import java.awt.event.*;
@@ -80,8 +81,79 @@ public class GuiMenuBar
 	JMenu menu = new JMenu("Edit");
 	menu.setMnemonic(KeyEvent.VK_E);
 
+	JMenu size = createBoardSizeMenu();
+	menu.add(size);
+
 	return menu;
     }
+
+    private JMenu createBoardSizeMenu()
+    {
+        JMenu menu = new JMenu("Board Size");
+	m_bsGroup = new ButtonGroup();
+
+	JRadioButtonMenuItem item;
+	item = new JRadioButtonMenuItem("14 x 14");
+	item.addActionListener(m_listener);
+	item.setActionCommand("newgame");
+	m_bsGroup.add(item);
+	menu.add(item);
+
+	item = new JRadioButtonMenuItem("11 x 11");
+	item.addActionListener(m_listener);
+	item.setActionCommand("newgame");
+	item.setSelected(true);
+	m_bsGroup.add(item);
+	menu.add(item);
+
+	item = new JRadioButtonMenuItem("8 x 8");
+	item.addActionListener(m_listener);
+	item.setActionCommand("newgame");
+	item.setSelected(true);
+	m_bsGroup.add(item);
+	menu.add(item);
+
+	item = new JRadioButtonMenuItem("7 x 7");
+	item.addActionListener(m_listener);
+	item.setActionCommand("newgame");
+	item.setSelected(true);
+	m_bsGroup.add(item);
+	menu.add(item);
+
+	menu.addSeparator();
+
+	item = new JRadioButtonMenuItem("Other...");
+	item.addActionListener(m_listener);
+	item.setActionCommand("newgame");
+	item.setSelected(true);
+	m_bsGroup.add(item);
+	menu.add(item);
+
+	return menu;
+    }
+	
+    public Dimension getCurrentBoardSize()
+    {
+
+	Enumeration e = m_bsGroup.getElements();
+	AbstractButton b = (AbstractButton)e.nextElement();
+	while (!b.isSelected() && e.hasMoreElements()) { 
+	    b = (AbstractButton)e.nextElement();
+	}
+
+	Dimension ret = new Dimension();
+	if (b.getText() == "14 x 14")
+	    ret.setSize(14,14);
+	else if (b.getText() == "11 x 11") 
+	    ret.setSize(11,11);
+	else if (b.getText() == "7 x 7")
+	    ret.setSize(7,7);
+	else if (b.getText() == "Other...") {
+	    ret.setSize(4,3);
+	}
+	    
+	return ret;
+    }	
 
     private JMenu createHelpMenu()
     {
@@ -97,8 +169,9 @@ public class GuiMenuBar
 
 	return menu;
     }
-
+    
     private ActionListener m_listener;
     private JMenuBar m_menuBar;
 
+    private ButtonGroup m_bsGroup;
 }

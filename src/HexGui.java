@@ -64,6 +64,8 @@ public class HexGui
     public void CmdNewGame()
     {
 	System.out.println("newgame");
+	Dimension dim = m_menuBar.getCurrentBoardSize();
+	m_board.initSize(dim.width, dim.height);
         m_board.newGame();
 	m_board.repaint();
     }
