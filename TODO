@@ -1,6 +1,29 @@
 HexGui TODO
 
+* optimize board drawing
+  + allow single hexes to be redrawn and use this when a move is made
+  
+* fix doubled up lines when drawing diamond board
+
++ implement "Edit -> BoardSize -> Other..."
+  ? save new boardsizes as preferences
+
++ add menu option to select between Flat and Diamond boards
+
++ use java.util.Preferences for user preferences
+
++ game loading/saving
+  + sgf file loading/saving
+
++ game navigation
+
++ connect to outside hex-playing program
+  ? use Runtime.exec for this?
+  ? or connect over sockets to allow distributed programs?
+  
 * use Ant to build?
+
 * organize src/ better
+
 
 
