@@ -37,17 +37,17 @@ public class HexGui
 // 	System.out.println(e.paramString());
 
 	String cmd = e.getActionCommand();
-	if ("shutdown" == cmd) {
+	if (cmd.equals("shutdown")) {
 	    CmdShutdown();
-	} else if ("newgame" == cmd) {
+	} else if (cmd.equals("newgame")) {
 	    CmdNewGame();
-	} else if ("savegame" == cmd) {
+	} else if (cmd.equals("savegame")) {
 	    CmdSaveGame();
-	} else if ("savegameas" == cmd) {
+	} else if (cmd.equals("savegameas")) {
 	    CmdSaveGame();
-	} else if ("loadgame" == cmd) {
+	} else if (cmd.equals("loadgame")) {
 	    CmdLoadGame();
-	} else if ("about" == cmd) {
+	} else if (cmd.equals("about")) {
 	    CmdLoadGame();
 	} else {
 	    System.out.println("Unknown command: '" + cmd + "'.");
