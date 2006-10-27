@@ -1,6 +1,5 @@
 //----------------------------------------------------------------------------
-// $Id: RadialGradientContext.java,v 1.2 2005/06/16 03:17:13 enz Exp $
-// $Source: /cvsroot/gogui/gogui/src/net/sf/gogui/utils/RadialGradientContext.java,v $
+// $Id$
 //----------------------------------------------------------------------------
 
 package hexgui.util;
