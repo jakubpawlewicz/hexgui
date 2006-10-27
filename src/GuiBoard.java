@@ -3,6 +3,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
+import hexgui.hex.*;
+
 public class GuiBoard
     extends JPanel
 {

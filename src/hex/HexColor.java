@@ -1,3 +1,5 @@
+package hexgui.hex;
+
 public final class HexColor
 {
     public static final HexColor EMPTY;

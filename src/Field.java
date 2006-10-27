@@ -4,6 +4,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
 
+import hexgui.hex.*;
+
 public class Field
 {
     public static int getStoneMargin(int width)
