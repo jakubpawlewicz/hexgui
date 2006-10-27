@@ -22,7 +22,7 @@ public class GuiBoard
 	initSize(11, 11);
         newGame();
 
-	m_drawer = new BoardDrawerDiamond();
+	setDrawType("Diamond");   // FIXME: use preferences
 	setPreferredSize(new Dimension(800, 600));
 
 	setLayout(new BoardLayout());
@@ -45,6 +45,18 @@ public class GuiBoard
 	m_boardPanel.addMouseListener(mouseAdapter);
 
 	setVisible(true);
+    }
+
+    public void setDrawType(String name)
+    {
+	if (name.equals("Diamond"))
+	    m_drawer = new BoardDrawerDiamond();
+	else if (name.equals("Flat")) 
+	    m_drawer = new BoardDrawerFlat();
+	else {
+	    System.out.println("GuiBoard: unknown draw type '" + name + "'.");
+	    m_drawer = new BoardDrawerDiamond();
+	} 
     }
 
     public void initSize(int w, int h)

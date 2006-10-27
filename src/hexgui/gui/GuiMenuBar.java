@@ -19,6 +19,7 @@ public class GuiMenuBar
 	m_menuBar.add(createFileMenu());
 	m_menuBar.add(createGameMenu());
         m_menuBar.add(createEditMenu());
+	m_menuBar.add(createViewMenu());
 	m_menuBar.add(createHelpMenu());
     }
 
@@ -140,7 +141,6 @@ public class GuiMenuBar
 	
     public Dimension getCurrentBoardSize()
     {
-
 	Enumeration e = m_bsGroup.getElements();
 	AbstractButton b = (AbstractButton)e.nextElement();
 	while (!b.isSelected() && e.hasMoreElements()) { 
@@ -148,17 +148,60 @@ public class GuiMenuBar
 	}
 
 	Dimension ret = new Dimension();
-	if (b.getText() == "14 x 14")
+	if (b.getText().equals("14 x 14"))
 	    ret.setSize(14,14);
-	else if (b.getText() == "11 x 11") 
+	else if (b.getText().equals("11 x 11")) 
 	    ret.setSize(11,11);
-	else if (b.getText() == "7 x 7")
+	else if (b.getText().equals("7 x 7"))
 	    ret.setSize(7,7);
-	else if (b.getText() == "Other...") {
+	else if (b.getText().equals("Other...")) {
 	    ret.setSize(4,3);
 	}
 	    
 	return ret;
+    }	
+
+    private JMenu createViewMenu()
+    {
+	JMenu menu = new JMenu("View");
+	menu.setMnemonic(KeyEvent.VK_V);
+
+	JMenu view = createBoardViewMenu();
+	menu.add(view);
+
+	return menu;
+    }
+
+    private JMenu createBoardViewMenu()
+    {
+        JMenu menu = new JMenu("Board Type");
+	m_btGroup = new ButtonGroup();
+
+	JRadioButtonMenuItem item;
+	item = new JRadioButtonMenuItem("Diamond");
+	item.addActionListener(m_listener);
+	item.setActionCommand("gui_board_draw_type");
+	item.setSelected(true);
+	m_btGroup.add(item);
+	menu.add(item);
+
+	item = new JRadioButtonMenuItem("Flat");
+	item.addActionListener(m_listener);
+	item.setActionCommand("gui_board_draw_type");
+	m_btGroup.add(item);
+	menu.add(item);
+
+	return menu;
+    }
+
+    public String getCurrentBoardDrawType()
+    {
+	Enumeration e = m_btGroup.getElements();
+	AbstractButton b = (AbstractButton)e.nextElement();
+	while (!b.isSelected() && e.hasMoreElements()) { 
+	    b = (AbstractButton)e.nextElement();
+	}
+	return b.getText();
     }	
 
     private JMenu createHelpMenu()
@@ -179,5 +222,6 @@ public class GuiMenuBar
     private ActionListener m_listener;
     private JMenuBar m_menuBar;
 
-    private ButtonGroup m_bsGroup;
+    private ButtonGroup m_bsGroup;   // board sizes
+    private ButtonGroup m_btGroup;   // board view types (diamond, flat, etc)
 }

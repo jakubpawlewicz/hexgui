@@ -57,6 +57,8 @@ public class HexGui
 	    CmdLoadGame();
 	} else if (cmd.equals("about")) {
 	    CmdLoadGame();
+	} else if (cmd.equals("gui_board_draw_type")) {
+	    CmdGuiBoardDrawType();
 	} else {
 	    System.out.println("Unknown command: '" + cmd + "'.");
 	}
@@ -65,7 +67,7 @@ public class HexGui
     //------------------------------------------------------------
     public void CmdShutdown()
     {
-	System.out.println("Shuting down...");
+	System.out.println("Shutting down...");
 	System.exit(0);
     }
 
@@ -91,6 +93,16 @@ public class HexGui
     public void CmdAbout()
     {
 
+    }
+
+    //------------------------------------------------------------
+
+    public void CmdGuiBoardDrawType()
+    {
+	String type = m_menuBar.getCurrentBoardDrawType();
+	System.out.println(type);
+	m_board.setDrawType(type);
+	m_board.repaint();
     }
 
 
