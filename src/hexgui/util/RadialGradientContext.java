@@ -3,6 +3,8 @@
 // $Source: /cvsroot/gogui/gogui/src/net/sf/gogui/utils/RadialGradientContext.java,v $
 //----------------------------------------------------------------------------
 
+package hexgui.util;
+
 import java.awt.Color;
 import java.awt.PaintContext;
 import java.awt.geom.Point2D;

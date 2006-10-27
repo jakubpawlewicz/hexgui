@@ -1,3 +1,6 @@
+
+import hexgui.gui.HexGui;
+
 import javax.swing.*;          
 import java.awt.*;
 import java.awt.event.*;

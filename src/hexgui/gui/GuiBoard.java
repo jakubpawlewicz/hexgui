@@ -1,9 +1,12 @@
+package hexgui.gui;
+
+import hexgui.hex.*;
+import hexgui.util.*;
 
 import javax.swing.*;          
 import java.awt.*;
 import java.awt.event.*;
 
-import hexgui.hex.*;
 
 public class GuiBoard
     extends JPanel
@@ -26,7 +29,7 @@ public class GuiBoard
 	    {
 		public void mouseClicked(MouseEvent e)
 		{
-		    Field f = m_drawer.getFieldContaining(e.getPoint(), field);
+		    GuiField f = m_drawer.getFieldContaining(e.getPoint(), field);
 		    if (f == null) return;
 		    if (f.getColor() == HexColor.EMPTY) {
 			f.setColor(m_toMove);
@@ -52,10 +55,10 @@ public class GuiBoard
 	m_east = m_south+1;
 	m_west = m_east+1;
 
-	field = new Field[w*h+4];
+	field = new GuiField[w*h+4];
 	for (int x=0; x<w*h+4; x++) {
-	    field[x] = new Field();
-	    if (x < w*h) field[x].setAttributes(Field.DRAW_CELL_OUTLINE);
+	    field[x] = new GuiField();
+	    if (x < w*h) field[x].setAttributes(GuiField.DRAW_CELL_OUTLINE);
 	}
     }
 
@@ -128,7 +131,7 @@ public class GuiBoard
 
     private Image m_image;
     private HexColor m_toMove;
-    private Field field[];
+    private GuiField field[];
 
     private BoardDrawerBase m_drawer;
     private BoardPanel m_boardPanel;

@@ -1,3 +1,4 @@
+package hexgui.gui;
 
 import javax.swing.*;          
 import java.awt.*;
@@ -5,8 +6,9 @@ import java.awt.event.*;
 import java.awt.geom.*;
 
 import hexgui.hex.*;
+import hexgui.util.*;
 
-public class Field
+public class GuiField
 {
     public static int getStoneMargin(int width)
     {
@@ -14,7 +16,7 @@ public class Field
     }
     
     //------------------------------------------------------------
-    public Field()
+    public GuiField()
     {
 	clear();
 	clearAttributes();

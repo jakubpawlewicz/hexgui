@@ -1,3 +1,7 @@
+package hexgui.gui;
+
+import hexgui.hex.HexColor;
+
 import javax.swing.*;          
 import java.awt.*;
 import java.awt.event.*;
@@ -88,10 +92,10 @@ public abstract class BoardDrawerBase
     //------------------------------------------------------------
     public int getShadowOffset()
     {
-        return (m_fieldWidth  - 2*Field.getStoneMargin(m_fieldWidth)) / 12;
+        return (m_fieldWidth  - 2*GuiField.getStoneMargin(m_fieldWidth)) / 12;
     }
 
-    public Field getFieldContaining(Point p, Field field[])
+    public GuiField getFieldContaining(Point p, GuiField field[])
     {
 	if (field.length != m_hexagon.length) {
 	    System.out.println("Fields differ in size!");
@@ -112,11 +116,11 @@ public abstract class BoardDrawerBase
 	    g.drawImage(m_background, 0, 0, m_width, m_height, null);
     }
 
-    protected void drawCells(Graphics g, Field field[])
+    protected void drawCells(Graphics g, GuiField field[])
     {
 	g.setColor(Color.black);
 	for (int i=0; i<m_hexagon.length; i++) {
-	    if ((field[i].getAttributes() & Field.DRAW_CELL_OUTLINE) != 0)
+	    if ((field[i].getAttributes() & GuiField.DRAW_CELL_OUTLINE) != 0)
 		g.drawPolygon(m_hexagon[i]);
 	}
     }
@@ -133,7 +137,7 @@ public abstract class BoardDrawerBase
 
     protected abstract void drawLabels(Graphics g);
 
-    protected void drawShadows(Graphics graphics, Field[] field)
+    protected void drawShadows(Graphics graphics, GuiField[] field)
     {
         if (m_fieldWidth <= 5)
             return;
@@ -142,7 +146,7 @@ public abstract class BoardDrawerBase
         if (graphics2D == null)
             return;
         graphics2D.setComposite(COMPOSITE_3);
-        int size = m_fieldWidth - 2 * Field.getStoneMargin(m_fieldWidth);
+        int size = m_fieldWidth - 2 * GuiField.getStoneMargin(m_fieldWidth);
         int offset = getShadowOffset();
         for (int pos = 0; pos < field.length; pos++) {
 	    if (field[pos].getColor() == HexColor.EMPTY)
@@ -156,7 +160,7 @@ public abstract class BoardDrawerBase
         graphics.setPaintMode();
     }
 
-    protected void drawFields(Graphics g, Field field[])
+    protected void drawFields(Graphics g, GuiField field[])
     {
 	for (int x=0; x<field.length; x++) {
 	    Point p = getLocation(x);
@@ -164,7 +168,7 @@ public abstract class BoardDrawerBase
 	}
     }
 
-    public void draw(Graphics g, int w, int h, int bx, int by, Field field[])
+    public void draw(Graphics g, int w, int h, int bx, int by, GuiField field[])
     {
 	m_width = w;
 	m_height = h;

@@ -3,6 +3,8 @@
 // $Source: /cvsroot/gogui/gogui/src/net/sf/gogui/utils/RadialGradientPaint.java,v $
 //----------------------------------------------------------------------------
 
+package hexgui.util;
+
 import java.awt.Color;
 import java.awt.Paint;
 import java.awt.PaintContext;
@@ -12,7 +14,8 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.ColorModel;
- 
+
+
 //----------------------------------------------------------------------------
 
 /** Creates a PaintContext for a radial gradient. */
