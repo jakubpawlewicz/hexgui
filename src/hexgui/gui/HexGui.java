@@ -4,11 +4,11 @@
 
 package hexgui.gui;
 
+import hexgui.hex.*;
+import java.util.*;
 import javax.swing.*;          
 import java.awt.*;
 import java.awt.event.*;
-
-import hexgui.hex.*;
 
 public class HexGui 
     extends JFrame 
@@ -74,7 +74,29 @@ public class HexGui
     public void CmdNewGame()
     {
 	System.out.println("newgame");
-	Dimension dim = m_menuBar.getCurrentBoardSize();
+
+	String size = m_menuBar.getSelectedBoardSize();
+	Dimension dim = new Dimension(-1,-1);
+	if (size.equals("Other...")) {
+	    size = BoardSizeDialog.show(this);
+	}
+
+	StringTokenizer st = new StringTokenizer(size);
+	if (st.countTokens() == 3) {
+	    int w,h;
+	    w = Integer.parseInt(st.nextToken());
+	    st.nextToken();
+	    h = Integer.parseInt(st.nextToken());
+	    dim.setSize(w,h);
+	}
+	if (dim.width == -1) {
+	    JOptionPane.showMessageDialog(this,
+					  "Invalid board size.",
+					  "Invalid Board Size",
+					  JOptionPane.ERROR_MESSAGE);
+	    return;
+	}
+
 	m_board.initSize(dim.width, dim.height);
         m_board.newGame();
 	m_board.repaint();

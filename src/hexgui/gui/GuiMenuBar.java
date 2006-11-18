@@ -138,8 +138,8 @@ public class GuiMenuBar
 
 	return menu;
     }
-	
-    public Dimension getCurrentBoardSize()
+
+    public String getSelectedBoardSize()
     {
 	Enumeration e = m_bsGroup.getElements();
 	AbstractButton b = (AbstractButton)e.nextElement();
@@ -147,18 +147,7 @@ public class GuiMenuBar
 	    b = (AbstractButton)e.nextElement();
 	}
 
-	Dimension ret = new Dimension();
-	if (b.getText().equals("14 x 14"))
-	    ret.setSize(14,14);
-	else if (b.getText().equals("11 x 11")) 
-	    ret.setSize(11,11);
-	else if (b.getText().equals("7 x 7"))
-	    ret.setSize(7,7);
-	else if (b.getText().equals("Other...")) {
-	    ret.setSize(4,3);
-	}
-	    
-	return ret;
+	return b.getText();
     }	
 
     private JMenu createViewMenu()
