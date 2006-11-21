@@ -13,7 +13,8 @@ import java.awt.event.*;
 public final class BoardSizeDialog
 {
     /** Run dialog.
-        @return Board dimensions or (-1,-1) if aborted. */
+        @return Board dimensions as string in format "w x h"; returns "-1 x -1" 
+	if aborted. */
     public static String show(Component parent)
     {
         String ret, value = "11 x 11";
