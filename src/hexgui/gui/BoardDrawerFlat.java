@@ -14,7 +14,7 @@ public class BoardDrawerFlat extends BoardDrawerBase
     public BoardDrawerFlat()
     {
 	super();
-	loadBackground("images/wood.png");
+	loadBackground("hexgui/images/wood.png");
     }
 
     //------------------------------------------------------------

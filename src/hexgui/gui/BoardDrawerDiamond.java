@@ -14,7 +14,7 @@ public class BoardDrawerDiamond extends BoardDrawerBase
     public BoardDrawerDiamond()
     {
 	super();
-	loadBackground("images/wood.png");
+	loadBackground("hexgui/images/wood.png");
     }
 
     //------------------------------------------------------------
