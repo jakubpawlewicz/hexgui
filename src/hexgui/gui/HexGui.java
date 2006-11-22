@@ -29,6 +29,9 @@ public class HexGui
 	m_menuBar = new GuiMenuBar(this);
 	setJMenuBar(m_menuBar.getJMenuBar());
 
+	m_toolBar = new GuiToolBar(this);
+        getContentPane().add(m_toolBar.getJToolBar(), BorderLayout.NORTH);
+
 	m_board = new GuiBoard();
         getContentPane().add(m_board, BorderLayout.CENTER);
 
@@ -45,9 +48,17 @@ public class HexGui
 // 	System.out.println(e.paramString());
 
 	String cmd = e.getActionCommand();
+
+	//
+	// system commands
+	//
 	if (cmd.equals("shutdown")) {
 	    CmdShutdown();
-	} else if (cmd.equals("newgame")) {
+	} 
+	//
+	// file/help commands
+	//
+	else if (cmd.equals("newgame")) {
 	    CmdNewGame();
 	} else if (cmd.equals("savegame")) {
 	    CmdSaveGame();
@@ -57,9 +68,33 @@ public class HexGui
 	    CmdLoadGame();
 	} else if (cmd.equals("about")) {
 	    CmdLoadGame();
-	} else if (cmd.equals("gui_board_draw_type")) {
+	} 
+	//
+	// gui commands
+	//
+	else if (cmd.equals("gui_board_draw_type")) {
 	    CmdGuiBoardDrawType();
-	} else {
+	} 
+	//
+        // game navigation commands  
+	//
+        else if (cmd.equals("game_beginning")) {
+
+	} else if (cmd.equals("game_backward10")) {
+
+	} else if (cmd.equals("game_back")) {
+
+	} else if (cmd.equals("game_forward")) {
+
+	} else if (cmd.equals("game_forward10")) {
+
+	} else if (cmd.equals("game_end")) {
+
+	}
+	//
+	// unknown command
+	//
+	else {
 	    System.out.println("Unknown command: '" + cmd + "'.");
 	}
     }
@@ -129,5 +164,6 @@ public class HexGui
 
 
     private GuiBoard m_board;
+    private GuiToolBar m_toolBar;
     private GuiMenuBar m_menuBar;
 }
