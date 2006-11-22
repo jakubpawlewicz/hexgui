@@ -3,15 +3,16 @@
 //----------------------------------------------------------------------------
 package hexgui.game;
 
-public class Node
+public class Game
 {
-    public Node()
+    public Game()
     {
+	m_root = null;
+	m_current = null;
     }
-
-    private Move m_move;
-    private Node m_parent;
-    private Node m_prev, m_next;
+    
+    private Node m_root;
+    private Node m_current;
 }
 
 //----------------------------------------------------------------------------
