@@ -152,3 +152,5 @@ public class GuiBoard
     private BoardDrawerBase m_drawer;
     private BoardPanel m_boardPanel;
 }
+
+//----------------------------------------------------------------------------

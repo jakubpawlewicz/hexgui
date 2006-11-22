@@ -10,7 +10,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.net.URL;
 
-public class GuiToolBar
+public final class GuiToolBar
 {
     public GuiToolBar(ActionListener listener)
     {
@@ -73,9 +73,34 @@ public class GuiToolBar
 				 "Go to end of game",
 				 "End"));
 
+	m_toolBar.addSeparator();
+
+	m_up = makeButton("hexgui/images/up.png",
+			  "game_up",
+			  "Explore previous variation",
+			  "Up");
+	m_toolBar.add(m_up);
+	enableUp(false);
+	
+	m_down = makeButton("hexgui/images/down.png",
+			  "game_down",
+			  "Explore next variation",
+			  "Down");
+	m_toolBar.add(m_down);
+	enableDown(false);
+
+	m_toolBar.addSeparator();
+
+	m_stop = makeButton("hexgui/images/stop.png",
+			    "stop",
+			    "Stop Action",
+			    "Stop");
+	m_toolBar.add(m_stop);
+	disableStopButton();
+
     }
 
-    public JButton makeButton(String imageFile, String actionCommand,
+    private JButton makeButton(String imageFile, String actionCommand,
 			      String tooltip, String altText)
     {
 	JButton button = new JButton();
@@ -94,6 +119,30 @@ public class GuiToolBar
 	return button;
     }
 
+    //----------------------------------------------------------------------
+
+    public void enableUp(boolean s) { m_up.setEnabled(s); }
+    public void enableDown(boolean s) { m_down.setEnabled(s); }
+
+    public void enableStopButton(String actionCommand)
+    {
+	m_stop.setEnabled(true);
+    }
+    
+    public void disableStopButton()
+    {
+	m_stop.setEnabled(false);
+    }
+
+    //----------------------------------------------------------------------
+
     private JToolBar m_toolBar;
     private ActionListener m_listener;
+
+    private JButton m_up;
+    private JButton m_down;
+    private JButton m_stop;
+    
 }
+
+//----------------------------------------------------------------------------

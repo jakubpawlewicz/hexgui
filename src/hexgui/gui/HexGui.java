@@ -90,6 +90,12 @@ public class HexGui
 
 	} else if (cmd.equals("game_end")) {
 
+	} else if (cmd.equals("game_up")) {
+
+	} else if (cmd.equals("game_down")) {
+
+	} else if (cmd.equals("stop")) {
+
 	}
 	//
 	// unknown command
@@ -167,3 +173,5 @@ public class HexGui
     private GuiToolBar m_toolBar;
     private GuiMenuBar m_menuBar;
 }
+
+//----------------------------------------------------------------------------
