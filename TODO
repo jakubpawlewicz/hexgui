@@ -5,10 +5,7 @@ HexGui TODO
   
 * fix doubled up lines when drawing diamond board
 
-+ implement "Edit -> BoardSize -> Other..."
-  ? save new boardsizes as preferences
-
-+ add menu option to select between Flat and Diamond boards
+? save new boardsizes as preferences
 
 + use java.util.Preferences for user preferences
 
