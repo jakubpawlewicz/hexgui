@@ -33,11 +33,11 @@ public final class HexGui
 		}
 	    });
 	
-	m_menuBar = new GuiMenuBar(this);
-	setJMenuBar(m_menuBar.getJMenuBar());
+	m_menubar = new GuiMenuBar(this);
+	setJMenuBar(m_menubar.getJMenuBar());
 
-	m_toolBar = new GuiToolBar(this);
-        getContentPane().add(m_toolBar.getJToolBar(), BorderLayout.NORTH);
+	m_toolbar = new GuiToolBar(this);
+        getContentPane().add(m_toolbar.getJToolBar(), BorderLayout.NORTH);
 
 	m_guiboard = new GuiBoard(this);
         getContentPane().add(m_guiboard, BorderLayout.CENTER);
@@ -88,21 +88,47 @@ public final class HexGui
         // game navigation commands  
 	//
         else if (cmd.equals("game_beginning")) {
-
+	    backward(1000);
 	} else if (cmd.equals("game_backward10")) {
-
+	    backward(10);
 	} else if (cmd.equals("game_back")) {
-
+	    backward(1);
 	} else if (cmd.equals("game_forward")) {
-
+	    forward(1);
 	} else if (cmd.equals("game_forward10")) {
-
+	    forward(10);
 	} else if (cmd.equals("game_end")) {
-
+	    forward(1000);
 	} else if (cmd.equals("game_up")) {
+	    if (m_current.getNext() != null) {
+		HexPoint point = m_current.getMove().getPoint();
+		m_guiboard.setColor(point, HexColor.EMPTY);
 
+		m_current = m_current.getNext();
+
+		HexColor color = m_current.getMove().getColor();
+		point = m_current.getMove().getPoint();
+		m_guiboard.setColor(point, color);
+		m_tomove = color.otherColor();
+		
+		m_guiboard.repaint();
+		m_toolbar.updateButtonStates(m_current);
+	    }
 	} else if (cmd.equals("game_down")) {
+	    if (m_current.getPrev() != null) {
+		HexPoint point = m_current.getMove().getPoint();
+		m_guiboard.setColor(point, HexColor.EMPTY);
 
+		m_current = m_current.getPrev();
+
+		HexColor color = m_current.getMove().getColor();
+		point = m_current.getMove().getPoint();
+		m_guiboard.setColor(point, color);
+		m_tomove = color.otherColor();
+
+		m_guiboard.repaint();
+		m_toolbar.updateButtonStates(m_current);
+	    }
 	} else if (cmd.equals("stop")) {
 
 	}
@@ -125,7 +151,7 @@ public final class HexGui
     {
 	System.out.println("newgame");
 
-	String size = m_menuBar.getSelectedBoardSize();
+	String size = m_menubar.getSelectedBoardSize();
 	Dimension dim = new Dimension(-1,-1);
 	if (size.equals("Other...")) {
 	    size = BoardSizeDialog.show(this);
@@ -148,8 +174,12 @@ public final class HexGui
 	}
 
 	m_tomove = HexColor.BLACK;
+	m_root = new Node();
+	m_current = m_root;
+
 	m_guiboard.initSize(dim.width, dim.height);
 	m_guiboard.repaint();
+	m_toolbar.updateButtonStates(m_current);
     }
 
     public void CmdSaveGame()
@@ -171,7 +201,7 @@ public final class HexGui
 
     public void CmdGuiBoardDrawType()
     {
-	String type = m_menuBar.getCurrentBoardDrawType();
+	String type = m_menubar.getCurrentBoardDrawType();
 	System.out.println(type);
 	m_guiboard.setDrawType(type);
 	m_guiboard.repaint();
@@ -185,20 +215,55 @@ public final class HexGui
     public void fieldClicked(HexPoint point)
     {
 	if (m_guiboard.getColor(point) == HexColor.EMPTY) {
+	    Move move = new Move(point, m_tomove);
+	    Node node = new Node(move);
+	    m_current.addChild(node);
+	    m_current = node;
+
 	    m_guiboard.setColor(point, m_tomove);
-	    m_guiboard.repaint();                   // FIXME: remove me!
 	    m_tomove = m_tomove.otherColor();
+	    m_guiboard.repaint();
+	    m_toolbar.updateButtonStates(m_current);
 	}
     }
 
-    public void forward(int n)
+    private void forward(int n)
     {
-	
+	for (int i=0; i<n; i++) {
+	    Node child = m_current.getChild();
+	    if (child == null) break;
+
+	    Move move = child.getMove();
+	    m_guiboard.setColor(move.getPoint(), move.getColor());
+	    m_current = child;
+	    m_tomove = move.getColor().otherColor();
+	}
+	m_guiboard.repaint();
+	m_toolbar.updateButtonStates(m_current);
+    }
+
+    private void backward(int n)
+    {
+	for (int i=0; i<n; i++) {
+	    if (m_current == m_root) break;
+
+	    Move move = m_current.getMove();
+	    m_guiboard.setColor(move.getPoint(), HexColor.EMPTY);
+
+	    m_current = m_current.getParent();
+	}
+	m_guiboard.repaint();
+	m_toolbar.updateButtonStates(m_current);
+	    
+	if (m_current == m_root) 
+	    m_tomove = HexColor.BLACK;
+	else
+	    m_tomove = m_current.getMove().getColor().otherColor();
     }
 
     private GuiBoard m_guiboard;
-    private GuiToolBar m_toolBar;
-    private GuiMenuBar m_menuBar;
+    private GuiToolBar m_toolbar;
+    private GuiMenuBar m_menubar;
 
     private Node m_root;
     private Node m_current;

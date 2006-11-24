@@ -56,7 +56,7 @@ public class Node
     }
 
     /** Add a child.
-        @param child Node to be added end of list.
+        @param child Node to be added to end of list.
     */     
     public void addChild(Node child) 
     {
@@ -72,6 +72,7 @@ public class Node
 	    child.setPrev(cur);
 	}
 	child.setNext(null);
+	child.setParent(this);
     }
 
     /** Get the nth child. 
