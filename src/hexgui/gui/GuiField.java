@@ -12,6 +12,8 @@ import java.awt.geom.*;
 import hexgui.hex.*;
 import hexgui.util.*;
 
+//----------------------------------------------------------------------------
+
 public class GuiField
 {
     public static int getStoneMargin(int width)
@@ -20,38 +22,31 @@ public class GuiField
     }
     
     //------------------------------------------------------------
+
     public GuiField()
     {
-	clear();
-	clearAttributes();
+	this(null);
+    }
+
+    public GuiField(HexPoint p)
+    {
+	m_point = p;
+	m_color = HexColor.EMPTY;
+	m_attributes = 0;
     }
 
     public static final int DRAW_CELL_OUTLINE = 1;
 
-    public void clearAttributes() 
-    {
-	m_attributes = 0;
-    }
+    public void clearAttributes() { m_attributes = 0; }
+    public void setAttributes(int f)   { m_attributes |= f; }
+    public int getAttributes() { return m_attributes; }
+ 
+    public void setColor(HexColor c) { m_color = c; }
+    public HexColor getColor() { return m_color; }
 
-    public int getAttributes()
-    {
-	return m_attributes;
-    }
+    public void setPoint(HexPoint p) { m_point = p; }
+    public HexPoint getPoint() { return m_point; }
 
-    public void setAttributes(int f)
-    {
-	m_attributes |= f;
-    }
-
-    public void setColor(HexColor c)
-    {
-	m_color = c;
-    }
-
-    public HexColor getColor()
-    {
-	return m_color;
-    }
 
     public void clear()
     {
@@ -118,6 +113,7 @@ public class GuiField
     private int m_width;
     private int m_height;
     private int m_margin;
+    private HexPoint m_point;
     private HexColor m_color;
     private int m_attributes;
     private Graphics m_graphics;

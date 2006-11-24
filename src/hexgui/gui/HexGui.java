@@ -5,14 +5,21 @@
 package hexgui.gui;
 
 import hexgui.hex.*;
+import hexgui.game.Node;
+
 import java.util.*;
 import javax.swing.*;          
 import java.awt.*;
 import java.awt.event.*;
 
-public class HexGui 
+//----------------------------------------------------------------------------
+
+/** The parent HexGui object.
+    Basically does everything.
+*/
+public final class HexGui 
     extends JFrame 
-    implements ActionListener 
+    implements ActionListener, GuiBoard.Listener
 {
     public HexGui()
     {
@@ -32,8 +39,10 @@ public class HexGui
 	m_toolBar = new GuiToolBar(this);
         getContentPane().add(m_toolBar.getJToolBar(), BorderLayout.NORTH);
 
-	m_board = new GuiBoard();
-        getContentPane().add(m_board, BorderLayout.CENTER);
+	m_guiboard = new GuiBoard(this);
+        getContentPane().add(m_guiboard, BorderLayout.CENTER);
+
+	CmdNewGame();
 
         pack();
         setVisible(true);
@@ -138,9 +147,9 @@ public class HexGui
 	    return;
 	}
 
-	m_board.initSize(dim.width, dim.height);
-        m_board.newGame();
-	m_board.repaint();
+	m_tomove = HexColor.BLACK;
+	m_guiboard.initSize(dim.width, dim.height);
+	m_guiboard.repaint();
     }
 
     public void CmdSaveGame()
@@ -155,7 +164,7 @@ public class HexGui
 
     public void CmdAbout()
     {
-
+	
     }
 
     //------------------------------------------------------------
@@ -164,14 +173,36 @@ public class HexGui
     {
 	String type = m_menuBar.getCurrentBoardDrawType();
 	System.out.println(type);
-	m_board.setDrawType(type);
-	m_board.repaint();
+	m_guiboard.setDrawType(type);
+	m_guiboard.repaint();
     }
 
+    //------------------------------------------------------------
 
-    private GuiBoard m_board;
+    /** Callback from GuiBoard. 
+	Handle a mouse click.
+    */
+    public void fieldClicked(HexPoint point)
+    {
+	if (m_guiboard.getColor(point) == HexColor.EMPTY) {
+	    m_guiboard.setColor(point, m_tomove);
+	    m_guiboard.repaint();                   // FIXME: remove me!
+	    m_tomove = m_tomove.otherColor();
+	}
+    }
+
+    public void forward(int n)
+    {
+	
+    }
+
+    private GuiBoard m_guiboard;
     private GuiToolBar m_toolBar;
     private GuiMenuBar m_menuBar;
+
+    private Node m_root;
+    private Node m_current;
+    private HexColor m_tomove;
 }
 
 //----------------------------------------------------------------------------

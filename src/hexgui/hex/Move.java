@@ -29,7 +29,10 @@ public final class Move
 
     public static String toString(HexPoint p, HexColor c)
     {
-	return "[" + p.toString() + ", " + c.toString() + "]";
+	if (p == null || c == null) 
+	    return "[null]";
+
+	return "[" + c.toString() + ", " + p.toString() + "]";
     }
 
     public String toString()

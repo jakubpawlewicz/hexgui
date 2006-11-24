@@ -11,16 +11,25 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
+//----------------------------------------------------------------------------
 
 public class GuiBoard
     extends JPanel
 {
-    public GuiBoard()
+    /** Callback for clicks on a field. */
+    public interface Listener
+    {
+	void fieldClicked(HexPoint point);
+    }
+
+    /** Constructor. */
+    public GuiBoard(Listener listener)
     {
 	m_image = null;
 
+	m_listener = listener;
+
 	initSize(11, 11);
-        newGame();
 
 	setDrawType("Diamond");   // FIXME: use preferences
 	setPreferredSize(new Dimension(800, 600));
@@ -30,18 +39,14 @@ public class GuiBoard
 	add(m_boardPanel);
 
 	MouseAdapter mouseAdapter = new MouseAdapter()
+	{
+	    public void mouseClicked(MouseEvent e)
 	    {
-		public void mouseClicked(MouseEvent e)
-		{
-		    GuiField f = m_drawer.getFieldContaining(e.getPoint(), field);
-		    if (f == null) return;
-		    if (f.getColor() == HexColor.EMPTY) {
-			f.setColor(m_toMove);
-			m_toMove = m_toMove.otherColor();
-			repaint();
-		    }
-		}
-	    };
+		GuiField f = m_drawer.getFieldContaining(e.getPoint(), field);
+		if (f == null) return;
+		m_listener.fieldClicked(f.getPoint());
+	    }
+	};
 	m_boardPanel.addMouseListener(mouseAdapter);
 
 	setVisible(true);
@@ -66,16 +71,18 @@ public class GuiBoard
 	m_width = w; 
 	m_height = h;
 
-	m_north = w*h;
-	m_south = m_north+1;
-	m_east = m_south+1;
-	m_west = m_east+1;
-
 	field = new GuiField[w*h+4];
-	for (int x=0; x<w*h+4; x++) {
-	    field[x] = new GuiField();
-	    if (x < w*h) field[x].setAttributes(GuiField.DRAW_CELL_OUTLINE);
+	for (int x=0; x<w*h; x++) {
+	    field[x] = new GuiField(new HexPoint(x % w, x / w));
+	    field[x].setAttributes(GuiField.DRAW_CELL_OUTLINE);
 	}
+
+	field[w*h+0] = new GuiField(HexPoint.NORTH);
+	field[w*h+1] = new GuiField(HexPoint.SOUTH);
+	field[w*h+2] = new GuiField(HexPoint.WEST);
+	field[w*h+3] = new GuiField(HexPoint.EAST);
+	
+	clearAll();
     }
 
     public void clearAll()
@@ -83,16 +90,32 @@ public class GuiBoard
 	for (int x=0; x<field.length; x++) 
 	    field[x].clear();
 
-	field[m_north].setColor(HexColor.BLACK);
-	field[m_south].setColor(HexColor.BLACK);
-	field[m_west].setColor(HexColor.WHITE);
-	field[m_east].setColor(HexColor.WHITE);
+	getField(HexPoint.NORTH).setColor(HexColor.BLACK);
+	getField(HexPoint.SOUTH).setColor(HexColor.BLACK);
+	getField(HexPoint.WEST).setColor(HexColor.WHITE);
+	getField(HexPoint.EAST).setColor(HexColor.WHITE);
     }
 
-    public void newGame()
+    public void setColor(HexPoint point, HexColor color)
     {
-        clearAll();
-	m_toMove = HexColor.BLACK;
+	GuiField f = getField(point);
+	f.setColor(color);
+    }
+
+    public HexColor getColor(HexPoint point)
+    {
+	GuiField f = getField(point);
+	return f.getColor();
+    }
+
+    public GuiField getField(HexPoint point)
+    {
+	for (int x=0; x<field.length; x++) {
+	    HexPoint p = field[x].getPoint();
+	    if (p.x == point.x && p.y == point.y) return field[x];
+	}
+	System.out.println("point off the board!");
+	return null;
     }
 
     //------------------------------------------------------------
@@ -143,14 +166,14 @@ public class GuiBoard
     public int DEFAULT_HEIGHT = 11;    
 
     private int m_width, m_height;
-    private int m_north, m_south, m_east, m_west;
 
     private Image m_image;
-    private HexColor m_toMove;
     private GuiField field[];
 
     private BoardDrawerBase m_drawer;
     private BoardPanel m_boardPanel;
+
+    private Listener m_listener;
 }
 
 //----------------------------------------------------------------------------
