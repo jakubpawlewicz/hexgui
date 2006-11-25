@@ -137,14 +137,14 @@ public class GuiBoard
 	{
 	    int width = getWidth();
 	    int height = getHeight();
-	    System.out.println("GuiBoard.paintComponent "
-			       + graphics.getClipBounds().x + " "
-			       + graphics.getClipBounds().y + " "
-			       + graphics.getClipBounds().width + " "
-			       + graphics.getClipBounds().height);
+// 	    System.out.println("GuiBoard.paintComponent "
+// 			       + graphics.getClipBounds().x + " "
+// 			       + graphics.getClipBounds().y + " "
+// 			       + graphics.getClipBounds().width + " "
+// 			       + graphics.getClipBounds().height);
 
 	    if (m_image == null) {
-		System.out.println("Creating new image...");
+		//System.out.println("Creating new image...");
 		m_image = createImage(width, height);
 	    }
 
@@ -157,7 +157,7 @@ public class GuiBoard
 	public void setBounds(int x, int y, int w, int h)
 	{
 	    super.setBounds(x,y,w,h);
-	    System.out.println("Bounds: "+x+" "+y+" "+w+" "+h);
+	    //System.out.println("Bounds: "+x+" "+y+" "+w+" "+h);
 	    m_image = null;
 	}
     }

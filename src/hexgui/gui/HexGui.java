@@ -76,7 +76,7 @@ public final class HexGui
 	} else if (cmd.equals("loadgame")) {
 	    CmdLoadGame();
 	} else if (cmd.equals("about")) {
-	    CmdLoadGame();
+	    CmdAbout();
 	} 
 	//
 	// gui commands
@@ -149,7 +149,8 @@ public final class HexGui
 
     private void CmdNewGame()
     {
-	System.out.println("newgame");
+	if (gameChanged() && !askSaveGame())
+	    return;
 
 	String size = m_menubar.getSelectedBoardSize();
 	Dimension dim = new Dimension(-1,-1);
@@ -182,6 +183,7 @@ public final class HexGui
 	    m_tomove = HexColor.BLACK;
 	    m_root = new Node();
 	    m_current = m_root;
+	    setGameChanged(false);
 	    
 	    m_guiboard.initSize(dim.width, dim.height);
 	    m_guiboard.repaint();
@@ -189,13 +191,16 @@ public final class HexGui
 	}
     }
 
-    private void CmdSaveGame()
+    private boolean CmdSaveGame()
     {
-
+	setGameChanged(false);
+	return true;
     }
 
     private void CmdLoadGame()
     {
+	if (gameChanged() && !askSaveGame())
+	    return;
 
     }
 
@@ -229,6 +234,8 @@ public final class HexGui
 
 	    m_guiboard.setColor(point, m_tomove);
 	    m_tomove = m_tomove.otherColor();
+	    setGameChanged(true);
+
 	    m_guiboard.repaint();
 	    m_toolbar.updateButtonStates(m_current);
 	}
@@ -268,6 +275,38 @@ public final class HexGui
 	    m_tomove = m_current.getMove().getColor().otherColor();
     }
 
+    private void setGameChanged(boolean t) 
+    {
+	m_gameChanged = t;
+    }
+
+    private boolean gameChanged()
+    {
+	return m_gameChanged;
+    }
+
+    /** Returns false if action was aborted for some reason. */
+    private boolean askSaveGame()
+    {
+	Object options[] = {"Save", "Discard", "Cancel"};
+	int n = JOptionPane.showOptionDialog(this,
+					     "Game has changed.  Save changes?",
+					     "Save Game?",
+					     JOptionPane.YES_NO_CANCEL_OPTION,
+					     JOptionPane.QUESTION_MESSAGE,
+					     null,
+					     options,
+					     options[0]);
+	if (n == 0) {
+	    if (CmdSaveGame()) 
+		return true;
+	    return false;
+	} else if (n == 1) {
+	    return true;
+	}
+	return false;
+    }
+
     private GuiBoard m_guiboard;
     private GuiToolBar m_toolbar;
     private GuiMenuBar m_menubar;
@@ -275,6 +314,9 @@ public final class HexGui
     private Node m_root;
     private Node m_current;
     private HexColor m_tomove;
+
+    private boolean m_gameChanged;
+
 }
 
 //----------------------------------------------------------------------------
