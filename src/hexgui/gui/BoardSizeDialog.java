@@ -15,12 +15,11 @@ public final class BoardSizeDialog
     /** Run dialog.
         @return Board dimensions as string in format "w x h"; returns "-1 x -1" 
 	if aborted. */
-    public static String show(Component parent)
+    public static String show(Component parent, Dimension current)
     {
-        String ret, value = "11 x 11";
+        String ret;
+	String value = "" + current.width + " x " + current.height;
         ret = JOptionPane.showInputDialog(parent, "Board size", value);
-        if (ret == null) 
-	    return "-1 x -1";
         return ret;
     }
 

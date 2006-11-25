@@ -70,6 +70,7 @@ public class GuiBoard
 
 	m_width = w; 
 	m_height = h;
+	m_size = new Dimension(m_width, m_height);
 
 	field = new GuiField[w*h+4];
 	for (int x=0; x<w*h; x++) {
@@ -83,6 +84,11 @@ public class GuiBoard
 	field[w*h+3] = new GuiField(HexPoint.EAST);
 	
 	clearAll();
+    }
+
+    public Dimension getBoardSize()
+    {
+	return m_size;
     }
 
     public void clearAll()
@@ -166,6 +172,7 @@ public class GuiBoard
     public int DEFAULT_HEIGHT = 11;    
 
     private int m_width, m_height;
+    private Dimension m_size;
 
     private Image m_image;
     private GuiField field[];

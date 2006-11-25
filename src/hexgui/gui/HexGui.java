@@ -141,65 +141,72 @@ public final class HexGui
     }
 
     //------------------------------------------------------------
-    public void CmdShutdown()
+    private void CmdShutdown()
     {
 	System.out.println("Shutting down...");
 	System.exit(0);
     }
 
-    public void CmdNewGame()
+    private void CmdNewGame()
     {
 	System.out.println("newgame");
 
 	String size = m_menubar.getSelectedBoardSize();
 	Dimension dim = new Dimension(-1,-1);
 	if (size.equals("Other...")) {
-	    size = BoardSizeDialog.show(this);
+	    size = BoardSizeDialog.show(this, m_guiboard.getBoardSize());
+	    if (size == null) return;
 	}
 
-	StringTokenizer st = new StringTokenizer(size);
-	if (st.countTokens() == 3) {
-	    int w,h;
-	    w = Integer.parseInt(st.nextToken());
+	try {
+	    StringTokenizer st = new StringTokenizer(size);
+	    int w = Integer.parseInt(st.nextToken());
 	    st.nextToken();
-	    h = Integer.parseInt(st.nextToken());
+	    int h = Integer.parseInt(st.nextToken());
 	    dim.setSize(w,h);
 	}
-	if (dim.width == -1) {
+	catch (Throwable t) {
 	    JOptionPane.showMessageDialog(this,
-					  "Invalid board size.",
-					  "Invalid Board Size",
+					  "Size should be in format 'w x h'.",
+					  "Invalid board size",
 					  JOptionPane.ERROR_MESSAGE);
 	    return;
 	}
 
-	m_tomove = HexColor.BLACK;
-	m_root = new Node();
-	m_current = m_root;
-
-	m_guiboard.initSize(dim.width, dim.height);
-	m_guiboard.repaint();
-	m_toolbar.updateButtonStates(m_current);
+	if (dim.width < 1 || dim.height < 1) {
+	    JOptionPane.showMessageDialog(this,
+					  "Invalid board size.",
+					  "Invalid board size",
+					  JOptionPane.ERROR_MESSAGE);
+	} else {
+	    m_tomove = HexColor.BLACK;
+	    m_root = new Node();
+	    m_current = m_root;
+	    
+	    m_guiboard.initSize(dim.width, dim.height);
+	    m_guiboard.repaint();
+	    m_toolbar.updateButtonStates(m_current);
+	}
     }
 
-    public void CmdSaveGame()
+    private void CmdSaveGame()
     {
 
     }
 
-    public void CmdLoadGame()
+    private void CmdLoadGame()
     {
 
     }
 
-    public void CmdAbout()
+    private void CmdAbout()
     {
 	
     }
 
     //------------------------------------------------------------
 
-    public void CmdGuiBoardDrawType()
+    private void CmdGuiBoardDrawType()
     {
 	String type = m_menubar.getCurrentBoardDrawType();
 	System.out.println(type);
