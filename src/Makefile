@@ -23,11 +23,15 @@ JAR = jar
 Main.class:
 	$(JAVAC) hexgui/util/*.java
 	$(JAVAC) hexgui/hex/*.java
+	$(JAVAC) hexgui/game/*.java
+	$(JAVAC) hexgui/sgf/*.java
 	$(JAVAC) hexgui/gui/*.java
 	$(JAVAC) Main.java
 
 clean:
 	$(RM) hexgui/util/*.class
 	$(RM) hexgui/hex/*.class
+	$(RM) hexgui/game/*.class
+	$(RM) hexgui/sgf/*.class
 	$(RM) hexgui/gui/*.class
 	$(RM) *.class

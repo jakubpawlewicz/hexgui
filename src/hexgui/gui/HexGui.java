@@ -6,7 +6,10 @@ package hexgui.gui;
 
 import hexgui.hex.*;
 import hexgui.game.Node;
+import hexgui.sgf.SgfWriter;
+import hexgui.sgf.SgfReader;
 
+import java.io.*;
 import java.util.*;
 import javax.swing.*;          
 import java.awt.*;
@@ -167,18 +170,12 @@ public final class HexGui
 	    dim.setSize(w,h);
 	}
 	catch (Throwable t) {
-	    JOptionPane.showMessageDialog(this,
-					  "Size should be in format 'w x h'.",
-					  "Invalid board size",
-					  JOptionPane.ERROR_MESSAGE);
+	    showError("Size should be in format 'w x h'.");
 	    return;
 	}
 
 	if (dim.width < 1 || dim.height < 1) {
-	    JOptionPane.showMessageDialog(this,
-					  "Invalid board size.",
-					  "Invalid board size",
-					  JOptionPane.ERROR_MESSAGE);
+	    showError("Invalid board size.");
 	} else {
 	    m_tomove = HexColor.BLACK;
 	    m_root = new Node();
@@ -193,8 +190,20 @@ public final class HexGui
 
     private boolean CmdSaveGame()
     {
-	setGameChanged(false);
-	return true;
+	JFileChooser fc = new JFileChooser("../games/");
+	int ret = fc.showOpenDialog(this);
+	if (ret == JFileChooser.APPROVE_OPTION) {
+	    File selected = fc.getSelectedFile();
+	    System.out.println("Saving to file: " + selected.getName());
+
+	    if (save(selected)) {
+		setGameChanged(false);
+		return true;
+	    }
+	    return false;
+	}
+
+	return false;
     }
 
     private void CmdLoadGame()
@@ -305,6 +314,31 @@ public final class HexGui
 	    return true;
 	}
 	return false;
+    }
+
+    /** Save game to file.
+	@return true If successful. 
+    */
+    private boolean save(File file)
+    {
+	FileOutputStream out;
+	try {
+	    out = new FileOutputStream(file);
+	}
+	catch (FileNotFoundException e) {
+	    showError("File not found!");
+	    return false;
+	}
+	
+	new SgfWriter(out, m_root);
+
+	return true;
+    }
+
+    private void showError(String msg)
+    {
+	JOptionPane.showMessageDialog(this, msg, "Error",
+				      JOptionPane.ERROR_MESSAGE);
     }
 
     private GuiBoard m_guiboard;

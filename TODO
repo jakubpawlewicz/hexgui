@@ -1,25 +1,19 @@
 HexGui TODO
 
++ sgf file loading/saving
+
++ connect to outside hex-playing program
+  ? use Runtime.exec for this?
+  ? or connect over sockets to allow distributed programs?
+
 * optimize board drawing
   + allow single hexes to be redrawn and use this when a move is made
   
 * fix doubled up lines when drawing diamond board
 
-? save new boardsizes as preferences
-
 + use java.util.Preferences for user preferences
 
-+ game loading/saving
-  + sgf file loading/saving
-
-+ game navigation
-
-+ connect to outside hex-playing program
-  ? use Runtime.exec for this?
-  ? or connect over sockets to allow distributed programs?
-  
 * use Ant to build?
-
 * organize src/ better
 
 
