@@ -182,6 +182,7 @@ public final class HexGui
 	    m_current = m_root;
 	    m_file = null;
 	    setGameChanged(false);
+	    setFrameTitle();
 	    
 	    m_guiboard.initSize(dim.width, dim.height);
 	    m_guiboard.repaint();
@@ -198,6 +199,7 @@ public final class HexGui
 	    System.out.println("Saving to file: " + m_file.getName());
 	    if (save(m_file)) {
 		setGameChanged(false);
+		setFrameTitle();
 		return true;
 	    }
 	}
@@ -252,6 +254,7 @@ public final class HexGui
 	    m_guiboard.setColor(point, m_tomove);
 	    m_tomove = m_tomove.otherColor();
 	    setGameChanged(true);
+	    setFrameTitle();
 
 	    m_guiboard.repaint();
 	    m_toolbar.updateButtonStates(m_current);
@@ -292,14 +295,22 @@ public final class HexGui
 	    m_tomove = m_current.getMove().getColor().otherColor();
     }
 
-    private void setGameChanged(boolean t) 
+    private void setGameChanged(boolean changed) 
     {
-	m_gameChanged = t;
+	m_gameChanged = changed;
     }
 
     private boolean gameChanged()
     {
 	return m_gameChanged;
+    }
+
+    private void setFrameTitle()
+    {
+	String filename = "untitled";
+	if (m_file != null) filename = m_file.getName();
+	if (gameChanged()) filename = filename + "*";
+	setTitle("HexGui - " + filename);
     }
 
     /** Returns false if action was aborted for some reason. */
@@ -365,6 +376,7 @@ public final class HexGui
     {
 	// FIXME: use most recent path here
 	JFileChooser fc = new JFileChooser("../games/");
+	if (m_file != null) fc.setSelectedFile(m_file);
 	int ret = fc.showSaveDialog(this);
 	if (ret == JFileChooser.APPROVE_OPTION)
 	    return fc.getSelectedFile();
