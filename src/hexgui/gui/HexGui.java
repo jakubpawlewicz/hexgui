@@ -146,6 +146,9 @@ public final class HexGui
     //------------------------------------------------------------
     private void cmdShutdown()
     {
+	if (gameChanged() && !askSaveGame())
+	    return;
+
 	System.out.println("Shutting down...");
 	System.exit(0);
     }
@@ -221,6 +224,23 @@ public final class HexGui
 	if (gameChanged() && !askSaveGame())
 	    return;
 
+	File file = showOpenDialog();
+	if (file == null) return;
+
+	System.out.println("Loading sgf from file: " + file.getName());
+        Node root = load(file);
+	if (root != null) {
+	    m_root = root;
+	    m_current = m_root;
+
+	    // FIXME: set the boardsize properly!
+	    m_guiboard.clearAll();
+	    forward(1000);
+
+	    m_file = file;
+	    setGameChanged(false);
+	    setFrameTitle();
+	}
     }
 
     private void cmdAbout()
@@ -313,7 +333,7 @@ public final class HexGui
 	setTitle("HexGui - " + filename);
     }
 
-    /** Returns false if action was aborted for some reason. */
+    /** Returns false if action was aborted. */
     private boolean askSaveGame()
     {
 	Object options[] = {"Save", "Discard", "Cancel"};
@@ -353,13 +373,28 @@ public final class HexGui
 	return true;
     }
 
-    /* Load game from file.
-       @return true If load was successful.
-    */
-    private boolean load(File file)
+    /* Load game from file. */
+    private Node load(File file)
     {
+	FileInputStream in;
+	try {
+	    in = new FileInputStream(file);
+	}
+	catch(FileNotFoundException e) {
+	    showError("File not found!");
+	    return null;
+	}
 
-	return true;
+	SgfReader sgf;
+	try {
+	    sgf = new SgfReader(in);
+	}
+	catch (SgfReader.SgfError e) {
+	    showError("Error reading SGF file.");
+	    return null;
+	}
+	
+	return sgf.getGameTree();
     }
 
     /** Show a simple error message dialog. */

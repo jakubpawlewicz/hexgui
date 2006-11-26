@@ -4,6 +4,9 @@
 
 package hexgui.hex;
 
+import java.lang.Number;
+import java.lang.NumberFormatException;
+
 //----------------------------------------------------------------------------
 
 public final class HexPoint
@@ -23,6 +26,19 @@ public final class HexPoint
     {
 	this.x = x;
 	this.y = y;
+    }
+
+    public HexPoint(String point)
+    {
+	x = point.charAt(0) - 'a';
+	String val = point.substring(1);
+	try {
+	    y = Integer.parseInt(val) - 1;
+	} 
+	catch (NumberFormatException e) {
+	    System.out.println("Malformed point!! '" + point + "'.");
+	    y = 0;
+	}
     }
 
     public static String toString(int x, int y)
