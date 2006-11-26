@@ -32,7 +32,7 @@ public final class HexGui
 	addWindowListener(new java.awt.event.WindowAdapter() 
 	    {
 		public void windowClosing(WindowEvent winEvt) {
-		    CmdShutdown();
+		    cmdShutdown();
 		}
 	    });
 	
@@ -45,7 +45,7 @@ public final class HexGui
 	m_guiboard = new GuiBoard(this);
         getContentPane().add(m_guiboard, BorderLayout.CENTER);
 
-	CmdNewGame();
+	cmdNewGame();
 
         pack();
         setVisible(true);
@@ -65,27 +65,27 @@ public final class HexGui
 	// system commands
 	//
 	if (cmd.equals("shutdown")) {
-	    CmdShutdown();
+	    cmdShutdown();
 	} 
 	//
 	// file/help commands
 	//
 	else if (cmd.equals("newgame")) {
-	    CmdNewGame();
+	    cmdNewGame();
 	} else if (cmd.equals("savegame")) {
-	    CmdSaveGame();
+	    cmdSaveGame();
 	} else if (cmd.equals("savegameas")) {
-	    CmdSaveGame();
+	    cmdSaveGameAs();
 	} else if (cmd.equals("loadgame")) {
-	    CmdLoadGame();
+	    cmdLoadGame();
 	} else if (cmd.equals("about")) {
-	    CmdAbout();
+	    cmdAbout();
 	} 
 	//
 	// gui commands
 	//
 	else if (cmd.equals("gui_board_draw_type")) {
-	    CmdGuiBoardDrawType();
+	    cmdGuiBoardDrawType();
 	} 
 	//
         // game navigation commands  
@@ -144,13 +144,13 @@ public final class HexGui
     }
 
     //------------------------------------------------------------
-    private void CmdShutdown()
+    private void cmdShutdown()
     {
 	System.out.println("Shutting down...");
 	System.exit(0);
     }
 
-    private void CmdNewGame()
+    private void cmdNewGame()
     {
 	if (gameChanged() && !askSaveGame())
 	    return;
@@ -180,6 +180,7 @@ public final class HexGui
 	    m_tomove = HexColor.BLACK;
 	    m_root = new Node();
 	    m_current = m_root;
+	    m_file = null;
 	    setGameChanged(false);
 	    
 	    m_guiboard.initSize(dim.width, dim.height);
@@ -188,39 +189,46 @@ public final class HexGui
 	}
     }
 
-    private boolean CmdSaveGame()
+    private boolean cmdSaveGame()
     {
-	JFileChooser fc = new JFileChooser("../games/");
-	int ret = fc.showOpenDialog(this);
-	if (ret == JFileChooser.APPROVE_OPTION) {
-	    File selected = fc.getSelectedFile();
-	    System.out.println("Saving to file: " + selected.getName());
-
-	    if (save(selected)) {
+	if (m_file == null) 
+	    m_file = showSaveAsDialog();
+	
+	if (m_file != null) {
+	    System.out.println("Saving to file: " + m_file.getName());
+	    if (save(m_file)) {
 		setGameChanged(false);
 		return true;
 	    }
-	    return false;
 	}
-
 	return false;
     }
 
-    private void CmdLoadGame()
+    private boolean cmdSaveGameAs()
+    {
+	File file = showSaveAsDialog();
+	if (file == null) 
+	    return false;
+
+	m_file = file;
+	return cmdSaveGame();
+    }
+
+    private void cmdLoadGame()
     {
 	if (gameChanged() && !askSaveGame())
 	    return;
 
     }
 
-    private void CmdAbout()
+    private void cmdAbout()
     {
 	
     }
 
     //------------------------------------------------------------
 
-    private void CmdGuiBoardDrawType()
+    private void cmdGuiBoardDrawType()
     {
 	String type = m_menubar.getCurrentBoardDrawType();
 	System.out.println(type);
@@ -307,7 +315,7 @@ public final class HexGui
 					     options,
 					     options[0]);
 	if (n == 0) {
-	    if (CmdSaveGame()) 
+	    if (cmdSaveGame()) 
 		return true;
 	    return false;
 	} else if (n == 1) {
@@ -331,15 +339,51 @@ public final class HexGui
 	}
 	
 	new SgfWriter(out, m_root);
+	return true;
+    }
+
+    /* Load game from file.
+       @return true If load was successful.
+    */
+    private boolean load(File file)
+    {
 
 	return true;
     }
 
+    /** Show a simple error message dialog. */
     private void showError(String msg)
     {
 	JOptionPane.showMessageDialog(this, msg, "Error",
 				      JOptionPane.ERROR_MESSAGE);
     }
+    
+    /** Show save dialog, return File of selected filename.  
+	@return null If aborted.
+    */
+    private File showSaveAsDialog()
+    {
+	// FIXME: use most recent path here
+	JFileChooser fc = new JFileChooser("../games/");
+	int ret = fc.showSaveDialog(this);
+	if (ret == JFileChooser.APPROVE_OPTION)
+	    return fc.getSelectedFile();
+	return null;
+    }
+
+    /** Show open dialog, return File of selected filename.  
+	@return null If aborted.
+    */
+    private File showOpenDialog()
+    {
+	// FIXME: use most recent path here
+	JFileChooser fc = new JFileChooser("../games/");
+	int ret = fc.showOpenDialog(this);
+	if (ret == JFileChooser.APPROVE_OPTION)
+	    return fc.getSelectedFile();
+	return null;
+    }
+
 
     private GuiBoard m_guiboard;
     private GuiToolBar m_toolbar;
@@ -348,8 +392,8 @@ public final class HexGui
     private Node m_root;
     private Node m_current;
     private HexColor m_tomove;
-
     private boolean m_gameChanged;
+    private File m_file;
 
 }
 
