@@ -8,8 +8,10 @@ import hexgui.hex.HexColor;
 import hexgui.hex.HexPoint;
 import hexgui.hex.Move;
 import hexgui.game.Node;
+import hexgui.game.GameInfo;
 
 import java.io.*;
+import java.awt.Dimension;
 
 //----------------------------------------------------------------------------
 
@@ -18,9 +20,10 @@ public final class SgfWriter
 {
     
     /** Write a game tree. */
-    public SgfWriter(OutputStream out, Node root)
+    public SgfWriter(OutputStream out, Node root, GameInfo game)
     {
 	m_out = new PrintStream(out);
+	m_gameinfo = game;
 
 	writeTree(root, true);
 	m_out.print("\n");
@@ -39,15 +42,20 @@ public final class SgfWriter
 	m_out.print(";");
 
 	if (isroot) {
-
-
+	    Dimension dim = m_gameinfo.getBoardSize();
+	    m_out.print("SZ[");
+	    if (dim.width == dim.height)
+		m_out.print(Integer.toString(dim.width));
+	    else
+		m_out.print(Integer.toString(dim.width) + ":" + 
+			    Integer.toString(dim.height));
+	    m_out.print("]");
 	}
 
 	if (node.getMove() != null) 
 	    printMove(node.getMove());
 	
 	// FIXME: print other properties!
-
 
 	int num = node.numChildren();
 	if (num == 0) return;
@@ -88,6 +96,7 @@ public final class SgfWriter
 
 
     private PrintStream m_out;
+    private GameInfo m_gameinfo;
 }
 
 //----------------------------------------------------------------------------

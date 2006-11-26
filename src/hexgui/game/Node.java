@@ -107,8 +107,15 @@ public class Node
 	}
     }
 
+    //----------------------------------------------------------------------
+    
+    public void setComment(String comment) { m_comment = comment; }
+    public String getComment() { return m_comment; }
+
     private Move m_move;
     private Node m_parent, m_prev, m_next, m_child;
+
+    private String m_comment;
 }
 
 //----------------------------------------------------------------------------

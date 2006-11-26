@@ -6,6 +6,7 @@ package hexgui.gui;
 
 import hexgui.hex.*;
 import hexgui.game.Node;
+import hexgui.game.GameInfo;
 import hexgui.sgf.SgfWriter;
 import hexgui.sgf.SgfReader;
 
@@ -183,6 +184,8 @@ public final class HexGui
 	    m_tomove = HexColor.BLACK;
 	    m_root = new Node();
 	    m_current = m_root;
+	    m_gameinfo = new GameInfo();
+	    m_gameinfo.setBoardSize(dim);
 	    m_file = null;
 	    setGameChanged(false);
 	    setFrameTitle();
@@ -228,13 +231,13 @@ public final class HexGui
 	if (file == null) return;
 
 	System.out.println("Loading sgf from file: " + file.getName());
-        Node root = load(file);
-	if (root != null) {
-	    m_root = root;
+	SgfReader sgf = load(file);
+	if (sgf != null) {
+	    m_root = sgf.getGameTree();
+	    m_gameinfo = sgf.getGameInfo();
 	    m_current = m_root;
 
-	    // FIXME: set the boardsize properly!
-	    m_guiboard.clearAll();
+	    m_guiboard.initSize(m_gameinfo.getBoardSize());
 	    forward(1000);
 
 	    m_file = file;
@@ -369,12 +372,12 @@ public final class HexGui
 	    return false;
 	}
 	
-	new SgfWriter(out, m_root);
+	new SgfWriter(out, m_root, m_gameinfo);
 	return true;
     }
 
     /* Load game from file. */
-    private Node load(File file)
+    private SgfReader load(File file)
     {
 	FileInputStream in;
 	try {
@@ -390,11 +393,11 @@ public final class HexGui
 	    sgf = new SgfReader(in);
 	}
 	catch (SgfReader.SgfError e) {
-	    showError("Error reading SGF file.");
+	    showError("Error reading SGF file:\n \"" + e.getMessage() + "\"");
 	    return null;
 	}
 	
-	return sgf.getGameTree();
+	return sgf;
     }
 
     /** Show a simple error message dialog. */
@@ -438,6 +441,7 @@ public final class HexGui
 
     private Node m_root;
     private Node m_current;
+    private GameInfo m_gameinfo;
     private HexColor m_tomove;
     private boolean m_gameChanged;
     private File m_file;

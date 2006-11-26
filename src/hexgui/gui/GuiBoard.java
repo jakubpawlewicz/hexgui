@@ -86,6 +86,11 @@ public class GuiBoard
 	clearAll();
     }
 
+    public void initSize(Dimension dim)
+    {
+	initSize(dim.width, dim.height);
+    }
+
     public Dimension getBoardSize()
     {
 	return m_size;
