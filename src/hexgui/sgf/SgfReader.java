@@ -33,6 +33,8 @@ public final class SgfReader
 	}
     }
 
+    public final static int GM_HEXGAME = 11;
+
     /** Constructor. 
 	Parse the input stream in sgf format. 
     */
@@ -45,11 +47,10 @@ public final class SgfReader
 
 	try {
 	    findGameTree();
-	    m_gametree = parseGameTree(null);
-	    verifyGameInfo();
+	    m_gametree = parseGameTree(null, true);
 	}
 	catch (IOException e) {
-	    throw new SgfError("Error occured during read.");
+	    throw sgfError("IO error occured while parsing file.");
 	}
     }
 
@@ -70,7 +71,7 @@ public final class SgfReader
 	while (true) {
 	    int ttype = m_tokenizer.nextToken();
 	    if (ttype == StreamTokenizer.TT_EOF)
-		throw new SgfError("No game tree found!");
+		throw sgfError("No game tree found!");
 	    
 	    if (ttype == '(') {
 		m_tokenizer.pushBack();
@@ -79,26 +80,28 @@ public final class SgfReader
 	}
     }
 
-    private Node parseGameTree(Node parent) throws SgfError, IOException
+    private Node parseGameTree(Node parent, boolean isroot) 
+	throws SgfError, IOException
     {
 	int ttype = m_tokenizer.nextToken();
 	if (ttype != '(') 
-	    throw new SgfError("Error at head of game tree!");
+	    throw sgfError("Missing '(' at head of game tree.");
 
-	Node node = parseNode(parent);
+	Node node = parseNode(parent, isroot);
 	
 	ttype = m_tokenizer.nextToken();
 	if (ttype != ')') 
-	    throw new SgfError("Game tree not closed!");
+	    throw sgfError("Game tree not closed!");
 
 	return node;
     }
 
-    private Node parseNode(Node parent) throws SgfError, IOException
+    private Node parseNode(Node parent, boolean isroot) 
+	throws SgfError, IOException
     {
 	int ttype = m_tokenizer.nextToken();
 	if (ttype != ';') 
-	    throw new SgfError("Error at head of node!");
+	    throw sgfError("Error at head of node!");
 
 	Node node = new Node();
 	node.setParent(parent);
@@ -111,12 +114,12 @@ public final class SgfReader
 	    switch(ttype) {
 	    case '(':
 		m_tokenizer.pushBack();
-		parseGameTree(node);
+		parseGameTree(node, false);
 		break;
 
 	    case ';':
 		m_tokenizer.pushBack();
-		parseNode(node);
+		parseNode(node, false);
 		done = true;
 		break;
 
@@ -126,60 +129,62 @@ public final class SgfReader
 		break;
 
 	    case StreamTokenizer.TT_WORD:
-		parseProperty(node);
+		parseProperty(node, isroot);
 		break;
 
 	    case StreamTokenizer.TT_EOF:
-		throw new SgfError("Unexpected EOF in node!");
+		throw sgfError("Unexpected EOF in node!");
 
 	    default:
-		throw new SgfError("Error in SGF file.");
+		throw sgfError("Error in SGF file.");
 	    }
 	}
 
 	return node;
     }
 
-    private void parseProperty(Node node) throws SgfError, IOException
+    private void parseProperty(Node node, boolean isroot) 
+	throws SgfError, IOException
     {
+	int x,y;
 	String name = m_tokenizer.sval;
-	String value = parseValue();
-
-	System.out.println(name + "[" + value + "]");
-
+	String val = parseValue();
+	node.setSgfProperty(name, val);
+	System.out.println(name + "[" + node.getSgfProperty(name) + "]");
+	
 	if (name.equals("W")) {
-	    HexPoint point = new HexPoint(value);
+	    HexPoint point = new HexPoint(val);
 	    node.setMove(new Move(point, HexColor.WHITE));
-	} else if (name.equals("B")) {
-	    HexPoint point = new HexPoint(value);
+	} 
+	else if (name.equals("B")) {
+	    HexPoint point = new HexPoint(val);
 	    node.setMove(new Move(point, HexColor.BLACK));
-	} else if (name.equals("C")) {
-	    node.setComment(value);
-	} else if (name.equals("SZ")) {
-	    int x,y;	    
+	} 
+	else if (name.equals("FF")) {
+	    if (!isroot) throw sgfError("FF property in non-root node!");
+	    x = parseInt(val);
+	    if (x < 1 || x > 4)
+		throw sgfError("Invalid SGF Version! (" + x + ")");
+	}
+	else if (name.equals("GM")) {
+	    if (!isroot) throw sgfError("GM property in non-root node!");
+	    if (parseInt(val) != GM_HEXGAME) throw sgfError("Not a Hex game!");
+	}
+	else if (name.equals("SZ")) {
+	    if (!isroot) throw sgfError("GM property in non-root node!");
 	    Dimension dim = new Dimension();
-	    String sp[] = value.split(":");
-	    
-	    try {
-		if (sp.length == 1) {
-		    x = Integer.parseInt(sp[0]);
-		    dim.setSize(x,x);
-		} else if (sp.length == 2) {
-		    x = Integer.parseInt(sp[0]);
-		    y = Integer.parseInt(sp[1]);
-		    dim.setSize(x,y);
-		} else {
-		    throw new SgfError("Too many arguments in SZ property!");
-		}
+	    String sp[] = val.split(":");
+	    if (sp.length == 1) {
+		x = parseInt(sp[0]);
+		dim.setSize(x,x);
+	    } else if (sp.length == 2) {
+		x = parseInt(sp[0]);
+		y = parseInt(sp[1]);
+		dim.setSize(x,y);
+	    } else {
+		throw sgfError("Malformed boardsize!");
 	    }
-	    catch (NumberFormatException e) {
-		throw new SgfError("Error in SZ property!");
-	    }
-
 	    m_gameinfo.setBoardSize(dim);
-	    
-	} else {
-	    System.out.println("Unsupported property '" + name + "'");
 	}
     }
 
@@ -187,14 +192,14 @@ public final class SgfReader
     {
 	int ttype = m_tokenizer.nextToken();
 	if (ttype != '[')
-	    throw new SgfError("Property missing opening '['.");
+	    throw sgfError("Property missing opening '['.");
 
 	StringBuilder sb = new StringBuilder(256);
 	boolean quoted = false;
 	while (true) {
 	    int c = m_reader.read();
 	    if (c < 0)
-		throw new SgfError("Property runs to EOF.");
+		throw sgfError("Property runs to EOF.");
 
 	    if (!quoted) {
 		if (c == ']') break;
@@ -213,12 +218,29 @@ public final class SgfReader
 	return sb.toString();
     }
 
+    private int parseInt(String str) throws SgfError
+    {
+	int ret;
+	try {
+	    ret = Integer.parseInt(str);
+	}
+	catch (NumberFormatException e) {
+	    throw sgfError("Error parsing integer.");
+	}
+	return ret;
+    }
+
     //----------------------------------------------------------------------
 
-    private void verifyGameInfo() throws SgfError
+    private void verifyGame(Node root) throws SgfError
     {
-	if (m_gameinfo.getBoardSize() == null) 
-	    throw new SgfError("Missing SZ property.");
+	if (m_gameinfo.getBoardSize()==null)
+	    throw sgfError("Missing SZ property.");
+    }
+
+    private SgfError sgfError(String msg)
+    {
+	return new SgfError("Line " + m_reader.getLineNumber() + ":" + msg);
     }
     
     private StreamTokenizer m_tokenizer;

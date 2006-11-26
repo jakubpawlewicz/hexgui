@@ -10,7 +10,7 @@ import java.awt.Dimension;
 //----------------------------------------------------------------------------
 
 /** Properties of a game.
-    Typically holds all properties that appear in a SGF root node.
+    Holds properties that appear in a SGF root node.
 */
 
 public class GameInfo

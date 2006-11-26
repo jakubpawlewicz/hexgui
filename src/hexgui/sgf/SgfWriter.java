@@ -12,6 +12,8 @@ import hexgui.game.GameInfo;
 
 import java.io.*;
 import java.awt.Dimension;
+import java.util.Map;
+import java.util.Iterator;
 
 //----------------------------------------------------------------------------
 
@@ -42,21 +44,29 @@ public final class SgfWriter
 	m_out.print(";");
 
 	if (isroot) {
+	    String value;
+
+	    node.setSgfProperty("FF", "4");
+	    node.setSgfProperty("AP", "HexGui:0.2");
+	    node.setSgfProperty("GM", "11");
+	    
 	    Dimension dim = m_gameinfo.getBoardSize();
-	    m_out.print("SZ[");
-	    if (dim.width == dim.height)
-		m_out.print(Integer.toString(dim.width));
-	    else
-		m_out.print(Integer.toString(dim.width) + ":" + 
-			    Integer.toString(dim.height));
-	    m_out.print("]");
+	    value = Integer.toString(dim.width);
+	    if (dim.width != dim.height)
+		value += ":" + Integer.toString(dim.height);
+	    node.setSgfProperty("SZ", value);
+
 	}
 
-	if (node.getMove() != null) 
-	    printMove(node.getMove());
+	Map map = node.getProperties();
+	Iterator it = map.entrySet().iterator();
+	while(it.hasNext()) {
+	    Map.Entry e = (Map.Entry)it.next();
+	    String key = (String)e.getKey();
+	    String val = (String)e.getValue();
+	    m_out.print(key + "[" + val + "]");
+	}
 	
-	// FIXME: print other properties!
-
 	int num = node.numChildren();
 	if (num == 0) return;
 
@@ -85,15 +95,6 @@ public final class SgfWriter
     {
 	m_out.print(point.toString());
     }
-
-    private void printMove(Move move)
-    {
-	printColor(move.getColor());
-	m_out.print("[");
-	printPoint(move.getPoint());
-	m_out.print("]");
-    }
-
 
     private PrintStream m_out;
     private GameInfo m_gameinfo;
