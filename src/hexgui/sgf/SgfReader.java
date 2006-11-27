@@ -14,7 +14,7 @@ import java.io.*;
 import java.awt.Dimension;
 import java.lang.StringBuilder;
 import java.lang.NumberFormatException;
-
+import java.util.Vector;
 
 //----------------------------------------------------------------------------
 
@@ -44,7 +44,7 @@ public final class SgfReader
 	m_reader = new LineNumberReader(reader);
 	m_tokenizer = new StreamTokenizer(m_reader);
 	m_gameinfo = new GameInfo();
-
+	m_warnings = new Vector();
 	try {
 	    findGameTree();
 	    m_gametree = parseGameTree(null, true);
@@ -62,6 +62,13 @@ public final class SgfReader
     public GameInfo getGameInfo()
     {
 	return m_gameinfo;
+    }
+
+    public Vector getWarnings()
+    {
+	if (m_warnings.size() == 0) 
+	    return null;
+	return m_warnings;
     }
 
     //------------------------------------------------------------
@@ -149,8 +156,7 @@ public final class SgfReader
 	int x,y;
 	String name = m_tokenizer.sval;
 	String val = parseValue();
-	node.setSgfProperty(name, val);
-	System.out.println(name + "[" + node.getSgfProperty(name) + "]");
+	System.out.println(name + "[" + val + "]");
 	
 	if (name.equals("W")) {
 	    HexPoint point = new HexPoint(val);
@@ -161,17 +167,19 @@ public final class SgfReader
 	    node.setMove(new Move(point, HexColor.BLACK));
 	} 
 	else if (name.equals("FF")) {
-	    if (!isroot) throw sgfError("FF property in non-root node!");
+	    node.setSgfProperty(name, val);
 	    x = parseInt(val);
 	    if (x < 1 || x > 4)
 		throw sgfError("Invalid SGF Version! (" + x + ")");
 	}
 	else if (name.equals("GM")) {
-	    if (!isroot) throw sgfError("GM property in non-root node!");
+	    node.setSgfProperty(name, val);
+	    if (!isroot) sgfWarning("GM property in non-root node!");
 	    if (parseInt(val) != GM_HEXGAME) throw sgfError("Not a Hex game!");
 	}
 	else if (name.equals("SZ")) {
-	    if (!isroot) throw sgfError("GM property in non-root node!");
+	    node.setSgfProperty(name, val);
+	    if (!isroot) sgfWarning("GM property in non-root node!");
 	    Dimension dim = new Dimension();
 	    String sp[] = val.split(":");
 	    if (sp.length == 1) {
@@ -185,6 +193,9 @@ public final class SgfReader
 		throw sgfError("Malformed boardsize!");
 	    }
 	    m_gameinfo.setBoardSize(dim);
+	} 
+	else {
+	    node.setSgfProperty(name, val);
 	}
     }
 
@@ -240,13 +251,19 @@ public final class SgfReader
 
     private SgfError sgfError(String msg)
     {
-	return new SgfError("Line " + m_reader.getLineNumber() + ":" + msg);
+	return new SgfError("Line " + m_reader.getLineNumber() + ": " + msg);
+    }
+
+    private void sgfWarning(String msg)
+    {
+	m_warnings.add("Line " + m_reader.getLineNumber() + ": " + msg); 
     }
     
     private StreamTokenizer m_tokenizer;
     private LineNumberReader m_reader;
     private Node m_gametree;
     private GameInfo m_gameinfo;
+    private Vector m_warnings;
 }
 
 //----------------------------------------------------------------------------

@@ -35,17 +35,7 @@ public class Node
 	setMove(move);
     }
 
-    public void setMove(Move move) { 
-	m_move = move; 
-	if (move == null) return;
-	if (move.getColor() == HexColor.WHITE) {
-	    m_property.put("W", move.getPoint().toString());
-	    m_property.remove("B");
-	} else {
-	    m_property.put("B", move.getPoint().toString());
-	    m_property.remove("W");
-	}
-    }
+    public void setMove(Move move) { m_move = move;  }
     public Move getMove() { return m_move; }
 
     public void setParent(Node parent) { m_parent = parent; }

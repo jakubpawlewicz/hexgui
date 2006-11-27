@@ -25,23 +25,25 @@ public final class SgfWriter
     public SgfWriter(OutputStream out, Node root, GameInfo game)
     {
 	m_out = new PrintStream(out);
+	m_buffer = new StringBuffer(128);
 	m_gameinfo = game;
 
 	writeTree(root, true);
-	m_out.print("\n");
+	print("\n");
+	flushBuffer();
 	m_out.flush();
     }
 
     private void writeTree(Node root, boolean isroot)
     {
-	m_out.print("(");
+	print("(");
 	writeNode(root, isroot);
-	m_out.print(")");
+	print(")");
     }
 
     private void writeNode(Node node, boolean isroot)
     {
-	m_out.print(";");
+	print(";");
 
 	if (isroot) {
 	    String value;
@@ -58,13 +60,16 @@ public final class SgfWriter
 
 	}
 
+	if (node.getMove() != null)
+	    printMove(node.getMove());
+
 	Map map = node.getProperties();
 	Iterator it = map.entrySet().iterator();
 	while(it.hasNext()) {
 	    Map.Entry e = (Map.Entry)it.next();
 	    String key = (String)e.getKey();
 	    String val = (String)e.getValue();
-	    m_out.print(key + "[" + val + "]");
+	    print(key + "[" + val + "]");
 	}
 	
 	int num = node.numChildren();
@@ -80,23 +85,31 @@ public final class SgfWriter
 	
     }
 
-    private void printColor(HexColor color)
+    private void printMove(Move move)
     {
-	if (color == HexColor.BLACK)
-	    m_out.print("B"); 
-	else if (color == HexColor.WHITE)
-	    m_out.print("W");
-	else {
-	    // FIXME: throw an error here!
-	}
-    }	
-
-    private void printPoint(HexPoint point)
-    {
-	m_out.print(point.toString());
+	String color = "B";
+	if (move.getColor() == HexColor.WHITE)
+	    color = "W";
+	print(color + "[" + move.getPoint().toString() + "]");
     }
 
+    private void print(String str)
+    {
+	if (m_buffer.length() + str.length() > 72) {
+	    m_out.append(m_buffer.toString());
+	    m_out.append("\n");
+	    m_buffer.setLength(0);
+	}
+	m_buffer.append(str);
+    }
+
+    private void flushBuffer()
+    {
+	m_out.append(m_buffer.toString());
+	m_buffer.setLength(0);
+    }
     private PrintStream m_out;
+    private StringBuffer m_buffer;
     private GameInfo m_gameinfo;
 }
 
