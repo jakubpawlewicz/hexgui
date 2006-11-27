@@ -156,7 +156,7 @@ public final class SgfReader
 	int x,y;
 	String name = m_tokenizer.sval;
 	String val = parseValue();
-	System.out.println(name + "[" + val + "]");
+	//System.out.println(name + "[" + val + "]");
 	
 	if (name.equals("W")) {
 	    HexPoint point = new HexPoint(val);

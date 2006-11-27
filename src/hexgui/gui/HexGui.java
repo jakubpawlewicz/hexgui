@@ -269,19 +269,23 @@ public final class HexGui
     public void fieldClicked(HexPoint point)
     {
 	if (m_guiboard.getColor(point) == HexColor.EMPTY) {
-	    Move move = new Move(point, m_tomove);
-	    Node node = new Node(move);
-	    m_current.addChild(node);
-	    m_current = node;
-
-	    m_guiboard.setColor(point, m_tomove);
-	    m_tomove = m_tomove.otherColor();
-	    setGameChanged(true);
-	    setFrameTitle();
-
-	    m_guiboard.repaint();
-	    m_toolbar.updateButtonStates(m_current);
+	    play(new Move(point, m_tomove));
 	}
+    }
+
+    private void play(Move move)
+    {
+	Node node = new Node(move);
+	m_current.addChild(node);
+	m_current = node;
+
+	m_guiboard.setColor(move.getPoint(), m_tomove);
+	m_tomove = m_tomove.otherColor();
+	setGameChanged(true);
+	setFrameTitle();
+
+	m_guiboard.repaint();
+	m_toolbar.updateButtonStates(m_current);	
     }
 
     private void forward(int n)

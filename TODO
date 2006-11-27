@@ -1,20 +1,25 @@
 HexGui TODO
 
-+ sgf file loading/saving
-
 + connect to outside hex-playing program
   ? use Runtime.exec for this?
-  ? or connect over sockets to allow distributed programs?
-
-* optimize board drawing
-  + allow single hexes to be redrawn and use this when a move is made
-  
-* fix doubled up lines when drawing diamond board
+  ? connect over sockets to allow distributed programs?
 
 + use java.util.Preferences for user preferences
 
-* use Ant to build?
-* organize src/ better
+* logging, instead of printing to stdout
+
++ game clock
+
+* support more sgf properties
+  * allow game information to be edited
+
+* optimize/fix board drawing
+  + allow single hexes to be redrawn and use this when a move is made
+  * fix doubled up that sometimes appear 
+
+* better Makefile
+  * compile to a jar
+  * use Ant to build?
 
 
 
