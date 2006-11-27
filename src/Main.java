@@ -2,6 +2,8 @@
 // $Id$
 //----------------------------------------------------------------------------
 
+package hexgui;
+
 import hexgui.gui.HexGui;
 
 import javax.swing.*;          

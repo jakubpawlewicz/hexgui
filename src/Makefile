@@ -3,8 +3,11 @@
 #----------------------------------------------------------------------------
 JAVA = java
 JAVAC = javac
+JAVADOC = javadoc
 JFLAGS =
 JAR = jar
+
+DOCDIR = ../doc/
 
 #MANIFEST = Manifest.txt
 #CLASS_FILES = Main.class HexGui.class HexBoard.class  \
@@ -35,6 +38,7 @@ compile:
 	$(JAVAC) Main.java
 
 clean:
+	$(RM) -rf $(DOCDIR)
 	$(RM) hexgui/util/*.class
 	$(RM) hexgui/hex/*.class
 	$(RM) hexgui/game/*.class
@@ -44,3 +48,6 @@ clean:
 
 run:
 	$(JAVA) -ea Main
+
+docs:
+	$(JAVADOC) -d $(DOCDIR) hexgui
