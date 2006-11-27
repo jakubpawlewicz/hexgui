@@ -159,11 +159,11 @@ public final class SgfReader
 	//System.out.println(name + "[" + val + "]");
 	
 	if (name.equals("W")) {
-	    HexPoint point = new HexPoint(val);
+	    HexPoint point = HexPoint.get(val);
 	    node.setMove(new Move(point, HexColor.WHITE));
 	} 
 	else if (name.equals("B")) {
-	    HexPoint point = new HexPoint(val);
+	    HexPoint point = HexPoint.get(val);
 	    node.setMove(new Move(point, HexColor.BLACK));
 	} 
 	else if (name.equals("FF")) {

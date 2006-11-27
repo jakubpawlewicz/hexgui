@@ -1,3 +1,7 @@
+#----------------------------------------------------------------------------
+# $Id$
+#----------------------------------------------------------------------------
+JAVA = java
 JAVAC = javac
 JFLAGS =
 JAR = jar
@@ -11,7 +15,8 @@ JAR = jar
 
 #IMAGE_FILES = images/wood.png
 
-.PHONY: clean
+.PHONY: clean run compile
+default: compile
 
 #HexGui.jar: $(CLASS_FILES)
 #	$(JAR) cvfm $@ $(MANIFEST) $(CLASS_FILES) $(IMAGE_FILES)
@@ -20,7 +25,8 @@ JAR = jar
 #%.class: %.java
 #	$(JAVAC) $(JFLAGS) $<
 
-Main.class:
+compile:
+	$(RM) Main.class >> /dev/null
 	$(JAVAC) hexgui/util/*.java
 	$(JAVAC) hexgui/hex/*.java
 	$(JAVAC) hexgui/game/*.java
@@ -35,3 +41,6 @@ clean:
 	$(RM) hexgui/sgf/*.class
 	$(RM) hexgui/gui/*.class
 	$(RM) *.class
+
+run:
+	$(JAVA) -ea Main

@@ -74,7 +74,7 @@ public class GuiBoard
 
 	field = new GuiField[w*h+4];
 	for (int x=0; x<w*h; x++) {
-	    field[x] = new GuiField(new HexPoint(x % w, x / w));
+	    field[x] = new GuiField(HexPoint.get(x % w, x / w));
 	    field[x].setAttributes(GuiField.DRAW_CELL_OUTLINE);
 	}
 
@@ -121,11 +121,10 @@ public class GuiBoard
 
     public GuiField getField(HexPoint point)
     {
-	for (int x=0; x<field.length; x++) {
-	    HexPoint p = field[x].getPoint();
-	    if (p.x == point.x && p.y == point.y) return field[x];
-	}
-	System.out.println("point off the board!");
+	for (int x=0; x<field.length; x++) 
+	    if (field[x].getPoint().equals(point)) 
+		return field[x];
+	assert(false);
 	return null;
     }
 
