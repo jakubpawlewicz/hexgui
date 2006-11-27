@@ -1,5 +1,7 @@
 HexGui TODO
 
+[06/11/26]
+
 + connect to outside hex-playing program
   ? use Runtime.exec for this?
   ? connect over sockets to allow distributed programs?
