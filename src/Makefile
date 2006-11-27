@@ -35,7 +35,7 @@ compile:
 	$(JAVAC) hexgui/game/*.java
 	$(JAVAC) hexgui/sgf/*.java
 	$(JAVAC) hexgui/gui/*.java
-	$(JAVAC) Main.java
+	$(JAVAC) hexgui/Main.java
 
 clean:
 	$(RM) -rf $(DOCDIR)
@@ -44,10 +44,11 @@ clean:
 	$(RM) hexgui/game/*.class
 	$(RM) hexgui/sgf/*.class
 	$(RM) hexgui/gui/*.class
-	$(RM) *.class
+	$(RM) hexgui/*.class
 
 run:
-	$(JAVA) -ea Main
+	$(JAVA) -ea hexgui/Main
 
 docs:
-	$(JAVADOC) -d $(DOCDIR) hexgui
+	$(JAVADOC) -d $(DOCDIR) -subpackages hexgui
+
