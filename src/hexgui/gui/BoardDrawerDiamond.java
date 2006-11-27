@@ -9,17 +9,25 @@ import java.awt.*;
 import java.awt.event.*;
 import java.net.URL;
 
+//----------------------------------------------------------------------------
+
 public class BoardDrawerDiamond extends BoardDrawerBase
 {
-    public BoardDrawerDiamond()
+    public BoardDrawerDiamond(boolean flipped)
     {
-	super();
+	super(flipped);
 	loadBackground("hexgui/images/wood.png");
     }
 
     //------------------------------------------------------------
     public Point getLocation(int x, int y)
     {
+	if (m_flipped) {
+	    int temp = x;
+	    x = y;
+	    y = temp;
+	}
+
 	Point ret = new Point();
 	ret.x = m_marginX + (y + x)*m_horizStep;
 	ret.y = m_marginY + (m_bheight/2)*m_fieldHeight + (y - x)*m_fieldHeight/2;
@@ -104,3 +112,5 @@ public class BoardDrawerDiamond extends BoardDrawerBase
 
     public static double ASPECT_RATIO = 1.0;
 }
+
+//----------------------------------------------------------------------------

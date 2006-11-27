@@ -88,6 +88,9 @@ public final class HexGui
 	else if (cmd.equals("gui_board_draw_type")) {
 	    cmdGuiBoardDrawType();
 	} 
+	else if (cmd.equals("gui_board_orientation")) {
+	    cmdGuiBoardOrientation();
+	}
 	//
         // game navigation commands  
 	//
@@ -258,6 +261,14 @@ public final class HexGui
 	String type = m_menubar.getCurrentBoardDrawType();
 	System.out.println(type);
 	m_guiboard.setDrawType(type);
+	m_guiboard.repaint();
+    }
+
+    private void cmdGuiBoardOrientation()
+    {
+	String type = m_menubar.getCurrentBoardOrientation();
+	System.out.println(type);
+	m_guiboard.setOrientation(type);
 	m_guiboard.repaint();
     }
 

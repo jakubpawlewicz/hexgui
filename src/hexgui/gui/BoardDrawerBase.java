@@ -11,11 +11,14 @@ import java.awt.*;
 import java.awt.event.*;
 import java.net.URL;
 
+//----------------------------------------------------------------------------
+
 public abstract class BoardDrawerBase
 {
-    public BoardDrawerBase()
+    public BoardDrawerBase(boolean flipped)
     {
 	m_background = null;
+	m_flipped = flipped;
     }
 
     public void loadBackground(String filename)
@@ -38,6 +41,11 @@ public abstract class BoardDrawerBase
 	    g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 				 RenderingHints.VALUE_ANTIALIAS_ON);
 	}
+    }
+
+    public void setFlipped(boolean f)
+    {
+	m_flipped = f;
     }
 
     public static double TAN60DEG = 1.732050808;
@@ -196,6 +204,8 @@ public abstract class BoardDrawerBase
     protected int m_width;
     protected int m_height;
 
+    protected boolean m_flipped;
+
     protected int m_bwidth;
     protected int m_bheight;
     protected int m_marginX;
@@ -207,3 +217,5 @@ public abstract class BoardDrawerBase
     protected static final AlphaComposite COMPOSITE_3
         = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3f);
 }
+
+//----------------------------------------------------------------------------

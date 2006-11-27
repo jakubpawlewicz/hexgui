@@ -9,7 +9,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class GuiMenuBar
+//----------------------------------------------------------------------------
+
+public final class GuiMenuBar
 {
     public GuiMenuBar(ActionListener listener)
     {
@@ -158,6 +160,9 @@ public class GuiMenuBar
 	JMenu view = createBoardViewMenu();
 	menu.add(view);
 
+	view = createOrientationViewMenu();
+	menu.add(view);
+
 	return menu;
     }
 
@@ -193,6 +198,38 @@ public class GuiMenuBar
 	return b.getText();
     }	
 
+    private JMenu createOrientationViewMenu()
+    {
+        JMenu menu = new JMenu("Board Orientation");
+	m_orGroup = new ButtonGroup();
+
+	JRadioButtonMenuItem item;
+	item = new JRadioButtonMenuItem("Black on top");
+	item.addActionListener(m_listener);
+	item.setActionCommand("gui_board_orientation");
+	item.setSelected(true);
+	m_orGroup.add(item);
+	menu.add(item);
+
+	item = new JRadioButtonMenuItem("White on top");
+	item.addActionListener(m_listener);
+	item.setActionCommand("gui_board_orientation");
+	m_orGroup.add(item);
+	menu.add(item);
+
+	return menu;
+    }
+
+    public String getCurrentBoardOrientation()
+    {
+	Enumeration e = m_orGroup.getElements();
+	AbstractButton b = (AbstractButton)e.nextElement();
+	while (!b.isSelected() && e.hasMoreElements()) { 
+	    b = (AbstractButton)e.nextElement();
+	}
+	return b.getText();
+    }	
+
     private JMenu createHelpMenu()
     {
 	JMenu menu = new JMenu("Help");
@@ -213,4 +250,5 @@ public class GuiMenuBar
 
     private ButtonGroup m_bsGroup;   // board sizes
     private ButtonGroup m_btGroup;   // board view types (diamond, flat, etc)
+    private ButtonGroup m_orGroup;   // black on top, or white?
 }

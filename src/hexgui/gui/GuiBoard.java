@@ -13,7 +13,7 @@ import java.awt.event.*;
 
 //----------------------------------------------------------------------------
 
-public class GuiBoard
+public final class GuiBoard
     extends JPanel
 {
     /** Callback for clicks on a field. */
@@ -22,17 +22,28 @@ public class GuiBoard
 	void fieldClicked(HexPoint point);
     }
 
+    private static int DEFAULT_WIDTH = 11;
+    private static int DEFAULT_HEIGHT = 11;    
+    private static String DEFAULT_DRAW_TYPE = "Diamond";
+
+    private static int DEFAULT_PREFERRED_WIDTH = 800;
+    private static int DEFAULT_PREFERRED_HEIGHT = 600;
+
+    private static boolean DEFAULT_FLIPPED = false;
+
+
     /** Constructor. */
     public GuiBoard(Listener listener)
     {
 	m_image = null;
-
 	m_listener = listener;
+	m_flipped = DEFAULT_FLIPPED;
 
-	initSize(11, 11);
+	initSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 
-	setDrawType("Diamond");   // FIXME: use preferences
-	setPreferredSize(new Dimension(800, 600));
+	setDrawType(DEFAULT_DRAW_TYPE);   
+	setPreferredSize(new Dimension(DEFAULT_PREFERRED_WIDTH, 
+				       DEFAULT_PREFERRED_HEIGHT));
 
 	setLayout(new BoardLayout());
 	m_boardPanel = new BoardPanel();
@@ -55,13 +66,27 @@ public class GuiBoard
     public void setDrawType(String name)
     {
 	if (name.equals("Diamond"))
-	    m_drawer = new BoardDrawerDiamond();
+	    m_drawer = new BoardDrawerDiamond(m_flipped);
 	else if (name.equals("Flat")) 
-	    m_drawer = new BoardDrawerFlat();
+	    m_drawer = new BoardDrawerFlat(m_flipped);
 	else {
 	    System.out.println("GuiBoard: unknown draw type '" + name + "'.");
-	    m_drawer = new BoardDrawerDiamond();
+	    m_drawer = new BoardDrawerDiamond(m_flipped);
 	} 
+    }
+
+    public void setOrientation(String orient)
+    {
+	if (orient.equals("Black on top"))
+	    m_flipped = false;
+	else if (orient.equals("White on top"))
+	    m_flipped = true;
+	else {
+	    m_flipped = false;
+	    System.out.println("GuiBoard: unknown orientation '" + 
+			       orient + "'.");
+	}
+	m_drawer.setFlipped(m_flipped);
     }
 
     public void initSize(int w, int h)
@@ -165,6 +190,7 @@ public class GuiBoard
 	    m_image = null;
 	}
     }
+
     //------------------------------------------------------------
 
     public void mousePressed(MouseEvent e) {}
@@ -172,11 +198,10 @@ public class GuiBoard
     public void mouseEntered(MouseEvent e) {}
     public void mouseExited(MouseEvent e) {}
 
-    public int DEFAULT_WIDTH = 11;
-    public int DEFAULT_HEIGHT = 11;    
-
     private int m_width, m_height;
     private Dimension m_size;
+
+    private boolean m_flipped;
 
     private Image m_image;
     private GuiField field[];
