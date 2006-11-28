@@ -30,8 +30,8 @@ public final class HexGui
     {
         super("HexGui");
 
-	System.out.println("HexGui v" + Version.id + " " + Version.date + 
-			   " build " + Version.build + "\n\n");
+	System.out.println("HexGui v" + Version.id + "; " + Version.date + 
+			   "; build " + Version.build + "\n");
 	
 	// Catch the close action and shutdown nicely
 	addWindowListener(new java.awt.event.WindowAdapter() 
