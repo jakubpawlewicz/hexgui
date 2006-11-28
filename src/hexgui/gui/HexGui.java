@@ -9,6 +9,7 @@ import hexgui.game.Node;
 import hexgui.game.GameInfo;
 import hexgui.sgf.SgfWriter;
 import hexgui.sgf.SgfReader;
+import hexgui.version.Version;
 
 import java.io.*;
 import java.util.*;
@@ -29,6 +30,9 @@ public final class HexGui
     {
         super("HexGui");
 
+	System.out.println("HexGui v" + Version.id + " " + Version.date + 
+			   " build " + Version.build + "\n\n");
+	
 	// Catch the close action and shutdown nicely
 	addWindowListener(new java.awt.event.WindowAdapter() 
 	    {

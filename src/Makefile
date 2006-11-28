@@ -8,6 +8,7 @@ JFLAGS =
 JAR = jar
 
 DOCDIR = ../doc/
+VERSIONDIR = hexgui/version/
 
 #MANIFEST = Manifest.txt
 #CLASS_FILES = Main.class HexGui.class HexBoard.class  \
@@ -18,8 +19,8 @@ DOCDIR = ../doc/
 
 #IMAGE_FILES = images/wood.png
 
-.PHONY: clean run compile
-default: compile
+.PHONY: clean run compile build version buildnumber
+default: version compile
 
 #HexGui.jar: $(CLASS_FILES)
 #	$(JAR) cvfm $@ $(MANIFEST) $(CLASS_FILES) $(IMAGE_FILES)
@@ -28,8 +29,16 @@ default: compile
 #%.class: %.java
 #	$(JAVAC) $(JFLAGS) $<
 
+version:
+	cd hexgui/version && ./update.sh
+
+buildnumber:
+	$(RM) hexgui/version/svn_version
+	svnversion -n . > hexgui/version/svn_version
+	@echo "svn revision number stored."
+
 compile:
-	$(RM) Main.class >> /dev/null
+	$(JAVAC) hexgui/version/*.java
 	$(JAVAC) hexgui/util/*.java
 	$(JAVAC) hexgui/hex/*.java
 	$(JAVAC) hexgui/game/*.java
@@ -39,6 +48,7 @@ compile:
 
 clean:
 	$(RM) -rf $(DOCDIR)
+	$(RM) hexgui/version/*.class
 	$(RM) hexgui/util/*.class
 	$(RM) hexgui/hex/*.class
 	$(RM) hexgui/game/*.class
