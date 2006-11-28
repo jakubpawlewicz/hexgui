@@ -1,19 +1,29 @@
 //----------------------------------------------------------------------------
 // $Id$
 //----------------------------------------------------------------------------
+
 package hexgui.hex;
 
+//----------------------------------------------------------------------------
+
+/** Possible states of a cell on a Hex board (black, white, or empty). */
 public final class HexColor
 {
     public static final HexColor EMPTY;
     public static final HexColor WHITE;
     public static final HexColor BLACK;
 
+    /** Returns a string representation of this color.
+	@return "black", "white", or "empty".
+    */
     public String toString()
     {
 	return m_string;
     }
 
+    /** Returns the other opposite color.
+	@return WHITE for BLACK, BLACK for WHITE, EMPTY otherwise. 
+    */
     public HexColor otherColor()
     {
 	return m_otherColor;

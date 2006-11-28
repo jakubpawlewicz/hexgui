@@ -10,8 +10,10 @@ import java.awt.Dimension;
 
 //----------------------------------------------------------------------------
 
-/** A cell on a hexboard. 
-    This class creates all the possible hex cells. 
+/** A cell on a Hex board. 
+    In addition to each playable cell, HexPoints are created for each edge of 
+    the board and for some special cases like swap moves, resignations, and
+    forfeitures. 
 */
 public final class HexPoint
 {
@@ -49,6 +51,14 @@ public final class HexPoint
 	FORFEIT     = new HexPoint( 500,  500, "forfeit");
     }
 
+    /** Returns the point with the given coordinates.
+	Note that it is not possible to obtain points for board edges and
+	special moves with this method.  Use the <code>get(String)</code> method
+	for these types of points.
+	@param x x-coordinate of point
+	@param y y-coordinate of point
+	@return point with coordinates (x,y). 
+    */
     public static HexPoint get(int x, int y)
     {
 	assert(x >= 0);
@@ -58,6 +68,12 @@ public final class HexPoint
 	return s_points[x][y];
     }
     
+    /** Returns the point with the given string represention.
+	Valid special moves include: "north", "south", "east", "west" 
+	"swap-sides", "swap-pieces", "resign", and "forfeit". 
+	@param name The name of the point to return
+	@return the point or <code>null</code> if <code>name</code> is invalid.
+    */
     public static HexPoint get(String name) 
     {
 	if (name.equals("north")) return NORTH;
@@ -78,7 +94,12 @@ public final class HexPoint
 	return null;
     }
 
-    /** Create all HexPoint objects for a width x height board. */
+    /** Returns the string representation of the point. */
+    public String toString()
+    {
+	return m_string;
+    }
+
     private static void createPoints(int width, int height)
     {
 	s_points = new HexPoint[width][height];
@@ -97,11 +118,6 @@ public final class HexPoint
 	this.x = x;
 	this.y = y;
 	m_string = name;
-    }
-
-    public String toString()
-    {
-	return m_string;
     }
 
     public int x, y;
