@@ -17,7 +17,7 @@ import java.util.Iterator;
 
 //----------------------------------------------------------------------------
 
-/** Writes a in sgf format. */
+/** SGF Writer. */
 public final class SgfWriter
 {
     
@@ -32,6 +32,7 @@ public final class SgfWriter
 	print("\n");
 	flushBuffer();
 	m_out.flush();
+	m_out.close();
     }
 
     private void writeTree(Node root, boolean isroot)
@@ -108,6 +109,7 @@ public final class SgfWriter
 	m_out.append(m_buffer.toString());
 	m_buffer.setLength(0);
     }
+
     private PrintStream m_out;
     private StringBuffer m_buffer;
     private GameInfo m_gameinfo;

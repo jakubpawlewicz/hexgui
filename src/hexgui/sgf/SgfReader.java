@@ -33,7 +33,8 @@ public final class SgfReader
 	}
     }
 
-    public final static int GM_HEXGAME = 11;
+    private static final int GM_HEXGAME = 11;
+
 
     /** Constructor. 
 	Parse the input stream in sgf format. 
@@ -48,6 +49,7 @@ public final class SgfReader
 	try {
 	    findGameTree();
 	    m_gametree = parseGameTree(null, true);
+	    m_reader.close();
 	}
 	catch (IOException e) {
 	    throw sgfError("IO error occured while parsing file.");
