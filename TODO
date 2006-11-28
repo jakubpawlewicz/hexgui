@@ -6,8 +6,6 @@ HexGui TODO
   ? use Runtime.exec for this?
   ? connect over sockets to allow distributed programs?
 
-+ version information 
-
 + 'about' dialog
 
 + use java.util.Preferences for user preferences
