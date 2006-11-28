@@ -13,21 +13,18 @@ import java.util.TreeMap;
 //----------------------------------------------------------------------------
 
 /** Node in a game tree.
-    Stores the move and other properties related to this move.
-    Can have any number of children.
+    Stores moves and other properties related to this move.
 */
 public class Node
 {
-    /** Constructor.
-	Create an empty node with a null move.
-    */
+    /** Initializes an empty node with a null move. */
     public Node()
     {
 	this(null);
     }
 
-    /** Constructor.
-	@param move Move to initialize the node with.
+    /** Constructs a new node with the specified move.
+	@param move move to initialize the node with.
     */
     public Node(Move move)
     {
@@ -47,9 +44,12 @@ public class Node
     public void setNext(Node next) { m_next = next; }
     public Node getNext() { return m_next; }
 
+    /** Sets the first child of this node.  
+	This does not update the sibling pointers of the child.
+    */
     public void setFirstChild(Node child) { m_child = child; }
-
-    /** Get the number of children. */
+    
+    /** Returns the number of children of this node. */
     public int numChildren()
     {
 	int num = 0;
@@ -61,7 +61,7 @@ public class Node
 	return num;
     }
 
-    /** Add a child.
+    /** Adds a child to the end of the list of children. 
         @param child Node to be added to end of list.
     */     
     public void addChild(Node child) 
@@ -81,9 +81,9 @@ public class Node
 	child.setParent(this);
     }
 
-    /** Get the nth child. 
-	@param n The child number to return.
-	@return  Node of the nth child, null if n < 0 or n > numChildren().
+    /** Returns the nth child. 
+	@param n The number of the child to return. 
+	@return  The nth child or <code>null</code> that child does not exist.
     */
     public Node getChild(int n) 
     {
@@ -95,10 +95,12 @@ public class Node
 	return null;
     }
 
-    /** Get the first child. */
+    /** Returns the first child. 
+	@return first child or <code>null</code> if no children.
+    */
     public Node getChild() { return getChild(0); }
 
-    /** Remove this subtree. */
+    /** Removes this node from the gametree. */
     public void removeSelf()
     {
 	Node prev = getPrev();
@@ -114,24 +116,40 @@ public class Node
     }
 
     //----------------------------------------------------------------------
-    
+
+    /** Adds a property to this node. 
+	Node properties are <code>(key, value)</code> pairs of strings.
+	These properties will stored if the gametree is saved in SGF format.
+	@param key name of the property
+	@param value value of the property
+    */
     public void setSgfProperty(String key, String value)
     {
 	m_property.put(key, value);
     }
 
+    /** Returns the value of a property. 
+	@param key name of property
+	@return value of <code>key</code> or <code>null</code> if key is
+	not in the property list.
+    */                
     public String getSgfProperty(String key)
     {
 	// FIXME: this generates a compiler warning.  How to fix?
 	return (String)m_property.get(key);
     }
 
+    /** Returns a map of the current set of properties.
+	@return Map containing the properties
+    */
     public Map getProperties()
     {
 	return m_property;
     }
 
+    /** Sets the SGF Comment field of this node. */
     public void setComment(String comment) { setSgfProperty("C", comment); }
+    
     public String getComment() { return getSgfProperty("C"); }
 
     //----------------------------------------------------------------------
