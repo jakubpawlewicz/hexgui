@@ -13,6 +13,9 @@ import java.net.URL;
 
 //----------------------------------------------------------------------------
 
+
+// FIXME: board not centered correctly if flipped and non square!
+
 public class BoardDrawerDiamond extends BoardDrawerBase
 {
 
@@ -51,16 +54,18 @@ public class BoardDrawerDiamond extends BoardDrawerBase
 	Point ret = new Point();
 	ret.x = m_marginX + (y + x)*m_step;
 	ret.y = m_marginY + yoffset + (m_bheight/2)*m_fieldHeight 
-	        + (y - x)*m_fieldHeight/2;
+	                  + (y - x)*m_fieldHeight/2;
 	return ret;
     }
 
-    protected Dimension calcFieldSize(int w, int h, int bw, int bh)
+    protected int calcFieldWidth(int w, int h, int bw, int bh)
     {
-	Dimension ret = new Dimension();
-	ret.width = w / (bw + (bh-1)/2 + 2);
-	ret.height = h / (bh + 2);
-	return ret;
+	return w / (bw + (bh-1)/2 + 2);
+    }
+
+    protected int calcFieldHeight(int w, int h, int bw, int bh)
+    {
+	return h / (bh + 2);
     }
 
     protected int calcStepSize()

@@ -36,7 +36,7 @@ public final class HexPoint
     public static final HexPoint RESIGN;
     public static final HexPoint FORFEIT;
 
-    public static final int MAXSIZE = 25;
+    public static final int MAXSIZE = 26;
 
     static 
     {

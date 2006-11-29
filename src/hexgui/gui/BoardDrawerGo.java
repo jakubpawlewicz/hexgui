@@ -13,6 +13,7 @@ import java.net.URL;
 
 //----------------------------------------------------------------------------
 
+// FIXME: board not centered correctly if flipped and non square!
 public class BoardDrawerGo extends BoardDrawerBase
 {
     public BoardDrawerGo(boolean flipped)
@@ -63,20 +64,22 @@ public class BoardDrawerGo extends BoardDrawerBase
 	return getLocation(pos.x, pos.y);
     }
 
-    protected Dimension calcFieldSize(int w, int h, int bw, int bh)
+    protected int calcFieldWidth(int w, int h, int bw, int bh)
     {
-	Dimension ret = new Dimension();
-	ret.width = w / (bw + 4);
-	ret.height = h / (bh + 4);
-	return ret;
+	return w / (bw + 4);
+    }
+
+    protected int calcFieldHeight(int w, int h, int bw, int bh)
+    {
+	return h / (bh + 4);
     }
 
     // FIXME: not needed... something is wrong with the api?
     protected int calcStepSize()
     {
 	return 0;
-	
     }
+
     protected int calcBoardWidth()
     {
 	return (m_bwidth+4)*m_fieldWidth;
@@ -109,6 +112,7 @@ public class BoardDrawerGo extends BoardDrawerBase
 		       x + i*m_fieldWidth, 
 		       y+(m_bheight-1)*m_fieldHeight);
 	}
+	// diagonal lines from left edge
 	for (int i=1; i<m_bheight; i++) {
 	    int j = Math.min(i, m_bwidth-1);
 	    g.drawLine(x, 
@@ -116,6 +120,7 @@ public class BoardDrawerGo extends BoardDrawerBase
 		       x + j*m_fieldWidth,
 		       y + (i-j)*m_fieldHeight);
 	}
+	// diagonal lines from bottom edge
 	for (int i=1; i<m_bwidth; i++) {
 	    int j = Math.min(m_bwidth-i-1, m_bheight-1);
 	    int k = Math.max(0, (i+m_bheight-1) - (m_bwidth-1));

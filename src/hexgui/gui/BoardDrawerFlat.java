@@ -13,6 +13,7 @@ import java.net.URL;
 
 //----------------------------------------------------------------------------
 
+// FIXME: board not centered correctly if flipped and non square!
 public class BoardDrawerFlat extends BoardDrawerBase
 {
 
@@ -47,12 +48,14 @@ public class BoardDrawerFlat extends BoardDrawerBase
 	return ret;
     }
 
-    protected Dimension calcFieldSize(int w, int h, int bw, int bh)
+    protected int calcFieldWidth(int w, int h, int bw, int bh)
     {
-	Dimension ret = new Dimension();
-	ret.width = w / (bw + (bh-1)/2 + 2);
-	ret.height = h / ((bh+1)/2 + (bh/4) + 3);
-	return ret;
+	return w / (bw + (bh-1)/2 + 2);
+    }
+
+    protected int calcFieldHeight(int w, int h, int bw, int bh)
+    {
+	return h / ((bh+1)/2 + (bh/4) + 3);
     }
 
     protected int calcStepSize()
