@@ -102,13 +102,34 @@ public final class GuiMenuBar
 	m_bsGroup = new ButtonGroup();
 
 	JRadioButtonMenuItem item;
+	item = new JRadioButtonMenuItem("19 x 19");
+	item.addActionListener(m_listener);
+	item.setActionCommand("newgame");
+	m_bsGroup.add(item);
+	menu.add(item);
+
 	item = new JRadioButtonMenuItem("14 x 14");
 	item.addActionListener(m_listener);
 	item.setActionCommand("newgame");
 	m_bsGroup.add(item);
 	menu.add(item);
 
+	// FIXME: coordinate default with GuiBoard!!
 	item = new JRadioButtonMenuItem("11 x 11");
+	item.addActionListener(m_listener);
+	item.setActionCommand("newgame");
+	item.setSelected(true);
+	m_bsGroup.add(item);
+	menu.add(item);
+
+	item = new JRadioButtonMenuItem("10 x 10");
+	item.addActionListener(m_listener);
+	item.setActionCommand("newgame");
+	item.setSelected(true);
+	m_bsGroup.add(item);
+	menu.add(item);
+
+	item = new JRadioButtonMenuItem("9 x 9");
 	item.addActionListener(m_listener);
 	item.setActionCommand("newgame");
 	item.setSelected(true);
@@ -180,6 +201,12 @@ public final class GuiMenuBar
 	menu.add(item);
 
 	item = new JRadioButtonMenuItem("Flat");
+	item.addActionListener(m_listener);
+	item.setActionCommand("gui_board_draw_type");
+	m_btGroup.add(item);
+	menu.add(item);
+
+	item = new JRadioButtonMenuItem("Go");
 	item.addActionListener(m_listener);
 	item.setActionCommand("gui_board_draw_type");
 	m_btGroup.add(item);

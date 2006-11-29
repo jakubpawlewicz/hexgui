@@ -15,12 +15,11 @@ import java.net.URL;
 
 public abstract class BoardDrawerBase
 {
-    protected static final double ASPECT_RATIO = 1.1547;
-
     public BoardDrawerBase(boolean flipped)
     {
 	m_background = null;
 	m_flipped = flipped;
+	m_aspect_ratio = 1.0;
     }
 
     public void loadBackground(String filename)
@@ -36,24 +35,9 @@ public abstract class BoardDrawerBase
 	}
     }
 
-    public void setFlipped(boolean f)
-    {
-	m_flipped = f;
-    }
+    public void setFlipped(boolean f) { m_flipped = f; }
 
-    public GuiField getFieldContaining(Point p, GuiField field[])
-    {
-	if (field.length != m_outline.length) {
-	    System.out.println("Fields differ in size!");
-	    return null;
-	}
-
-	for (int x=0; x<field.length; x++) {
-	    if (m_outline[x].contains(p)) 
-		return field[x];
-	}
-	return null;
-    }
+    public abstract GuiField getFieldContaining(Point p, GuiField field[]);
 
     public void draw(Graphics g, 
 		     int w, int h, int bx, int by, 
@@ -66,6 +50,7 @@ public abstract class BoardDrawerBase
 	m_bheight = by;
 
 	computeFieldPlacement();
+	initDrawCells();
 
 	setAntiAliasing(g);
 	drawBackground(g);
@@ -98,12 +83,13 @@ public abstract class BoardDrawerBase
     protected abstract int calcStepSize();
     protected abstract int calcBoardWidth();
     protected abstract int calcBoardHeight();
-    protected abstract Polygon createOutlinePolygon(Point pos);
+
+    protected abstract void initDrawCells();
+    protected abstract void drawCells(Graphics g, GuiField field[]);
+
 
     protected void computeFieldPlacement()
     {
-	m_outline = new Polygon[m_bwidth*m_bheight+4];
-
 	Dimension dim = calcFieldSize(m_width, m_height, m_bwidth, m_bheight);
 	m_fieldWidth = dim.width;
 	m_fieldHeight = dim.height;
@@ -113,10 +99,10 @@ public abstract class BoardDrawerBase
 	if ((m_fieldWidth & 1) != 0) m_fieldWidth++;
 	if ((m_fieldHeight & 1) != 0) m_fieldHeight++;
 	
-	if (m_fieldHeight >= (int)(m_fieldWidth/ASPECT_RATIO)) {
-	    m_fieldHeight = (int)(m_fieldWidth/ASPECT_RATIO);
+	if (m_fieldHeight >= (int)(m_fieldWidth/m_aspect_ratio)) {
+	    m_fieldHeight = (int)(m_fieldWidth/m_aspect_ratio);
 	} else {
-	    m_fieldWidth = (int)(m_fieldHeight*ASPECT_RATIO);
+	    m_fieldWidth = (int)(m_fieldHeight*m_aspect_ratio);
 	}
 
 	m_fieldRadius = (m_fieldWidth < m_fieldHeight) ? 
@@ -130,9 +116,6 @@ public abstract class BoardDrawerBase
 	m_marginX = (m_width - bw) / 2 + m_fieldWidth/2;
 	m_marginY = (m_height - bh) / 2 + m_fieldHeight/2;
 
-        for (int i = 0; i < m_outline.length; i++) {
-	    m_outline[i] = createOutlinePolygon(getLocation(i));
-        }	
     }
 
     //------------------------------------------------------------
@@ -146,16 +129,6 @@ public abstract class BoardDrawerBase
     {
 	if (m_background != null) 
 	    g.drawImage(m_background, 0, 0, m_width, m_height, null);
-    }
-
-    protected void drawCells(Graphics g, GuiField field[])
-    {
-	g.setColor(Color.black);
-	for (int i=0; i<m_outline.length; i++) {
-	    if ((field[i].getAttributes() & GuiField.DRAW_CELL_OUTLINE) != 0) {
-		g.drawPolygon(m_outline[i]);
-	    }
-	}
     }
 
     protected void drawLabel(Graphics g, Point p, String string, int xoff)
@@ -213,11 +186,12 @@ public abstract class BoardDrawerBase
     protected Image m_background;
     protected boolean m_flipped;
 
+    protected double m_aspect_ratio;
+
     protected int m_width, m_height;
     protected int m_bwidth, m_bheight;
     protected int m_marginX, m_marginY;
     protected int m_fieldWidth, m_fieldHeight, m_fieldRadius, m_step;
-    protected Polygon m_outline[];
 
     protected static final AlphaComposite COMPOSITE_3
         = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3f);

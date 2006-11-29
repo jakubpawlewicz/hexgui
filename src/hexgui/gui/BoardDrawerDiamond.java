@@ -15,10 +15,28 @@ import java.net.URL;
 
 public class BoardDrawerDiamond extends BoardDrawerBase
 {
+
+    protected static final double ASPECT_RATIO = 1.1547;
+
     public BoardDrawerDiamond(boolean flipped)
     {
 	super(flipped);
 	loadBackground("hexgui/images/wood.png");
+	m_aspect_ratio = ASPECT_RATIO;
+    }
+
+    public GuiField getFieldContaining(Point p, GuiField field[])
+    {
+	if (field.length != m_outline.length) {
+	    System.out.println("Fields differ in size!");
+	    return null;
+	}
+
+	for (int x=0; x<field.length; x++) {
+	    if (m_outline[x].contains(p)) 
+		return field[x];
+	}
+	return null;
     }
 
     protected Point getLocation(int x, int y)
@@ -58,11 +76,24 @@ public class BoardDrawerDiamond extends BoardDrawerBase
 	return m_bheight*m_fieldHeight;
     }
 
-    protected Polygon createOutlinePolygon(Point pos)
+    protected void initDrawCells()
     {
-	return Hexagon.createHorizontalHexagon(pos, 
-					       m_fieldWidth, 
-					       m_fieldHeight);
+	m_outline = new Polygon[m_bwidth*m_bheight+4];
+        for (int i = 0; i < m_outline.length; i++) {
+	    m_outline[i] = Hexagon.createHorizontalHexagon(getLocation(i), 
+							   m_fieldWidth, 
+							   m_fieldHeight);
+        }	
+    }
+
+    protected void drawCells(Graphics g, GuiField field[])
+    {
+	g.setColor(Color.black);
+	for (int i=0; i<m_outline.length; i++) {
+	    if ((field[i].getAttributes() & GuiField.DRAW_CELL_OUTLINE) != 0) {
+		g.drawPolygon(m_outline[i]);
+	    }
+	}
     }
 
     protected void drawLabels(Graphics g)
@@ -87,6 +118,8 @@ public class BoardDrawerDiamond extends BoardDrawerBase
 	    n++;
 	}
     }
+
+    protected Polygon m_outline[];
 }
 
 //----------------------------------------------------------------------------

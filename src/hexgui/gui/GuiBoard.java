@@ -22,14 +22,16 @@ public final class GuiBoard
 	void fieldClicked(HexPoint point);
     }
 
-    private static int DEFAULT_WIDTH = 11;
-    private static int DEFAULT_HEIGHT = 11;    
-    private static String DEFAULT_DRAW_TYPE = "Diamond";
+    private static final int DEFAULT_WIDTH = 11;
+    private static final int DEFAULT_HEIGHT = 11;    
 
-    private static int DEFAULT_PREFERRED_WIDTH = 800;
-    private static int DEFAULT_PREFERRED_HEIGHT = 600;
+    // FIXME: coordinate this with GuiMenuBar default!!
+    private static final String DEFAULT_DRAW_TYPE = "Diamond";
 
-    private static boolean DEFAULT_FLIPPED = false;
+    private static final int DEFAULT_PREFERRED_WIDTH = 800;
+    private static final int DEFAULT_PREFERRED_HEIGHT = 600;
+
+    private static final boolean DEFAULT_FLIPPED = false;
 
 
     /** Constructor. */
@@ -65,7 +67,9 @@ public final class GuiBoard
 
     public void setDrawType(String name)
     {
-	if (name.equals("Diamond"))
+	if (name.equals("Go"))
+	    m_drawer = new BoardDrawerGo(m_flipped);
+	else if (name.equals("Diamond"))
 	    m_drawer = new BoardDrawerDiamond(m_flipped);
 	else if (name.equals("Flat")) 
 	    m_drawer = new BoardDrawerFlat(m_flipped);
