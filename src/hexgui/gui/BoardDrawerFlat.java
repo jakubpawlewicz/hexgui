@@ -4,6 +4,8 @@
 
 package hexgui.gui;
 
+import hexgui.util.Hexagon;
+
 import javax.swing.*;          
 import java.awt.*;
 import java.awt.event.*;
@@ -19,75 +21,48 @@ public class BoardDrawerFlat extends BoardDrawerBase
 	loadBackground("hexgui/images/wood.png");
     }
 
-    public Point getLocation(int x, int y)
+    protected Point getLocation(int x, int y)
     {
 	if (m_flipped) {
 	    int temp = x;
 	    x = y;
 	    y = temp;
 	}
-
 	Point ret = new Point();
 	ret.x = m_marginX + y*m_fieldWidth/2 + x*m_fieldWidth;
-	ret.y = m_marginY + y*m_vertStep;
+	ret.y = m_marginY + y*m_step;
 	return ret;
     }
 
-    public Point getLocation(int pos)
+    protected Dimension calcFieldSize(int w, int h, int bw, int bh)
     {
-	Point ret = new Point();
-	int size = m_bwidth*m_bheight;
-	if (pos == size) { // north
-	    ret = getLocation(m_bwidth/2+1, -2);
-	} else if (pos == size+1) { // south
-	    ret = getLocation(m_bwidth/2-1, m_bheight+1);
-	} else if (pos == size+2) { // east 
-	    ret = getLocation(m_bwidth+1, m_bheight/2-1);
-	} else if (pos == size+3) { // west
-	    ret = getLocation(-2, m_bheight/2+1);
-	} else {
-	    ret = getLocation(pos % m_bwidth, pos / m_bwidth);
-	}
+	Dimension ret = new Dimension();
+	ret.width = (2*w) / (2*bw + bh + 3);
+	ret.height = (2*h - bh*ret.width) /  (bh + 1);
 	return ret;
     }
 
-    public void computeFieldPlacement()
+    protected int calcStepSize()
     {
-	m_hexagon = new Polygon[m_bwidth*m_bheight+4];
-
-	m_fieldWidth  = (2*m_width) / (2*m_bwidth + m_bheight + 3);
-	m_fieldHeight = (2*m_height - m_bheight*m_fieldWidth) 
-	                   /  (m_bheight + 1);
-
-	// Note: if field dimensions are not even then the inner cell lines
-	// on the board can be doubled up.  
-	if ((m_fieldWidth & 1) != 0) m_fieldWidth++;
-	if ((m_fieldHeight & 1) != 0) m_fieldHeight++;
+	return m_fieldHeight/4 + m_fieldHeight/2;
 	
-	if (m_fieldHeight >= (int)(m_fieldWidth * (1.0 / ASPECT_RATIO))) {
-		m_fieldHeight = (int)(m_fieldWidth * (1.0 / ASPECT_RATIO));
-	} else {
-		m_fieldWidth = (int)(m_fieldHeight*ASPECT_RATIO);
-	}
+    }
+    protected int calcBoardWidth()
+    {
+	return m_bwidth*m_fieldWidth + (m_bheight-1)*m_fieldWidth/2;
+    }
 
-	m_fieldRadius = (m_fieldWidth < m_fieldHeight) ? 
-	    m_fieldWidth : m_fieldHeight;
+    protected int calcBoardHeight()
+    {
+	return m_fieldHeight*(m_bheight+1)/2 
+	    + (m_bheight/2)*(2*(m_fieldHeight/4));
+    }
 
-	int sy = (m_fieldHeight/2)/2;
-	m_vertStep = sy + m_fieldHeight/2;
-
-	int bw = m_bwidth*m_fieldWidth + (m_bheight-1)*m_fieldWidth/2;
-	int bh = m_fieldHeight*(m_bheight+1)/2 
-	           + (m_bheight/2)*(2*sy);
-
-	m_marginX = (m_width - bw) / 2 + m_fieldWidth/2;
-	m_marginY = (m_height - bh) / 2 + m_fieldHeight/2;
-
-        for (int i = 0; i < m_hexagon.length; i++) {
-	    Point p = getLocation(i);
-	    m_hexagon[i] = createVerticalHexagon(p, m_fieldWidth, 
-						    m_fieldHeight);
-        }	
+    protected Polygon createOutlinePolygon(Point pos)
+    {
+	return Hexagon.createVerticalHexagon(pos, 
+					     m_fieldWidth, 
+					     m_fieldHeight);
     }
 
     protected void drawLabels(Graphics g)
@@ -114,8 +89,6 @@ public class BoardDrawerFlat extends BoardDrawerBase
 	    n++;
 	}
     }
-
-    protected int m_vertStep;
 }
 
 //----------------------------------------------------------------------------

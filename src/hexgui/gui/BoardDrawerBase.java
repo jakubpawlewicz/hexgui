@@ -36,89 +36,110 @@ public abstract class BoardDrawerBase
 	}
     }
 
-    public void setAntiAliasing(Graphics g)
-    {
-	if (g instanceof Graphics2D) {
-	    Graphics2D g2d = (Graphics2D)g;
-	    g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-				 RenderingHints.VALUE_ANTIALIAS_ON);
-	}
-    }
-
     public void setFlipped(boolean f)
     {
 	m_flipped = f;
     }
 
-    public Polygon createVerticalHexagon(Point p, int width, int height)
-    {
-	int xpoints[] = new int[6];
-	int ypoints[] = new int[6];
-
-	int sx = width/2;
-	int ly = height/2;
-        int sy = ly/2;
-	
-	xpoints[0] = 0;   ypoints[0] = -ly;
-	xpoints[1] = -sx; ypoints[1] = -ly+sy;
-	xpoints[2] = -sx; ypoints[2] =  ly-sy;
-	xpoints[3] = 0;   ypoints[3] = +ly;
-	xpoints[4] = +sx; ypoints[4] =  ly-sy;
-	xpoints[5] = +sx; ypoints[5] = -ly+sy;
-
-	Polygon ret = new Polygon(xpoints, ypoints, 6);
-	ret.translate(p.x, p.y);
-
-	return ret;
-    }
-
-    public Polygon createHorizontalHexagon(Point p, int width, int height)
-    {
-	int xpoints[] = new int[6];
-	int ypoints[] = new int[6];
-
-	int sy = height/2;
-	int lx = width/2;
-	int sx = lx/2;
-
-	xpoints[0] = -lx;    ypoints[0] = 0;
-	xpoints[1] = -lx+sx; ypoints[1] = +sy;
-	xpoints[2] =  lx-sx; ypoints[2] = +sy;
-	xpoints[3] = +lx;    ypoints[3] = 0;
-	xpoints[4] =  lx-sx; ypoints[4] = -sy;
-	xpoints[5] = -lx+sx; ypoints[5] = -sy;
-
-	Polygon ret = new Polygon(xpoints, ypoints, 6);
-	ret.translate(p.x, p.y);
-
-	return ret;
-    }
-
-    //------------------------------------------------------------
-
-    public abstract Point getLocation(int x, int y);
-    public abstract Point getLocation(int pos);
-    public abstract void computeFieldPlacement();
-
-    //------------------------------------------------------------
-
-    public int getShadowOffset()
-    {
-        return (m_fieldRadius - 2*GuiField.getStoneMargin(m_fieldRadius)) / 12;
-    }
-
     public GuiField getFieldContaining(Point p, GuiField field[])
     {
-	if (field.length != m_hexagon.length) {
+	if (field.length != m_outline.length) {
 	    System.out.println("Fields differ in size!");
 	    return null;
 	}
 
 	for (int x=0; x<field.length; x++) {
-	    if (m_hexagon[x].contains(p)) 
+	    if (m_outline[x].contains(p)) 
 		return field[x];
 	}
 	return null;
+    }
+
+    public void draw(Graphics g, 
+		     int w, int h, int bx, int by, 
+		     GuiField field[])
+    {
+	m_width = w;
+	m_height = h;
+
+	m_bwidth = bx;
+	m_bheight = by;
+
+	computeFieldPlacement();
+
+	setAntiAliasing(g);
+	drawBackground(g);
+	drawCells(g, field);
+	drawLabels(g);
+	drawShadows(g, field);
+	drawFields(g, field);
+    }
+
+    //------------------------------------------------------------
+
+    protected abstract Point getLocation(int x, int y);
+
+    protected Point getLocation(int pos)
+    {
+	int size = m_bwidth*m_bheight;
+	if (pos == size) { // north
+	    return getLocation(m_bwidth/2+1, -2);
+	} else if (pos == size+1) { // south
+	    return getLocation(m_bwidth/2-1, m_bheight+1);
+	} else if (pos == size+2) { // east 
+	    return getLocation(m_bwidth+1, m_bheight/2-1);
+	} else if (pos == size+3) { // west
+	    return getLocation(-2, m_bheight/2+1);
+	}
+	return getLocation(pos % m_bwidth, pos / m_bwidth);
+    }
+
+    protected abstract Dimension calcFieldSize(int w, int h, int bw, int bh);
+    protected abstract int calcStepSize();
+    protected abstract int calcBoardWidth();
+    protected abstract int calcBoardHeight();
+    protected abstract Polygon createOutlinePolygon(Point pos);
+
+    protected void computeFieldPlacement()
+    {
+	m_outline = new Polygon[m_bwidth*m_bheight+4];
+
+	Dimension dim = calcFieldSize(m_width, m_height, m_bwidth, m_bheight);
+	m_fieldWidth = dim.width;
+	m_fieldHeight = dim.height;
+
+	// Note: if field dimensions are not even then the inner cell lines
+	// on the board can be doubled up.  
+	if ((m_fieldWidth & 1) != 0) m_fieldWidth++;
+	if ((m_fieldHeight & 1) != 0) m_fieldHeight++;
+	
+	if (m_fieldHeight >= (int)(m_fieldWidth/ASPECT_RATIO)) {
+	    m_fieldHeight = (int)(m_fieldWidth/ASPECT_RATIO);
+	} else {
+	    m_fieldWidth = (int)(m_fieldHeight*ASPECT_RATIO);
+	}
+
+	m_fieldRadius = (m_fieldWidth < m_fieldHeight) ? 
+	    m_fieldWidth : m_fieldHeight;
+
+	m_step = calcStepSize();
+	
+	int bw = calcBoardWidth();
+	int bh = calcBoardHeight();
+
+	m_marginX = (m_width - bw) / 2 + m_fieldWidth/2;
+	m_marginY = (m_height - bh) / 2 + m_fieldHeight/2;
+
+        for (int i = 0; i < m_outline.length; i++) {
+	    m_outline[i] = createOutlinePolygon(getLocation(i));
+        }	
+    }
+
+    //------------------------------------------------------------
+
+    protected int getShadowOffset()
+    {
+        return (m_fieldRadius - 2*GuiField.getStoneMargin(m_fieldRadius)) / 12;
     }
 
     protected void drawBackground(Graphics g)
@@ -130,9 +151,9 @@ public abstract class BoardDrawerBase
     protected void drawCells(Graphics g, GuiField field[])
     {
 	g.setColor(Color.black);
-	for (int i=0; i<m_hexagon.length; i++) {
+	for (int i=0; i<m_outline.length; i++) {
 	    if ((field[i].getAttributes() & GuiField.DRAW_CELL_OUTLINE) != 0) {
-		g.drawPolygon(m_hexagon[i]);
+		g.drawPolygon(m_outline[i]);
 	    }
 	}
     }
@@ -180,41 +201,23 @@ public abstract class BoardDrawerBase
 	}
     }
 
-    public void draw(Graphics g, int w, int h, 
-		     int bx, int by, GuiField field[])
+    protected void setAntiAliasing(Graphics g)
     {
-	m_width = w;
-	m_height = h;
-
-	m_bwidth = bx;
-	m_bheight = by;
-
-	setAntiAliasing(g);
-
-	computeFieldPlacement();
-
-	drawBackground(g);
-	drawCells(g, field);
-	drawLabels(g);
-	drawShadows(g, field);
-
-	drawFields(g, field);
+	if (g instanceof Graphics2D) {
+	    Graphics2D g2d = (Graphics2D)g;
+	    g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+				 RenderingHints.VALUE_ANTIALIAS_ON);
+	}
     }
 
     protected Image m_background;
-    protected int m_width;
-    protected int m_height;
-
     protected boolean m_flipped;
 
-    protected int m_bwidth;
-    protected int m_bheight;
-    protected int m_marginX;
-    protected int m_marginY;
-    protected int m_fieldWidth;
-    protected int m_fieldHeight;
-    protected int m_fieldRadius;
-    protected Polygon m_hexagon[];
+    protected int m_width, m_height;
+    protected int m_bwidth, m_bheight;
+    protected int m_marginX, m_marginY;
+    protected int m_fieldWidth, m_fieldHeight, m_fieldRadius, m_step;
+    protected Polygon m_outline[];
 
     protected static final AlphaComposite COMPOSITE_3
         = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3f);
