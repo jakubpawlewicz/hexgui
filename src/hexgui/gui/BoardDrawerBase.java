@@ -96,8 +96,8 @@ public abstract class BoardDrawerBase
 
 	// Note: if field dimensions are not even then the inner cell lines
 	// on the board can be doubled up.  
-	if ((m_fieldWidth & 1) != 0) m_fieldWidth++;
-	if ((m_fieldHeight & 1) != 0) m_fieldHeight++;
+	if ((m_fieldWidth & 1) != 0) m_fieldWidth--;
+	if ((m_fieldHeight & 1) != 0) m_fieldHeight--;
 	
 	if (m_fieldHeight >= (int)(m_fieldWidth/m_aspect_ratio)) {
 	    m_fieldHeight = (int)(m_fieldWidth/m_aspect_ratio);
@@ -109,13 +109,11 @@ public abstract class BoardDrawerBase
 	    m_fieldWidth : m_fieldHeight;
 
 	m_step = calcStepSize();
-	
+
 	int bw = calcBoardWidth();
 	int bh = calcBoardHeight();
-
 	m_marginX = (m_width - bw) / 2 + m_fieldWidth/2;
 	m_marginY = (m_height - bh) / 2 + m_fieldHeight/2;
-
     }
 
     //------------------------------------------------------------

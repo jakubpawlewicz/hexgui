@@ -43,8 +43,8 @@ public class BoardDrawerGo extends BoardDrawerBase
 	    y = temp;
 	}
 	Point ret = new Point();
-	ret.x = m_marginX + x*m_fieldWidth;
-	ret.y = m_marginY + y*m_fieldHeight;
+	ret.x = m_marginX + (x+2)*m_fieldWidth;
+	ret.y = m_marginY + (y+2)*m_fieldHeight;
 	return ret;
     }
 
@@ -79,12 +79,12 @@ public class BoardDrawerGo extends BoardDrawerBase
     }
     protected int calcBoardWidth()
     {
-	return m_bwidth*m_fieldWidth;
+	return (m_bwidth+4)*m_fieldWidth;
     }
 
     protected int calcBoardHeight()
     {
-	return m_bheight*m_fieldHeight;
+	return (m_bheight+4)*m_fieldHeight;
     }
 
     protected void initDrawCells(GuiField field[])
@@ -110,16 +110,19 @@ public class BoardDrawerGo extends BoardDrawerBase
 		       y+(m_bheight-1)*m_fieldHeight);
 	}
 	for (int i=1; i<m_bheight; i++) {
+	    int j = Math.min(i, m_bwidth-1);
 	    g.drawLine(x, 
 		       y + i*m_fieldHeight,
-		       x + i*m_fieldWidth,   // FIXME: WRONG ON NON-SQUARE!
-		       y);
+		       x + j*m_fieldWidth,
+		       y + (i-j)*m_fieldHeight);
 	}
 	for (int i=1; i<m_bwidth; i++) {
+	    int j = Math.min(m_bwidth-i-1, m_bheight-1);
+	    int k = Math.max(0, (i+m_bheight-1) - (m_bwidth-1));
 	    g.drawLine(x + i*m_fieldWidth,
 		       y + (m_bheight-1)*m_fieldHeight,
-		       x + (m_bwidth-1)*m_fieldWidth,
-		       y + i*m_fieldHeight);
+		       x + (i+j)*m_fieldWidth,
+		       y + k*m_fieldHeight);
 	}
     }
 

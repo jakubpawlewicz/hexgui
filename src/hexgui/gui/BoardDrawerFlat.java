@@ -50,8 +50,8 @@ public class BoardDrawerFlat extends BoardDrawerBase
     protected Dimension calcFieldSize(int w, int h, int bw, int bh)
     {
 	Dimension ret = new Dimension();
-	ret.width = (2*w) / (2*bw + bh + 3);
-	ret.height = (2*h - bh*ret.width) /  (bh + 1);
+	ret.width = w / (bw + (bh-1)/2 + 2);
+	ret.height = h / ((bh+1)/2 + (bh/4) + 3);
 	return ret;
     }
 
@@ -68,7 +68,7 @@ public class BoardDrawerFlat extends BoardDrawerBase
     protected int calcBoardHeight()
     {
 	return m_fieldHeight*(m_bheight+1)/2 
-	    + (m_bheight/2)*(2*(m_fieldHeight/4));
+	    +  m_fieldHeight*m_bheight/4;
     }
 
     protected void initDrawCells(GuiField field[])

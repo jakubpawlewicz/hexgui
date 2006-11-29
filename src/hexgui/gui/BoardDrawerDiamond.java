@@ -42,9 +42,15 @@ public class BoardDrawerDiamond extends BoardDrawerBase
 	    y = temp;
 	}
 
+	// yoffset will be positive when bwidth > bheight (to push the
+	// board down) and negative when bwidth < bheight (to lift it
+	// up) because the a1 square (0,0) will not be 
+	// in the center of the vertical space occupied by the board. 
+	int yoffset = (m_bwidth - m_bheight)*m_fieldHeight/2;
+
 	Point ret = new Point();
 	ret.x = m_marginX + (y + x)*m_step;
-	ret.y = m_marginY + (m_bheight/2)*m_fieldHeight 
+	ret.y = m_marginY + yoffset + (m_bheight/2)*m_fieldHeight 
 	        + (y - x)*m_fieldHeight/2;
 	return ret;
     }
@@ -52,8 +58,8 @@ public class BoardDrawerDiamond extends BoardDrawerBase
     protected Dimension calcFieldSize(int w, int h, int bw, int bh)
     {
 	Dimension ret = new Dimension();
-	ret.width = h / (bh + 2);
-	ret.height = w / (bw + 2 + (bh-1)/2);
+	ret.width = w / (bw + (bh-1)/2 + 2);
+	ret.height = h / (bh + 2);
 	return ret;
     }
 
@@ -68,7 +74,8 @@ public class BoardDrawerDiamond extends BoardDrawerBase
 
     protected int calcBoardHeight()
     {
-	return m_bheight*m_fieldHeight;
+	return m_bheight*m_fieldHeight 
+	    + (m_bwidth - m_bheight)*m_fieldHeight/2;
     }
 
     protected void initDrawCells(GuiField field[])
