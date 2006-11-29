@@ -27,11 +27,6 @@ public class BoardDrawerFlat extends BoardDrawerBase
 
     public GuiField getFieldContaining(Point p, GuiField field[])
     {
-	if (field.length != m_outline.length) {
-	    System.out.println("Fields differ in size!");
-	    return null;
-	}
-
 	for (int x=0; x<field.length; x++) {
 	    if (m_outline[x].contains(p)) 
 		return field[x];
@@ -76,11 +71,12 @@ public class BoardDrawerFlat extends BoardDrawerBase
 	    + (m_bheight/2)*(2*(m_fieldHeight/4));
     }
 
-    protected void initDrawCells()
+    protected void initDrawCells(GuiField field[])
     {
-	m_outline = new Polygon[m_bwidth*m_bheight+4];
-        for (int i = 0; i < m_outline.length; i++) {
-	    m_outline[i] = Hexagon.createVerticalHexagon(getLocation(i), 
+	m_outline = new Polygon[field.length];
+        for (int x = 0; x < m_outline.length; x++) {
+	    Point p = getLocation(field[x].getPoint());
+	    m_outline[x] = Hexagon.createVerticalHexagon(p,
 							 m_fieldWidth, 
 							 m_fieldHeight);
         }	

@@ -5,6 +5,7 @@
 package hexgui.gui;
 
 import hexgui.hex.HexColor;
+import hexgui.hex.HexPoint;
 
 import javax.swing.*;          
 import java.awt.*;
@@ -50,7 +51,7 @@ public abstract class BoardDrawerBase
 	m_bheight = by;
 
 	computeFieldPlacement();
-	initDrawCells();
+	initDrawCells(field);
 
 	setAntiAliasing(g);
 	drawBackground(g);
@@ -64,19 +65,18 @@ public abstract class BoardDrawerBase
 
     protected abstract Point getLocation(int x, int y);
 
-    protected Point getLocation(int pos)
+    protected Point getLocation(HexPoint pos)
     {
-	int size = m_bwidth*m_bheight;
-	if (pos == size) { // north
+	if (pos == HexPoint.NORTH) {
 	    return getLocation(m_bwidth/2+1, -2);
-	} else if (pos == size+1) { // south
+	} else if (pos == HexPoint.SOUTH) { 
 	    return getLocation(m_bwidth/2-1, m_bheight+1);
-	} else if (pos == size+2) { // east 
+	} else if (pos == HexPoint.EAST) { 
 	    return getLocation(m_bwidth+1, m_bheight/2-1);
-	} else if (pos == size+3) { // west
+	} else if (pos == HexPoint.WEST) { 
 	    return getLocation(-2, m_bheight/2+1);
 	}
-	return getLocation(pos % m_bwidth, pos / m_bwidth);
+	return getLocation(pos.x, pos.y);
     }
 
     protected abstract Dimension calcFieldSize(int w, int h, int bw, int bh);
@@ -84,7 +84,7 @@ public abstract class BoardDrawerBase
     protected abstract int calcBoardWidth();
     protected abstract int calcBoardHeight();
 
-    protected abstract void initDrawCells();
+    protected abstract void initDrawCells(GuiField field[]);
     protected abstract void drawCells(Graphics g, GuiField field[]);
 
 
@@ -157,7 +157,7 @@ public abstract class BoardDrawerBase
         for (int pos = 0; pos < field.length; pos++) {
 	    if (field[pos].getColor() == HexColor.EMPTY)
 		continue;
-	    Point location = getLocation(pos);
+	    Point location = getLocation(field[pos].getPoint());
 	    graphics.setColor(Color.black);
 	    graphics.fillOval(location.x - size / 2 + offset,
 			      location.y - size / 2 + offset,
@@ -169,7 +169,7 @@ public abstract class BoardDrawerBase
     protected void drawFields(Graphics g, GuiField field[])
     {
 	for (int x=0; x<field.length; x++) {
-	    Point p = getLocation(x);
+	    Point p = getLocation(field[x].getPoint());
 	    field[x].draw(g, p.x, p.y, m_fieldWidth, m_fieldHeight);
 	}
     }

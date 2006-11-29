@@ -24,12 +24,6 @@ public class GuiField
     private static final Color COLOR_STONE_WHITE = Color.decode("#d7d0c9");
     private static final Color COLOR_STONE_WHITE_BRIGHT = Color.decode("#ffffff");
 
-
-    public GuiField()
-    {
-	this(null);
-    }
-
     public GuiField(HexPoint p)
     {
 	m_point = p;

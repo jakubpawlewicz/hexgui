@@ -151,7 +151,7 @@ public final class GuiBoard
     public GuiField getField(HexPoint point)
     {
 	for (int x=0; x<field.length; x++) 
-	    if (field[x].getPoint().equals(point)) 
+	    if (field[x].getPoint() == point) 
 		return field[x];
 	assert(false);
 	return null;

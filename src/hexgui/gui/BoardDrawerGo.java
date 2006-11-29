@@ -4,6 +4,8 @@
 
 package hexgui.gui;
 
+import hexgui.hex.HexPoint;
+
 import javax.swing.*;          
 import java.awt.*;
 import java.awt.event.*;
@@ -19,20 +21,16 @@ public class BoardDrawerGo extends BoardDrawerBase
 	loadBackground("hexgui/images/wood.png");
     }
 
-    // FIXME: do this better instead of relying on our encoding!!
-    // FIXME: support clicking on edges!!
     public GuiField getFieldContaining(Point p, GuiField field[])
     {
 	int w = m_fieldWidth/2;
 	int h = m_fieldHeight/2;
-	for (int y=0; y<m_bheight; y++) {
-	    for (int x=0; x<m_bwidth; x++) {
-		Point c = getLocation(x, y);
-		int dx = Math.abs(p.x - c.x);
-		int dy = Math.abs(p.y - c.y);
-		if (dx <= w && dy <= h) 
-		    return field[y*m_bheight + x];
-	    }
+	for (int x=0; x<field.length; x++) {
+	    Point c = getLocation(field[x].getPoint());
+	    int dx = Math.abs(p.x - c.x);
+	    int dy = Math.abs(p.y - c.y);
+	    if (dx <= w && dy <= h) 
+		return field[x];
 	}
 	return null;
     }
@@ -51,19 +49,18 @@ public class BoardDrawerGo extends BoardDrawerBase
     }
 
     // FIXME: center stones on even length sides!!
-    protected Point getLocation(int pos)
+    protected Point getLocation(HexPoint pos)
     {
-	int size = m_bwidth*m_bheight;
-	if (pos == size) { // north
+	if (pos == HexPoint.NORTH) {
 	    return getLocation(m_bwidth/2, -2);
-	} else if (pos == size+1) { // south
+	} else if (pos == HexPoint.SOUTH) {
 	    return getLocation(m_bwidth/2, m_bheight+1);
-	} else if (pos == size+2) { // east 
+	} else if (pos == HexPoint.EAST) {
 	    return getLocation(m_bwidth+1, m_bheight/2);
-	} else if (pos == size+3) { // west
+	} else if (pos == HexPoint.WEST) {
 	    return getLocation(-2, m_bheight/2);
 	}
-	return getLocation(pos % m_bwidth, pos / m_bwidth);
+	return getLocation(pos.x, pos.y);
     }
 
     protected Dimension calcFieldSize(int w, int h, int bw, int bh)
@@ -74,7 +71,7 @@ public class BoardDrawerGo extends BoardDrawerBase
 	return ret;
     }
 
-    // FIXME: not needed... something is wrong with the api 
+    // FIXME: not needed... something is wrong with the api?
     protected int calcStepSize()
     {
 	return 0;
@@ -90,7 +87,7 @@ public class BoardDrawerGo extends BoardDrawerBase
 	return m_bheight*m_fieldHeight;
     }
 
-    protected void initDrawCells()
+    protected void initDrawCells(GuiField field[])
     {
     }
 
