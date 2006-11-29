@@ -19,7 +19,6 @@ public class BoardDrawerFlat extends BoardDrawerBase
 	loadBackground("hexgui/images/wood.png");
     }
 
-    //------------------------------------------------------------
     public Point getLocation(int x, int y)
     {
 	if (m_flipped) {
@@ -65,15 +64,16 @@ public class BoardDrawerFlat extends BoardDrawerBase
 	if ((m_fieldWidth & 1) != 0) m_fieldWidth++;
 	if ((m_fieldHeight & 1) != 0) m_fieldHeight++;
 	
-	// make them equal.  
-        // FIXME: is this ok?
-	if (m_fieldHeight >= (int)(m_fieldWidth * 1.0)) {
-		m_fieldHeight = (int)(m_fieldWidth * 1.0);
-	} else if (m_fieldHeight < (int)(m_fieldWidth * 1.0)) {
-		m_fieldWidth = (int)(m_fieldHeight*1.0);
+	if (m_fieldHeight >= (int)(m_fieldWidth * (1.0 / ASPECT_RATIO))) {
+		m_fieldHeight = (int)(m_fieldWidth * (1.0 / ASPECT_RATIO));
+	} else {
+		m_fieldWidth = (int)(m_fieldHeight*ASPECT_RATIO);
 	}
 
-	int sy = (int)((0.5 * m_fieldWidth / TAN60DEG)+0.5);
+	m_fieldRadius = (m_fieldWidth < m_fieldHeight) ? 
+	    m_fieldWidth : m_fieldHeight;
+
+	int sy = (m_fieldHeight/2)/2;
 	m_vertStep = sy + m_fieldHeight/2;
 
 	int bw = m_bwidth*m_fieldWidth + (m_bheight-1)*m_fieldWidth/2;
@@ -85,7 +85,8 @@ public class BoardDrawerFlat extends BoardDrawerBase
 
         for (int i = 0; i < m_hexagon.length; i++) {
 	    Point p = getLocation(i);
-	    m_hexagon[i] = createVerticalHexagon(p, m_fieldWidth, m_fieldHeight);
+	    m_hexagon[i] = createVerticalHexagon(p, m_fieldWidth, 
+						    m_fieldHeight);
         }	
     }
 

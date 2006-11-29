@@ -15,6 +15,8 @@ import java.net.URL;
 
 public abstract class BoardDrawerBase
 {
+    protected static final double ASPECT_RATIO = 1.1547;
+
     public BoardDrawerBase(boolean flipped)
     {
 	m_background = null;
@@ -48,23 +50,21 @@ public abstract class BoardDrawerBase
 	m_flipped = f;
     }
 
-    public static double TAN60DEG = 1.732050808;
-
     public Polygon createVerticalHexagon(Point p, int width, int height)
     {
 	int xpoints[] = new int[6];
 	int ypoints[] = new int[6];
 
-	int sx = (int)(0.5 * width);
-        int sy = (int)(sx / TAN60DEG);
-	int ly = (int)(0.5 * height);
+	int sx = width/2;
+	int ly = height/2;
+        int sy = ly/2;
 	
 	xpoints[0] = 0;   ypoints[0] = -ly;
-	xpoints[1] = -sx; ypoints[1] = -sy;
-	xpoints[2] = -sx; ypoints[2] = +sy;
+	xpoints[1] = -sx; ypoints[1] = -ly+sy;
+	xpoints[2] = -sx; ypoints[2] =  ly-sy;
 	xpoints[3] = 0;   ypoints[3] = +ly;
-	xpoints[4] = +sx; ypoints[4] = +sy;
-	xpoints[5] = +sx; ypoints[5] = -sy;
+	xpoints[4] = +sx; ypoints[4] =  ly-sy;
+	xpoints[5] = +sx; ypoints[5] = -ly+sy;
 
 	Polygon ret = new Polygon(xpoints, ypoints, 6);
 	ret.translate(p.x, p.y);
@@ -77,16 +77,16 @@ public abstract class BoardDrawerBase
 	int xpoints[] = new int[6];
 	int ypoints[] = new int[6];
 
-	int sy = (int)(0.5 * height);
-        int sx = (int)(sy / TAN60DEG);
-	int lx = (int)(0.5 * width);
-	
-	xpoints[0] = -lx; ypoints[0] = 0;
-	xpoints[1] = -sx; ypoints[1] = +sy;
-	xpoints[2] = +sx; ypoints[2] = +sy;
-	xpoints[3] = +lx; ypoints[3] = 0;
-	xpoints[4] = +sx; ypoints[4] = -sy;
-	xpoints[5] = -sx; ypoints[5] = -sy;
+	int sy = height/2;
+	int lx = width/2;
+	int sx = lx/2;
+
+	xpoints[0] = -lx;    ypoints[0] = 0;
+	xpoints[1] = -lx+sx; ypoints[1] = +sy;
+	xpoints[2] =  lx-sx; ypoints[2] = +sy;
+	xpoints[3] = +lx;    ypoints[3] = 0;
+	xpoints[4] =  lx-sx; ypoints[4] = -sy;
+	xpoints[5] = -lx+sx; ypoints[5] = -sy;
 
 	Polygon ret = new Polygon(xpoints, ypoints, 6);
 	ret.translate(p.x, p.y);
@@ -95,16 +95,16 @@ public abstract class BoardDrawerBase
     }
 
     //------------------------------------------------------------
+
     public abstract Point getLocation(int x, int y);
-
     public abstract Point getLocation(int pos);
-
     public abstract void computeFieldPlacement();
 
     //------------------------------------------------------------
+
     public int getShadowOffset()
     {
-        return (m_fieldWidth  - 2*GuiField.getStoneMargin(m_fieldWidth)) / 12;
+        return (m_fieldRadius - 2*GuiField.getStoneMargin(m_fieldRadius)) / 12;
     }
 
     public GuiField getFieldContaining(Point p, GuiField field[])
@@ -121,7 +121,6 @@ public abstract class BoardDrawerBase
 	return null;
     }
 
-    //------------------------------------------------------------
     protected void drawBackground(Graphics g)
     {
 	if (m_background != null) 
@@ -132,8 +131,9 @@ public abstract class BoardDrawerBase
     {
 	g.setColor(Color.black);
 	for (int i=0; i<m_hexagon.length; i++) {
-	    if ((field[i].getAttributes() & GuiField.DRAW_CELL_OUTLINE) != 0)
+	    if ((field[i].getAttributes() & GuiField.DRAW_CELL_OUTLINE) != 0) {
 		g.drawPolygon(m_hexagon[i]);
+	    }
 	}
     }
 
@@ -151,14 +151,14 @@ public abstract class BoardDrawerBase
 
     protected void drawShadows(Graphics graphics, GuiField[] field)
     {
-        if (m_fieldWidth <= 5)
+        if (m_fieldRadius <= 5)
             return;
         Graphics2D graphics2D =
             graphics instanceof Graphics2D ? (Graphics2D)graphics : null;
         if (graphics2D == null)
             return;
         graphics2D.setComposite(COMPOSITE_3);
-        int size = m_fieldWidth - 2 * GuiField.getStoneMargin(m_fieldWidth);
+        int size = m_fieldRadius - 2 * GuiField.getStoneMargin(m_fieldRadius);
         int offset = getShadowOffset();
         for (int pos = 0; pos < field.length; pos++) {
 	    if (field[pos].getColor() == HexColor.EMPTY)
@@ -180,7 +180,8 @@ public abstract class BoardDrawerBase
 	}
     }
 
-    public void draw(Graphics g, int w, int h, int bx, int by, GuiField field[])
+    public void draw(Graphics g, int w, int h, 
+		     int bx, int by, GuiField field[])
     {
 	m_width = w;
 	m_height = h;
@@ -212,10 +213,12 @@ public abstract class BoardDrawerBase
     protected int m_marginY;
     protected int m_fieldWidth;
     protected int m_fieldHeight;
+    protected int m_fieldRadius;
     protected Polygon m_hexagon[];
 
     protected static final AlphaComposite COMPOSITE_3
         = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3f);
+
 }
 
 //----------------------------------------------------------------------------

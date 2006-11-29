@@ -19,7 +19,6 @@ public class BoardDrawerDiamond extends BoardDrawerBase
 	loadBackground("hexgui/images/wood.png");
     }
 
-    //------------------------------------------------------------
     public Point getLocation(int x, int y)
     {
 	if (m_flipped) {
@@ -30,7 +29,8 @@ public class BoardDrawerDiamond extends BoardDrawerBase
 
 	Point ret = new Point();
 	ret.x = m_marginX + (y + x)*m_horizStep;
-	ret.y = m_marginY + (m_bheight/2)*m_fieldHeight + (y - x)*m_fieldHeight/2;
+	ret.y = m_marginY + (m_bheight/2)*m_fieldHeight 
+	        + (y - x)*m_fieldHeight/2;
 	return ret;
     }
 
@@ -54,8 +54,6 @@ public class BoardDrawerDiamond extends BoardDrawerBase
 
     public void computeFieldPlacement()
     {
-	int sx;
-
 	m_hexagon = new Polygon[m_bwidth*m_bheight+4];
 
 	m_fieldHeight = m_height / (m_bheight + 2);
@@ -63,25 +61,29 @@ public class BoardDrawerDiamond extends BoardDrawerBase
 
 	if (m_fieldHeight >= (int)(m_fieldWidth * (1.0 / ASPECT_RATIO))) {
 		m_fieldHeight = (int)(m_fieldWidth * (1.0 / ASPECT_RATIO));
-	} else if (m_fieldHeight < (int)(m_fieldWidth * ASPECT_RATIO)) {
+	} else {
 		m_fieldWidth = (int)(m_fieldHeight*ASPECT_RATIO);
 	}
 
 	if ((m_fieldHeight & 1) != 0) m_fieldHeight++;
 	if ((m_fieldWidth & 1) != 0) m_fieldWidth++;
 
-	sx = (int)((0.5 * m_fieldHeight / TAN60DEG)+0.5);
+	m_fieldRadius = (m_fieldWidth < m_fieldHeight) ? 
+	    m_fieldWidth : m_fieldHeight;
+
+	int sx = (m_fieldWidth/2)/2;
 	m_horizStep = sx + m_fieldWidth/2;
-	
+
 	int bw = (m_bwidth+m_bheight-1)*m_horizStep;
 	int bh = m_bheight*m_fieldHeight;
 
 	m_marginX = (m_width - bw) / 2 + m_fieldWidth/2;
 	m_marginY = (m_height - bh) / 2 + m_fieldHeight/2;
-
+	
         for (int i = 0; i < m_hexagon.length; i++) {
 	    Point p = getLocation(i);
-	    m_hexagon[i] = createHorizontalHexagon(p, m_fieldWidth, m_fieldHeight);
+	    m_hexagon[i] = createHorizontalHexagon(p, m_fieldWidth, 
+						      m_fieldHeight);
         }	
     }
 
@@ -109,8 +111,6 @@ public class BoardDrawerDiamond extends BoardDrawerBase
     }
 
     protected int m_horizStep;
-
-    public static double ASPECT_RATIO = 1.0;
 }
 
 //----------------------------------------------------------------------------

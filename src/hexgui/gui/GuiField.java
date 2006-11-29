@@ -16,12 +16,14 @@ import hexgui.util.*;
 
 public class GuiField
 {
-    public static int getStoneMargin(int width)
-    {
-	return width / 17 + 3;
-    }
-    
-    //------------------------------------------------------------
+
+    public static final int DRAW_CELL_OUTLINE = 1;
+
+    private static final Color COLOR_STONE_BLACK = Color.decode("#030303");
+    private static final Color COLOR_STONE_BLACK_BRIGHT = Color.decode("#666666");
+    private static final Color COLOR_STONE_WHITE = Color.decode("#d7d0c9");
+    private static final Color COLOR_STONE_WHITE_BRIGHT = Color.decode("#ffffff");
+
 
     public GuiField()
     {
@@ -35,7 +37,10 @@ public class GuiField
 	m_attributes = 0;
     }
 
-    public static final int DRAW_CELL_OUTLINE = 1;
+    public static int getStoneMargin(int width)
+    {
+	return width / 17 + 1;
+    }
 
     public void clearAttributes() { m_attributes = 0; }
     public void setAttributes(int f)   { m_attributes |= f; }
@@ -53,16 +58,17 @@ public class GuiField
 	setColor(HexColor.EMPTY);
     }
 
-    private RadialGradientPaint getPaint(int size,
+    private RadialGradientPaint getPaint(int width, 
+					 int height,
                                          Color colorNormal,
                                          Color colorBright)
     {
         RadialGradientPaint paint;
         int paintSize;
+	int size = (width < height) ? width : height;
         int radius = Math.max(size / 3, 1);
-        int center = size / 3;
         Point2D.Double centerPoint =
-            new Point2D.Double(center, center);
+            new Point2D.Double(width/2 - size/6, height/2 - size/6);
         Point2D.Double radiusPoint =
             new Point2D.Double(radius, radius);
         paint = new RadialGradientPaint(centerPoint, colorBright,
@@ -70,7 +76,6 @@ public class GuiField
         return paint;
     }
 
-    //------------------------------------------------------------
     void draw(Graphics g, int x, int y, int w, int h)
     {
 	if (!g.hitClip(x, y, w, h))
@@ -78,7 +83,9 @@ public class GuiField
 
 	m_width = w;
 	m_height = h;
-	m_margin = getStoneMargin(m_width);
+
+	m_radius = (h < w) ? h/2 : w/2;
+	m_margin = getStoneMargin(m_radius*2);
 
 	m_graphics = g.create(x-w/2,y-h/2,w,h);
 	if (m_graphics instanceof Graphics2D)
@@ -98,32 +105,29 @@ public class GuiField
     void drawStone(Color normal, Color bright)
     {
 	if (m_graphics2D != null) {
-	    RadialGradientPaint paint = getPaint(m_width, normal, bright);
+	    RadialGradientPaint paint = getPaint(m_width, m_height, 
+						 normal, bright);
 	    m_graphics2D.setPaint(paint);
 	} else {
 	    m_graphics.setColor(normal);
 	}
 
-	m_graphics.fillOval(m_margin, m_margin,
-			    m_width - 2*m_margin, m_height - 2*m_margin);
+	int size = m_radius - m_margin;
+	m_graphics.fillOval(m_width/2 - size, m_height/2 - size,
+			    size*2, size*2);
 
 	m_graphics.setPaintMode();
     }
 
     private int m_width;
     private int m_height;
+    private int m_radius;
     private int m_margin;
     private HexPoint m_point;
     private HexColor m_color;
     private int m_attributes;
     private Graphics m_graphics;
     private Graphics2D m_graphics2D;
-
-    private static final Color COLOR_STONE_BLACK = Color.decode("#030303");
-    private static final Color COLOR_STONE_BLACK_BRIGHT = Color.decode("#666666");
-    private static final Color COLOR_STONE_WHITE = Color.decode("#d7d0c9");
-    private static final Color COLOR_STONE_WHITE_BRIGHT
-	//        = Color.decode("#f6eee6");
-        = Color.decode("#ffffff");
-
 }
+
+//----------------------------------------------------------------------------
