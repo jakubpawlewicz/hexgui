@@ -30,6 +30,8 @@ public final class GuiMenuBar
 	return m_menuBar;
     }
 
+    //----------------------------------------------------------------------
+
     private JMenu createFileMenu()
     {
 	JMenu menu = new JMenu("File");
@@ -84,6 +86,8 @@ public final class GuiMenuBar
 
 	return menu;
     }
+
+    //----------------------------------------------------------------------
 
     private JMenu createEditMenu()
     {
@@ -173,12 +177,29 @@ public final class GuiMenuBar
 	return b.getText();
     }	
 
+    //----------------------------------------------------------------------
+
+    public boolean getToolbarVisible()
+    {
+	return m_toolbar_visible.getState();
+    }
+
     private JMenu createViewMenu()
     {
 	JMenu menu = new JMenu("View");
 	menu.setMnemonic(KeyEvent.VK_V);
 
-	JMenu view = createBoardViewMenu();
+	m_toolbar_visible = new JCheckBoxMenuItem("Show Toolbar");
+	// FIXME: coordinate with preferences
+	m_toolbar_visible.setState(true);  
+	m_toolbar_visible.addActionListener(m_listener);
+	m_toolbar_visible.setActionCommand("gui_toolbar_visible");
+	menu.add(m_toolbar_visible);
+
+	menu.addSeparator();
+
+	JMenu view;
+	view = createBoardViewMenu();
 	menu.add(view);
 
 	view = createOrientationViewMenu();
@@ -257,6 +278,8 @@ public final class GuiMenuBar
 	return b.getText();
     }	
 
+    //----------------------------------------------------------------------
+
     private JMenu createHelpMenu()
     {
 	JMenu menu = new JMenu("Help");
@@ -274,6 +297,8 @@ public final class GuiMenuBar
     
     private ActionListener m_listener;
     private JMenuBar m_menuBar;
+
+    private JCheckBoxMenuItem m_toolbar_visible;
 
     private ButtonGroup m_bsGroup;   // board sizes
     private ButtonGroup m_btGroup;   // board view types (diamond, flat, etc)

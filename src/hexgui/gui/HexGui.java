@@ -19,9 +19,7 @@ import java.awt.event.*;
 
 //----------------------------------------------------------------------------
 
-/** The parent HexGui object.
-    Basically does everything.
-*/
+/** HexGui. */
 public final class HexGui 
     extends JFrame 
     implements ActionListener, GuiBoard.Listener
@@ -89,6 +87,9 @@ public final class HexGui
 	//
 	// gui commands
 	//
+	else if (cmd.equals("gui_toolbar_visible")) {
+	    cmdGuiToolbarVisible();
+	}
 	else if (cmd.equals("gui_board_draw_type")) {
 	    cmdGuiBoardDrawType();
 	} 
@@ -259,6 +260,12 @@ public final class HexGui
     }
 
     //------------------------------------------------------------
+
+    private void cmdGuiToolbarVisible()
+    {
+	boolean visible = m_menubar.getToolbarVisible();
+	m_toolbar.setVisible(visible);
+    }
 
     private void cmdGuiBoardDrawType()
     {

@@ -12,6 +12,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.net.URL;
 
+//----------------------------------------------------------------------------
+
 public final class GuiToolBar
 {
     public GuiToolBar(ActionListener listener)
@@ -26,7 +28,38 @@ public final class GuiToolBar
 	return m_toolBar;
     }
 
-    public void createToolBar()
+    public void setVisible(boolean visible)
+    {
+	m_toolBar.setVisible(visible);
+    }
+
+    public void enableStopButton(String actionCommand)
+    {
+	m_stop.setEnabled(true);
+    }
+    
+    public void disableStopButton()
+    {
+	m_stop.setEnabled(false);
+    }
+    
+    public void updateButtonStates(Node node)
+    {
+	m_beginning.setEnabled(node.getParent() != null);
+	m_back10.setEnabled(node.getParent() != null);
+	m_back.setEnabled(node.getParent() != null);
+
+	m_forward.setEnabled(node.getChild() != null);
+	m_forward10.setEnabled(node.getChild() != null);
+	m_end.setEnabled(node.getChild() != null);
+
+	m_up.setEnabled(node.getNext() != null);
+	m_down.setEnabled(node.getPrev() != null);
+    }
+
+    //----------------------------------------------------------------------
+
+    private void createToolBar()
     {
 	m_toolBar.add(makeButton("hexgui/images/filenew.png", 
 				 "newgame",
@@ -123,32 +156,6 @@ public final class GuiToolBar
 	    System.out.println("*** Resource not found: " + imageFile);
 	}
 	return button;
-    }
-
-    //----------------------------------------------------------------------
-
-    public void enableStopButton(String actionCommand)
-    {
-	m_stop.setEnabled(true);
-    }
-    
-    public void disableStopButton()
-    {
-	m_stop.setEnabled(false);
-    }
-    
-    public void updateButtonStates(Node node)
-    {
-	m_beginning.setEnabled(node.getParent() != null);
-	m_back10.setEnabled(node.getParent() != null);
-	m_back.setEnabled(node.getParent() != null);
-
-	m_forward.setEnabled(node.getChild() != null);
-	m_forward10.setEnabled(node.getChild() != null);
-	m_end.setEnabled(node.getChild() != null);
-
-	m_up.setEnabled(node.getNext() != null);
-	m_down.setEnabled(node.getPrev() != null);
     }
 
     //----------------------------------------------------------------------
