@@ -13,12 +13,11 @@ import java.net.URL;
 
 //----------------------------------------------------------------------------
 
-// FIXME: board not centered correctly if flipped and non square!
 public class BoardDrawerGo extends BoardDrawerBase
 {
-    public BoardDrawerGo(boolean flipped)
+    public BoardDrawerGo()
     {
-	super(flipped);
+	super();
 	loadBackground("hexgui/images/wood.png");
     }
 
@@ -38,11 +37,6 @@ public class BoardDrawerGo extends BoardDrawerBase
 
     protected Point getLocation(int x, int y)
     {
-	if (m_flipped) {
-	    int temp = x;
-	    x = y;
-	    y = temp;
-	}
 	Point ret = new Point();
 	ret.x = m_marginX + (x+2)*m_fieldWidth;
 	ret.y = m_marginY + (y+2)*m_fieldHeight;
@@ -131,26 +125,29 @@ public class BoardDrawerGo extends BoardDrawerBase
 	}
     }
 
-    protected void drawLabels(Graphics g)
+    protected void drawLabels(Graphics g, boolean alphatop)
     {
+	String string;
 	int xoffset,yoffset;
 	g.setColor(Color.black);
 
-	char c = 'A';
 	xoffset = yoffset = 0;
 	for (int x=0; x<m_bwidth; x++) {
-	    String string = Character.toString(c);
+	    if (alphatop)
+		string = Character.toString((char)((int)'A' + x));
+	    else
+		string = Integer.toString(x+1);
 	    drawLabel(g, getLocation(x, -1), string, xoffset);
 	    drawLabel(g, getLocation(x, m_bheight), string, xoffset);
-	    c++;
 	}
-	int n = 1;
 	xoffset = yoffset = 0;
 	for (int y=0; y<m_bheight; y++) {
-	    String string = Integer.toString(n);
+	    if (!alphatop)
+		string = Character.toString((char)((int)'A' + y));
+	    else
+		string = Integer.toString(y+1);
 	    drawLabel(g, getLocation(-1, y), string, xoffset);
 	    drawLabel(g, getLocation(m_bwidth, y), string, xoffset);
-	    n++;
 	}
     }
 }

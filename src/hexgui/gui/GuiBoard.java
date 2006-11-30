@@ -13,6 +13,7 @@ import java.awt.event.*;
 
 //----------------------------------------------------------------------------
 
+/** Gui Board. */
 public final class GuiBoard
     extends JPanel
 {
@@ -55,7 +56,7 @@ public final class GuiBoard
 	{
 	    public void mouseClicked(MouseEvent e)
 	    {
-		GuiField f = m_drawer.getFieldContaining(e.getPoint(), field);
+		GuiField f = m_drawer.getFieldContaining(e.getPoint(), m_field);
 		if (f == null) return;
 		m_listener.fieldClicked(f.getPoint());
 	    }
@@ -65,20 +66,28 @@ public final class GuiBoard
 	setVisible(true);
     }
 
+    /** Sets the type of board drawer to use.  If <code>name</code> is
+	not one of the values because "Diamond" is is used.
+	@param name one of ("Diamond", "Flat", "Go"). 
+    */
     public void setDrawType(String name)
     {
 	if (name.equals("Go"))
-	    m_drawer = new BoardDrawerGo(m_flipped);
+	    m_drawer = new BoardDrawerGo();
 	else if (name.equals("Diamond"))
-	    m_drawer = new BoardDrawerDiamond(m_flipped);
+	    m_drawer = new BoardDrawerDiamond();
 	else if (name.equals("Flat")) 
-	    m_drawer = new BoardDrawerFlat(m_flipped);
+	    m_drawer = new BoardDrawerFlat();
 	else {
 	    System.out.println("GuiBoard: unknown draw type '" + name + "'.");
-	    m_drawer = new BoardDrawerDiamond(m_flipped);
+	    m_drawer = new BoardDrawerDiamond();
 	} 
     }
 
+    /** Sets whether black on letters is on top or if white on 
+	numbers is on top.  If string is invalid defaults to black on top.
+	@param orient either "Black on top" or "White on top". 
+    */
     public void setOrientation(String orient)
     {
 	if (orient.equals("Black on top"))
@@ -90,9 +99,12 @@ public final class GuiBoard
 	    System.out.println("GuiBoard: unknown orientation '" + 
 			       orient + "'.");
 	}
-	m_drawer.setFlipped(m_flipped);
     }
 
+    /** Creates a board of the given dimensions.
+	@param w width of the board in cells
+	@param h height of the board in cells
+    */
     public void initSize(int w, int h)
     {
 	System.out.println("GuiBoard.initSize: " + w + " " + h);
@@ -101,34 +113,43 @@ public final class GuiBoard
 	m_height = h;
 	m_size = new Dimension(m_width, m_height);
 
-	field = new GuiField[w*h+4];
+	m_field = new GuiField[w*h+4];
 	for (int x=0; x<w*h; x++) {
-	    field[x] = new GuiField(HexPoint.get(x % w, x / w));
-	    field[x].setAttributes(GuiField.DRAW_CELL_OUTLINE);
+	    m_field[x] = new GuiField(HexPoint.get(x % w, x / w));
+	    m_field[x].setAttributes(GuiField.DRAW_CELL_OUTLINE);
 	}
 
-	field[w*h+0] = new GuiField(HexPoint.NORTH);
-	field[w*h+1] = new GuiField(HexPoint.SOUTH);
-	field[w*h+2] = new GuiField(HexPoint.WEST);
-	field[w*h+3] = new GuiField(HexPoint.EAST);
+	m_field[w*h+0] = new GuiField(HexPoint.NORTH);
+	m_field[w*h+1] = new GuiField(HexPoint.SOUTH);
+	m_field[w*h+2] = new GuiField(HexPoint.WEST);
+	m_field[w*h+3] = new GuiField(HexPoint.EAST);
 	
 	clearAll();
     }
 
+    /** Creates a board with the given dimensions.
+	Convience function.  
+	@param dim dimension of the board
+	@see initSize(int, int)
+    */
     public void initSize(Dimension dim)
     {
 	initSize(dim.width, dim.height);
     }
 
+    /** Gets the size of the board.
+	@return size of the board as a Dimension.
+    */
     public Dimension getBoardSize()
     {
 	return m_size;
     }
 
+    /** Clears all marks and stones from the board. */
     public void clearAll()
     {
-	for (int x=0; x<field.length; x++) 
-	    field[x].clear();
+	for (int x=0; x<m_field.length; x++) 
+	    m_field[x].clear();
 
 	getField(HexPoint.NORTH).setColor(HexColor.BLACK);
 	getField(HexPoint.SOUTH).setColor(HexColor.BLACK);
@@ -136,28 +157,59 @@ public final class GuiBoard
 	getField(HexPoint.EAST).setColor(HexColor.WHITE);
     }
 
+    /** Sets the given point to the given color.
+	@param point the point
+	@param color the color to set it to.
+    */
     public void setColor(HexPoint point, HexColor color)
     {
 	GuiField f = getField(point);
 	f.setColor(color);
     }
 
+    /** Gets the color of the specified point.
+	@param point the point whose color we with to obtain.
+	@return the color of <code>point</code>
+    */
     public HexColor getColor(HexPoint point)
     {
 	GuiField f = getField(point);
 	return f.getColor();
     }
 
+    /** Gets the field at the specified point. */
     public GuiField getField(HexPoint point)
     {
-	for (int x=0; x<field.length; x++) 
-	    if (field[x].getPoint() == point) 
-		return field[x];
+	for (int x=0; x<m_field.length; x++) 
+	    if (m_field[x].getPoint() == point) 
+		return m_field[x];
 	assert(false);
 	return null;
     }
 
     //------------------------------------------------------------
+
+    private GuiField[] flipFields(GuiField field[])
+    {
+	GuiField out[] = new GuiField[field.length];
+	for (int i=0; i<field.length; i++) {
+	    HexPoint p = field[i].getPoint();
+	    out[i] = new GuiField(field[i]);
+	    if (p == HexPoint.NORTH)
+		out[i].setPoint(HexPoint.WEST);
+	    else if (p == HexPoint.WEST)
+		out[i].setPoint(HexPoint.NORTH);
+	    else if (p == HexPoint.EAST)
+		out[i].setPoint(HexPoint.SOUTH);
+	    else if (p == HexPoint.SOUTH)
+		out[i].setPoint(HexPoint.EAST);
+	    else {
+		out[i].setPoint(HexPoint.get(p.y, p.x));
+	    }	    
+	}
+	return out;
+    }
+
     private class BoardPanel
 	extends JPanel
     {
@@ -168,34 +220,32 @@ public final class GuiBoard
 
 	public void paintComponent(Graphics graphics)
 	{
-	    int width = getWidth();
-	    int height = getHeight();
-// 	    System.out.println("GuiBoard.paintComponent "
-// 			       + graphics.getClipBounds().x + " "
-// 			       + graphics.getClipBounds().y + " "
-// 			       + graphics.getClipBounds().width + " "
-// 			       + graphics.getClipBounds().height);
+	    int w = getWidth();
+	    int h = getHeight();
 
 	    if (m_image == null) {
-		//System.out.println("Creating new image...");
-		m_image = createImage(width, height);
+		m_image = createImage(w, h);
 	    }
 
-	    m_drawer.draw(m_image.getGraphics(), width, height, 
-			  m_width, m_height, field);
+	    int bw = m_width;
+	    int bh = m_height;
+	    GuiField ff[] = m_field;
+	    if (m_flipped) {
+		bw = m_height;
+		bh = m_width;
+		ff = flipFields(m_field);
+	    }
 
+	    m_drawer.draw(m_image.getGraphics(), w, h, bw, bh, m_flipped, ff);
 	    graphics.drawImage(m_image, 0, 0, null);
 	}
 
 	public void setBounds(int x, int y, int w, int h)
 	{
-	    super.setBounds(x,y,w,h);
-	    //System.out.println("Bounds: "+x+" "+y+" "+w+" "+h);
+	    super.setBounds(x, y, w, h);
 	    m_image = null;
 	}
     }
-
-    //------------------------------------------------------------
 
     public void mousePressed(MouseEvent e) {}
     public void mouseReleased(MouseEvent e) {}
@@ -204,11 +254,10 @@ public final class GuiBoard
 
     private int m_width, m_height;
     private Dimension m_size;
-
     private boolean m_flipped;
 
     private Image m_image;
-    private GuiField field[];
+    private GuiField m_field[];
 
     private BoardDrawerBase m_drawer;
     private BoardPanel m_boardPanel;

@@ -26,9 +26,20 @@ public class GuiField
 
     public GuiField(HexPoint p)
     {
+	this(p, HexColor.EMPTY, 0);
+    }
+
+    public GuiField(HexPoint p, HexColor c, int attributes)
+    {
 	m_point = p;
-	m_color = HexColor.EMPTY;
-	m_attributes = 0;
+	m_color = c;
+	m_attributes = attributes;
+    }
+
+    /** Creates a copy of the given field. */
+    public GuiField(GuiField f)
+    {
+	this(f.getPoint(), f.getColor(), f.getAttributes());
     }
 
     public static int getStoneMargin(int width)
@@ -113,13 +124,15 @@ public class GuiField
 	m_graphics.setPaintMode();
     }
 
+    private HexPoint m_point;
+    private HexColor m_color;
+    private int m_attributes;
+
     private int m_width;
     private int m_height;
     private int m_radius;
     private int m_margin;
-    private HexPoint m_point;
-    private HexColor m_color;
-    private int m_attributes;
+
     private Graphics m_graphics;
     private Graphics2D m_graphics2D;
 }

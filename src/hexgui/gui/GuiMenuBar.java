@@ -11,6 +11,7 @@ import java.awt.event.*;
 
 //----------------------------------------------------------------------------
 
+/** Menu bar. */
 public final class GuiMenuBar
 {
     public GuiMenuBar(ActionListener listener)
@@ -29,6 +30,10 @@ public final class GuiMenuBar
     {
 	return m_menuBar;
     }
+
+    //
+    // TODO: coordinate all default options with preferences
+    //
 
     //----------------------------------------------------------------------
 
@@ -66,6 +71,8 @@ public final class GuiMenuBar
 
 	return menu;
     }
+
+    //----------------------------------------------------------------------
 
     private JMenu createGameMenu()
     {

@@ -13,17 +13,14 @@ import java.net.URL;
 
 //----------------------------------------------------------------------------
 
-
-// FIXME: board not centered correctly if flipped and non square!
-
 public class BoardDrawerDiamond extends BoardDrawerBase
 {
 
     protected static final double ASPECT_RATIO = 1.1547;
 
-    public BoardDrawerDiamond(boolean flipped)
+    public BoardDrawerDiamond()
     {
-	super(flipped);
+	super();
 	loadBackground("hexgui/images/wood.png");
 	m_aspect_ratio = ASPECT_RATIO;
     }
@@ -39,12 +36,6 @@ public class BoardDrawerDiamond extends BoardDrawerBase
 
     protected Point getLocation(int x, int y)
     {
-	if (m_flipped) {
-	    int temp = x;
-	    x = y;
-	    y = temp;
-	}
-
 	// yoffset will be positive when bwidth > bheight (to push the
 	// board down) and negative when bwidth < bheight (to lift it
 	// up) because the a1 square (0,0) will not be 
@@ -104,26 +95,29 @@ public class BoardDrawerDiamond extends BoardDrawerBase
 	}
     }
 
-    protected void drawLabels(Graphics g)
+    protected void drawLabels(Graphics g, boolean alphatop)
     {
 	int xoffset;
+	String string;
 	g.setColor(Color.black);
 
-	char c = 'A';
 	xoffset = 0;
 	for (int x=0; x<m_bwidth; x++) {
-	    String string = Character.toString(c);
+	    if (alphatop)
+		string = Character.toString((char)((int)'A' + x));
+	    else
+		string = Integer.toString(x+1);
 	    drawLabel(g, getLocation(x, -1), string, xoffset);
 	    drawLabel(g, getLocation(x, m_bheight), string, xoffset);
-	    c++;
 	}
-	int n = 1;
 	xoffset = 0;	
 	for (int y=0; y<m_bheight; y++) {
-	    String string = Integer.toString(n);
+	    if (!alphatop)
+		string = Character.toString((char)((int)'A' + y));
+	    else
+		string = Integer.toString(y+1);
 	    drawLabel(g, getLocation(-1, y), string, xoffset);
 	    drawLabel(g, getLocation(m_bwidth, y), string, xoffset);
-	    n++;
 	}
     }
 

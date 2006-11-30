@@ -27,14 +27,12 @@ import java.net.URL;
     <code>m</code> and <code>n</code> range from 1 to 26.  By default,
     black connects top and bottom and should be labeled with letters.
     White connects left and right and should be labeled with numbers.
-    An option to display White on the top is provided.
 */
 public abstract class BoardDrawerBase
 {
-    public BoardDrawerBase(boolean flipped)
+    public BoardDrawerBase()
     {
 	m_background = null;
-	m_flipped = flipped;
 	m_aspect_ratio = 1.0;
     }
 
@@ -56,13 +54,6 @@ public abstract class BoardDrawerBase
 	}
     }
 
-    /** Sets whether White connects top and bottom or not.
-	If <code>f</code> is <code>true</code> then White should connect
-        top and bottom, otherwise Black connects top and bottom.
-	@param f  whether White connects top and bottom or not
-    */
-    public void setFlipped(boolean f) { m_flipped = f; }
-
     /** Gets the field containing the specified point.
 	@param p the point
 	@param field the set of fields to search through.
@@ -75,22 +66,22 @@ public abstract class BoardDrawerBase
 	The size of the region to draw to, the size of the board, and the
 	field to draw must be given.  The position of each field is 
 	then calculated and the board drawn. 
-
 	@param g graphics context to draw to
 	@param w the width of the region to draw in
 	@param h the height of the region to draw in
-	@param bx the width of the board (in fields)
-	@param by the height of the board (in fields)
+	@param bw the width of the board (in fields)
+	@param bh the height of the board (in fields)
     */
     public void draw(Graphics g, 
-		     int w, int h, int bx, int by, 
+		     int w, int h, int bw, int bh, 
+		     boolean flipped, 
 		     GuiField field[])
     {
 	m_width = w;
 	m_height = h;
 
-	m_bwidth = bx;
-	m_bheight = by;
+	m_bwidth = bw;
+	m_bheight = bh;
 
 	computeFieldPlacement();
 	initDrawCells(field);
@@ -98,7 +89,7 @@ public abstract class BoardDrawerBase
 	setAntiAliasing(g);
 	drawBackground(g);
 	drawCells(g, field);
-	drawLabels(g);
+	drawLabels(g, !flipped);
 	drawShadows(g, field);
 	drawFields(g, field);
     }
@@ -221,7 +212,7 @@ public abstract class BoardDrawerBase
 	g.drawString(string, p.x + xoff - x, p.y + y); 
     }
 
-    protected abstract void drawLabels(Graphics g);
+    protected abstract void drawLabels(Graphics g, boolean alphatop);
 
     protected void drawShadows(Graphics graphics, GuiField[] field)
     {
@@ -263,10 +254,9 @@ public abstract class BoardDrawerBase
 	}
     }
 
-    protected Image m_background;
-    protected boolean m_flipped;
-
     protected double m_aspect_ratio;
+
+    protected Image m_background;
 
     protected int m_width, m_height;
     protected int m_bwidth, m_bheight;

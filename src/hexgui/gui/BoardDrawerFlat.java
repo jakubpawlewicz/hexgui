@@ -13,15 +13,14 @@ import java.net.URL;
 
 //----------------------------------------------------------------------------
 
-// FIXME: board not centered correctly if flipped and non square!
 public class BoardDrawerFlat extends BoardDrawerBase
 {
 
     protected static final double ASPECT_RATIO = 1.1547;
 
-    public BoardDrawerFlat(boolean flipped)
+    public BoardDrawerFlat()
     {
-	super(flipped);
+	super();
 	loadBackground("hexgui/images/wood.png");
 	m_aspect_ratio = ASPECT_RATIO;
     }
@@ -37,11 +36,6 @@ public class BoardDrawerFlat extends BoardDrawerBase
 
     protected Point getLocation(int x, int y)
     {
-	if (m_flipped) {
-	    int temp = x;
-	    x = y;
-	    y = temp;
-	}
 	Point ret = new Point();
 	ret.x = m_marginX + y*m_fieldWidth/2 + x*m_fieldWidth;
 	ret.y = m_marginY + y*m_step;
@@ -95,28 +89,31 @@ public class BoardDrawerFlat extends BoardDrawerBase
 	}
     }
 
-    protected void drawLabels(Graphics g)
+    protected void drawLabels(Graphics g, boolean alphatop)
     {
+	String string;
 	int xoffset,yoffset;
 	g.setColor(Color.black);
 
-	char c = 'A';
-	xoffset = (m_flipped) ? 0 : m_fieldWidth/2;
-	yoffset = (m_flipped) ? 0 : 1;
+	xoffset = m_fieldWidth/2;
+	yoffset = 1;
 	for (int x=0; x<m_bwidth; x++) {
-	    String string = Character.toString(c);
+	    if (alphatop)
+		string = Character.toString((char)((int)'A' + x));
+	    else
+		string = Integer.toString(x+1);
 	    drawLabel(g, getLocation(x, -1), string, xoffset);
 	    drawLabel(g, getLocation(x-yoffset, m_bheight), string, xoffset);
-	    c++;
 	}
-	int n = 1;
-	xoffset = (m_flipped) ? m_fieldWidth / 2 : 0;	
-	yoffset = (m_flipped) ? 1 : 0;
+	xoffset = 0;
+	yoffset = 0;
 	for (int y=0; y<m_bheight; y++) {
-	    String string = Integer.toString(n);
+	    if (!alphatop)
+		string = Character.toString((char)((int)'A' + y));
+	    else
+		string = Integer.toString(y+1);
 	    drawLabel(g, getLocation(-1, y), string, xoffset);
 	    drawLabel(g, getLocation(m_bwidth, y-yoffset), string, xoffset);
-	    n++;
 	}
     }
 
