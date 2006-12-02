@@ -120,8 +120,8 @@ public final class HexPoint
 	m_string = name;
     }
 
-    public int x, y;
-    private String m_string;
+    public final int x, y;
+    private final String m_string;
 }
 
 //----------------------------------------------------------------------------
