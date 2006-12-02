@@ -29,11 +29,11 @@ public final class Hexagon
         int sy = ly/2;
 	
 	xpoints[0] = 0;   ypoints[0] = -ly;
-	xpoints[1] = -sx; ypoints[1] = -ly+sy;
-	xpoints[2] = -sx; ypoints[2] =  ly-sy;
+	xpoints[1] = -sx; ypoints[1] = -sy;
+	xpoints[2] = -sx; ypoints[2] = +sy;
 	xpoints[3] = 0;   ypoints[3] = +ly;
-	xpoints[4] = +sx; ypoints[4] =  ly-sy;
-	xpoints[5] = +sx; ypoints[5] = -ly+sy;
+	xpoints[4] = +sx; ypoints[4] = +sy;
+	xpoints[5] = +sx; ypoints[5] = -sy;
 
 	Polygon ret = new Polygon(xpoints, ypoints, 6);
 	ret.translate(p.x, p.y);
@@ -58,12 +58,12 @@ public final class Hexagon
 	int lx = width/2;
 	int sx = lx/2;
 
-	xpoints[0] = -lx;    ypoints[0] = 0;
-	xpoints[1] = -lx+sx; ypoints[1] = +sy;
-	xpoints[2] =  lx-sx; ypoints[2] = +sy;
-	xpoints[3] = +lx;    ypoints[3] = 0;
-	xpoints[4] =  lx-sx; ypoints[4] = -sy;
-	xpoints[5] = -lx+sx; ypoints[5] = -sy;
+	xpoints[0] = -lx; ypoints[0] = 0;
+	xpoints[1] = -sx; ypoints[1] = +sy;
+	xpoints[2] = +sx; ypoints[2] = +sy;
+	xpoints[3] = +lx; ypoints[3] = 0;
+	xpoints[4] = +sx; ypoints[4] = -sy;
+	xpoints[5] = -sx; ypoints[5] = -sy;
 
 	Polygon ret = new Polygon(xpoints, ypoints, 6);
 	ret.translate(p.x, p.y);

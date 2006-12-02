@@ -73,6 +73,15 @@ public class BoardDrawerDiamond extends BoardDrawerBase
 	    outline[x] = Hexagon.createHorizontalHexagon(p,
 							 m_fieldWidth, 
 							 m_fieldHeight);
+// 	    System.out.println("-----");
+// 	    System.out.println(field[x].getPoint().toString());
+// 	    Polygon poly = outline[x];
+// 	    for (int j=0; j<6; j++) {
+// 		System.out.print("(" + poly.xpoints[j] + 
+// 				 "," + poly.ypoints[j] + 
+// 				 ") ");
+// 	    }
+// 	    System.out.println("");
         }	
 	return outline;
     }

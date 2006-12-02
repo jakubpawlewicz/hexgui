@@ -16,7 +16,7 @@ import java.net.URL;
 public class BoardDrawerFlat extends BoardDrawerBase
 {
 
-    protected static final double ASPECT_RATIO = 1.1547;
+    protected static final double ASPECT_RATIO = 1.0/1.1547;
 
     public BoardDrawerFlat()
     {
@@ -40,7 +40,7 @@ public class BoardDrawerFlat extends BoardDrawerBase
 
     protected int calcFieldHeight(int w, int h, int bw, int bh)
     {
-	return h / ((bh+1)/2 + (bh/4) + 3);
+	return h / ((bh+1)/2 + (bh/4) + 4);
     }
 
     protected int calcStepSize()
