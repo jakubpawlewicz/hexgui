@@ -25,15 +25,6 @@ public class BoardDrawerDiamond extends BoardDrawerBase
 	m_aspect_ratio = ASPECT_RATIO;
     }
 
-    public GuiField getFieldContaining(Point p, GuiField field[])
-    {
-	for (int x=0; x<field.length; x++) {
-	    if (m_outline[x].contains(p)) 
-		return field[x];
-	}
-	return null;
-    }
-
     protected Point getLocation(int x, int y)
     {
 	// yoffset will be positive when bwidth > bheight (to push the
@@ -74,25 +65,16 @@ public class BoardDrawerDiamond extends BoardDrawerBase
 	    + (m_bwidth - m_bheight)*m_fieldHeight/2;
     }
 
-    protected void initDrawCells(GuiField field[])
+    protected Polygon[] calcCellOutlines(GuiField field[])
     {
-	m_outline = new Polygon[field.length];
-        for (int x = 0; x < m_outline.length; x++) {
+	Polygon outline[] = new Polygon[field.length];
+        for (int x = 0; x < outline.length; x++) {
 	    Point p = getLocation(field[x].getPoint());
-	    m_outline[x] = Hexagon.createHorizontalHexagon(p,
-							   m_fieldWidth, 
-							   m_fieldHeight);
+	    outline[x] = Hexagon.createHorizontalHexagon(p,
+							 m_fieldWidth, 
+							 m_fieldHeight);
         }	
-    }
-
-    protected void drawCells(Graphics g, GuiField field[])
-    {
-	g.setColor(Color.black);
-	for (int i=0; i<m_outline.length; i++) {
-	    if ((field[i].getAttributes() & GuiField.DRAW_CELL_OUTLINE) != 0) {
-		g.drawPolygon(m_outline[i]);
-	    }
-	}
+	return outline;
     }
 
     protected void drawLabels(Graphics g, boolean alphatop)

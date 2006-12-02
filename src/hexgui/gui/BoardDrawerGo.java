@@ -21,20 +21,6 @@ public class BoardDrawerGo extends BoardDrawerBase
 	loadBackground("hexgui/images/wood.png");
     }
 
-    public GuiField getFieldContaining(Point p, GuiField field[])
-    {
-	int w = m_fieldWidth/2;
-	int h = m_fieldHeight/2;
-	for (int x=0; x<field.length; x++) {
-	    Point c = getLocation(field[x].getPoint());
-	    int dx = Math.abs(p.x - c.x);
-	    int dy = Math.abs(p.y - c.y);
-	    if (dx <= w && dy <= h) 
-		return field[x];
-	}
-	return null;
-    }
-
     protected Point getLocation(int x, int y)
     {
 	Point ret = new Point();
@@ -84,8 +70,20 @@ public class BoardDrawerGo extends BoardDrawerBase
 	return (m_bheight+4)*m_fieldHeight;
     }
 
-    protected void initDrawCells(GuiField field[])
+    protected Polygon[] calcCellOutlines(GuiField field[])
     {
+	int w = m_fieldWidth/2;
+	int h = m_fieldHeight/2;
+	Polygon outline[] = new Polygon[field.length];
+	for (int i=0; i<field.length; i++) {
+	    Point c = getLocation(field[i].getPoint());
+	    outline[i] = new Polygon();
+	    outline[i].addPoint(c.x - w, c.y-h);
+	    outline[i].addPoint(c.x + w, c.y-h);
+	    outline[i].addPoint(c.x + w, c.y+h);
+	    outline[i].addPoint(c.x - w, c.y+h);
+	}
+	return outline;
     }
 
     protected void drawCells(Graphics g, GuiField field[])

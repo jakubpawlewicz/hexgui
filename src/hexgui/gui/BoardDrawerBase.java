@@ -55,12 +55,24 @@ public abstract class BoardDrawerBase
     }
 
     /** Gets the field containing the specified point.
+	NOTE: uses the position of fields from the last call to draw().
+	Also assumes the set of fields given are the same as those in the
+	last call to draw(). 
 	@param p the point
 	@param field the set of fields to search through.
 	@return the field in the set that p is in or <code>null</code> if
                 p is not in any field.
     */
-    public abstract GuiField getFieldContaining(Point p, GuiField field[]);
+    public GuiField getFieldContaining(Point p, GuiField field[])
+    {
+	if (m_outline == null)
+	    return null;
+	for (int x=0; x<field.length; x++) {
+	    if (m_outline[x].contains(p)) 
+		return field[x];
+	}
+	return null;
+    }
 
     /** Draws the board.
 	The size of the region to draw to, the size of the board, and the
@@ -84,7 +96,7 @@ public abstract class BoardDrawerBase
 	m_bheight = bh;
 
 	computeFieldPlacement();
-	initDrawCells(field);
+	m_outline = calcCellOutlines(field);
 
 	setAntiAliasing(g);
 	drawBackground(g);
@@ -153,13 +165,21 @@ public abstract class BoardDrawerBase
 	outlines of the fields.
 	@param the fields it will need to draw
     */
-    protected abstract void initDrawCells(GuiField field[]);
+    protected abstract Polygon[] calcCellOutlines(GuiField field[]);
 
     /** Draws the outlines of the given fields. 
 	@param g graphics context to draw to.
 	@param field the list of fields to draw.
     */
-    protected abstract void drawCells(Graphics g, GuiField field[]);
+    protected void drawCells(Graphics g, GuiField field[])
+    {
+	g.setColor(Color.black);
+	for (int i=0; i<m_outline.length; i++) {
+	    if ((field[i].getAttributes() & GuiField.DRAW_CELL_OUTLINE) != 0) {
+		g.drawPolygon(m_outline[i]);
+	    }
+	}
+    }
 
     protected void computeFieldPlacement()
     {
@@ -262,6 +282,7 @@ public abstract class BoardDrawerBase
     protected int m_bwidth, m_bheight;
     protected int m_marginX, m_marginY;
     protected int m_fieldWidth, m_fieldHeight, m_fieldRadius, m_step;
+    protected Polygon m_outline[];
 
     protected static final AlphaComposite COMPOSITE_3
         = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3f);
