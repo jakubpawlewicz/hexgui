@@ -64,13 +64,11 @@ public final class SgfWriter
 	if (node.getMove() != null)
 	    printMove(node.getMove());
 
-	Map map = node.getProperties();
-	Iterator it = map.entrySet().iterator();
+	Map<String,String> map = node.getProperties();
+	Iterator<Map.Entry<String,String> >  it = map.entrySet().iterator();
 	while(it.hasNext()) {
-	    Map.Entry e = (Map.Entry)it.next();
-	    String key = (String)e.getKey();
-	    String val = (String)e.getValue();
-	    print(key + "[" + val + "]");
+	    Map.Entry<String,String> e = it.next();
+	    print(e.getKey() + "[" + e.getValue() + "]");
 	}
 	
 	int num = node.numChildren();

@@ -13,7 +13,7 @@ import java.util.TreeMap;
 //----------------------------------------------------------------------------
 
 /** Node in a game tree.
-    Stores moves and other properties related to this move.
+    Stores moves and other properties.
 */
 public class Node
 {
@@ -28,7 +28,7 @@ public class Node
     */
     public Node(Move move)
     {
-	m_property = new TreeMap();
+	m_property = new TreeMap<String, String>();
 	setMove(move);
     }
 
@@ -47,7 +47,45 @@ public class Node
     /** Sets the first child of this node.  
 	This does not update the sibling pointers of the child.
     */
-    public void setFirstChild(Node child) { m_child = child; }
+    public void setFirstChild(Node child) { 
+	m_child = child; 
+    }
+
+    /** Removes this node from the gametree. */
+    public void removeSelf()
+    {
+	Node prev = getPrev();
+	Node next = getNext();
+	if (prev != null && next != null) {
+	    prev.setNext(next);
+	    next.setPrev(prev);
+	} else if (prev == null && next != null) {
+	    if (getParent() != null) getParent().setFirstChild(next);
+	    next.setPrev(null);
+	} else if (prev != null && next == null) {
+	    prev.setNext(next);
+	}
+    }
+
+    /** Adds a child to the end of the list of children. 
+        @param child Node to be added to end of list.
+    */     
+    public void addChild(Node child) 
+    {
+	child.setNext(null);
+	child.setParent(this);
+
+	if (m_child == null) {
+	    m_child = child;
+	    child.setPrev(null);
+	} else {
+	    Node cur = m_child;
+	    while (cur.getNext() != null)
+		cur = cur.getNext();
+	    cur.setNext(child);
+	    child.setPrev(cur);
+	}
+    }
     
     /** Returns the number of children of this node. */
     public int numChildren()
@@ -59,26 +97,6 @@ public class Node
 	    cur = cur.getNext();
 	}	
 	return num;
-    }
-
-    /** Adds a child to the end of the list of children. 
-        @param child Node to be added to end of list.
-    */     
-    public void addChild(Node child) 
-    {
-	Node cur = m_child;
-
-	if (cur == null) {
-	    m_child = child;
-	    child.setPrev(null);
-	} else {
-	    while (cur.getNext() != null)
-		cur = cur.getNext();
-	    cur.setNext(child);
-	    child.setPrev(cur);
-	}
-	child.setNext(null);
-	child.setParent(this);
     }
 
     /** Returns the nth child. 
@@ -100,21 +118,6 @@ public class Node
     */
     public Node getChild() { return getChild(0); }
 
-    /** Removes this node from the gametree. */
-    public void removeSelf()
-    {
-	Node prev = getPrev();
-	Node next = getNext();
-	if (m_prev == null) {
-	    Node parent = getParent();
-	    if (parent != null) getParent().setFirstChild(next);
-	    next.setPrev(null);
-	} else {
-	    prev.setNext(next);
-	    next.setPrev(prev);
-	}
-    }
-
     //----------------------------------------------------------------------
 
     /** Adds a property to this node. 
@@ -135,14 +138,13 @@ public class Node
     */                
     public String getSgfProperty(String key)
     {
-	// FIXME: this generates a compiler warning.  How to fix?
-	return (String)m_property.get(key);
+	return m_property.get(key);
     }
 
     /** Returns a map of the current set of properties.
 	@return Map containing the properties
     */
-    public Map getProperties()
+    public Map<String,String> getProperties()
     {
 	return m_property;
     }
@@ -154,7 +156,7 @@ public class Node
 
     //----------------------------------------------------------------------
 
-    private TreeMap m_property;
+    private TreeMap<String,String> m_property;
 
     private Move m_move;
     private Node m_parent, m_prev, m_next, m_child;

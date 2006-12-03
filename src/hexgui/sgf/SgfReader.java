@@ -45,7 +45,7 @@ public final class SgfReader
 	m_reader = new LineNumberReader(reader);
 	m_tokenizer = new StreamTokenizer(m_reader);
 	m_gameinfo = new GameInfo();
-	m_warnings = new Vector();
+	m_warnings = new Vector<String>();
 	try {
 	    findGameTree();
 	    m_gametree = parseGameTree(null, true);
@@ -66,7 +66,7 @@ public final class SgfReader
 	return m_gameinfo;
     }
 
-    public Vector getWarnings()
+    public Vector<String> getWarnings()
     {
 	if (m_warnings.size() == 0) 
 	    return null;
@@ -265,7 +265,7 @@ public final class SgfReader
     private LineNumberReader m_reader;
     private Node m_gametree;
     private GameInfo m_gameinfo;
-    private Vector m_warnings;
+    private Vector<String> m_warnings;
 }
 
 //----------------------------------------------------------------------------
