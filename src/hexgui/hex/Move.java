@@ -8,7 +8,7 @@ package hexgui.hex;
 
 /** Move.
     Contains a HexPoint and a HexColor.  To construct a swap moves or
-    other special moves use the appropriate HexPoint. 
+    other special moves use the appropriate HexPoint.  Immutable.
 */
 public final class Move
 {
@@ -38,8 +38,8 @@ public final class Move
 	return m_color;
     }
 
-    private HexPoint m_point;
-    private HexColor m_color;
+    private final HexPoint m_point;
+    private final HexColor m_color;
 }
 
 //----------------------------------------------------------------------------
