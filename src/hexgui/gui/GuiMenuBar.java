@@ -62,6 +62,12 @@ public final class GuiMenuBar
  	menu.add(item);
 
  	menu.addSeparator();
+	item = new JMenuItem("Attach Program...");
+	item.addActionListener(m_listener);
+	item.setActionCommand("attach-program");
+ 	menu.add(item);
+
+ 	menu.addSeparator();
 	
 	item = new JMenuItem("Exit");
 	item.setMnemonic(KeyEvent.VK_X);

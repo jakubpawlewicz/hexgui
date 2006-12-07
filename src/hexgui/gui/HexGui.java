@@ -9,6 +9,8 @@ import hexgui.game.Node;
 import hexgui.game.GameInfo;
 import hexgui.sgf.SgfWriter;
 import hexgui.sgf.SgfReader;
+import hexgui.htp.HtpController;
+import hexgui.htp.HtpError;
 import hexgui.version.Version;
 
 import java.io.*;
@@ -16,6 +18,7 @@ import java.util.*;
 import javax.swing.*;          
 import java.awt.*;
 import java.awt.event.*;
+import java.net.*;
 
 //----------------------------------------------------------------------------
 
@@ -28,8 +31,8 @@ public final class HexGui
     {
         super("HexGui");
 
-	System.out.println("HexGui v" + Version.id + "; " + Version.date + 
-			   "; build " + Version.build + "\n");
+	System.out.println("HexGui v" + Version.id + "; " + Version.date 
+			   + "; build " + Version.build + "\n");
 	
 	// Catch the close action and shutdown nicely
 	addWindowListener(new java.awt.event.WindowAdapter() 
@@ -67,51 +70,48 @@ public final class HexGui
 	//
 	// system commands
 	//
-	if (cmd.equals("shutdown")) {
+	if (cmd.equals("shutdown"))
 	    cmdShutdown();
-	} 
+	else if (cmd.equals("attach-program"))
+	    cmdAttachProgram();
 	//
 	// file/help commands
 	//
-	else if (cmd.equals("newgame")) {
+	else if (cmd.equals("newgame")) 
 	    cmdNewGame();
-	} else if (cmd.equals("savegame")) {
+	else if (cmd.equals("savegame"))
 	    cmdSaveGame();
-	} else if (cmd.equals("savegameas")) {
+	else if (cmd.equals("savegameas"))
 	    cmdSaveGameAs();
-	} else if (cmd.equals("loadgame")) {
+	else if (cmd.equals("loadgame"))
 	    cmdLoadGame();
-	} else if (cmd.equals("about")) {
+	else if (cmd.equals("about"))
 	    cmdAbout();
-	} 
 	//
 	// gui commands
 	//
-	else if (cmd.equals("gui_toolbar_visible")) {
+	else if (cmd.equals("gui_toolbar_visible"))
 	    cmdGuiToolbarVisible();
-	}
-	else if (cmd.equals("gui_board_draw_type")) {
+	else if (cmd.equals("gui_board_draw_type"))
 	    cmdGuiBoardDrawType();
-	} 
-	else if (cmd.equals("gui_board_orientation")) {
+	else if (cmd.equals("gui_board_orientation"))
 	    cmdGuiBoardOrientation();
-	}
 	//
         // game navigation commands  
 	//
-        else if (cmd.equals("game_beginning")) {
+        else if (cmd.equals("game_beginning"))
 	    backward(1000);
-	} else if (cmd.equals("game_backward10")) {
+	else if (cmd.equals("game_backward10"))
 	    backward(10);
-	} else if (cmd.equals("game_back")) {
+	else if (cmd.equals("game_back"))
 	    backward(1);
-	} else if (cmd.equals("game_forward")) {
+	else if (cmd.equals("game_forward"))
 	    forward(1);
-	} else if (cmd.equals("game_forward10")) {
+	else if (cmd.equals("game_forward10"))
 	    forward(10);
-	} else if (cmd.equals("game_end")) {
+	else if (cmd.equals("game_end"))
 	    forward(1000);
-	} else if (cmd.equals("game_up")) {
+	else if (cmd.equals("game_up")) {
 	    if (m_current.getNext() != null) {
 		HexPoint point = m_current.getMove().getPoint();
 		m_guiboard.setColor(point, HexColor.EMPTY);
@@ -160,6 +160,40 @@ public final class HexGui
 
 	System.out.println("Shutting down...");
 	System.exit(0);
+    }
+
+    private void cmdAttachProgram()
+    {
+	Runtime runtime = Runtime.getRuntime();
+	String hostname = "localhost";
+	int port = 20000;
+	HexColor color = HexColor.WHITE;
+
+	Socket socket;
+	try {
+	    socket = new Socket(hostname, port);
+	}
+	catch (UnknownHostException e) {
+	    showError("Unknown host");
+	    return;
+	}
+	catch (IOException e) {
+	    showError("Error creating socket!");
+	    return;
+	}
+
+	try {
+	    m_white = new HtpController(socket.getInputStream(), 
+					socket.getOutputStream());
+	}
+	catch (IOException e) {
+	    showError("Error creating controller!");
+	    m_white = null;
+	    return;
+	}
+
+	send("name\n");
+	send("version\n");
     }
 
     private void cmdNewGame()
@@ -285,14 +319,63 @@ public final class HexGui
 
     //------------------------------------------------------------
 
+    private void sendCommand(String cmd, Runnable callback)
+    {
+	if (m_white == null) return;
+
+	try {
+	    m_white.sendCommand(cmd, callback);
+	}
+	catch (HtpError e) {
+	    showError("Error sending command!");
+	}
+    }
+
+    private void doPlayCommand(Move move)
+    {
+	// FIXME: add a callback here
+	sendCommand("play " + move.getColor().toString() + 
+		    " " + move.getPoint().toString() + 
+		    "\n", 
+		    null);
+    }
+
+    private void getComputerMove()
+    {
+	Runnable callback = new Runnable() 
+	    { 
+		public void run() { computerMove(); } 
+	    };
+	
+	sendCommand("genmove " + m_tomove.toString() + "\n", callback);
+    }
+
     /** Callback from GuiBoard. 
 	Handle a mouse click.
     */
     public void fieldClicked(HexPoint point)
     {
 	if (m_guiboard.getColor(point) == HexColor.EMPTY) {
+	    humanMove(new Move(point, m_tomove));
+	}
+    }
+
+    public void computerMove()
+    {
+	String str = m_white.getResponse();
+	HexPoint point = HexPoint.get(str.trim());
+	if (point == null) {
+	    System.out.println("Invalid move!!");
+	} else {
 	    play(new Move(point, m_tomove));
 	}
+    }
+
+    public void humanMove(Move move)
+    {
+	doPlayCommand(move);
+	play(move);
+	getComputerMove();
     }
 
     private void play(Move move)
@@ -426,6 +509,16 @@ public final class HexGui
 	return sgf;
     }
 
+    private void send(String cmd)
+    {
+	try {
+	    m_white.sendCommand(cmd, null);
+	}
+	catch (HtpError e) {
+	    showError(e.getMessage());
+	}
+    }
+
     /** Show a simple error message dialog. */
     private void showError(String msg)
     {
@@ -460,7 +553,6 @@ public final class HexGui
 	return null;
     }
 
-
     private GuiBoard m_guiboard;
     private GuiToolBar m_toolbar;
     private GuiMenuBar m_menubar;
@@ -470,8 +562,10 @@ public final class HexGui
     private GameInfo m_gameinfo;
     private HexColor m_tomove;
     private boolean m_gameChanged;
-    private File m_file;
 
+    private HtpController m_white;
+
+    private File m_file;
 }
 
 //----------------------------------------------------------------------------

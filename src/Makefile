@@ -43,6 +43,7 @@ compile:
 	$(JAVAC) hexgui/hex/*.java
 	$(JAVAC) hexgui/game/*.java
 	$(JAVAC) hexgui/sgf/*.java
+	$(JAVAC) hexgui/htp/*.java
 	$(JAVAC) hexgui/gui/*.java
 	$(JAVAC) hexgui/Main.java
 
@@ -53,6 +54,7 @@ clean:
 	$(RM) hexgui/hex/*.class
 	$(RM) hexgui/game/*.class
 	$(RM) hexgui/sgf/*.class
+	$(RM) hexgui/htp/*.class
 	$(RM) hexgui/gui/*.class
 	$(RM) hexgui/*.class
 
