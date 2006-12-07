@@ -32,10 +32,14 @@ public class HtpServer
 						socket.getOutputStream()));
  	Thread there = new Thread(new StreamCopy(socket.getInputStream(), 
  						 proc.getOutputStream()));
+	Thread fuck = new Thread(new StreamCopy(proc.getErrorStream(),
+						System.out));
+	fuck.start();
  	there.start();
  	here.start();
  	there.join();
  	here.join();
+	fuck.join();
 	server.close();
     }
 

@@ -338,6 +338,7 @@ public final class HexGui
 		    " " + move.getPoint().toString() + 
 		    "\n", 
 		    null);
+	sendCommand("showboard\n", null);
     }
 
     private void getComputerMove()
@@ -348,6 +349,7 @@ public final class HexGui
 	    };
 	
 	sendCommand("genmove " + m_tomove.toString() + "\n", callback);
+	sendCommand("showboard\n", null);
     }
 
     /** Callback from GuiBoard. 
