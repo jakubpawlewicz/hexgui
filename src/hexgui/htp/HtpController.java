@@ -35,6 +35,7 @@ public class HtpController
 
 	System.out.println("controller: sending '" + cmd.trim() + "'");
 	m_out.print(cmd);
+	m_out.flush();
         handleResponse(callback);
 
 	if (callback != null) {

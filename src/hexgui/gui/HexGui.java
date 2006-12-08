@@ -11,6 +11,7 @@ import hexgui.sgf.SgfWriter;
 import hexgui.sgf.SgfReader;
 import hexgui.htp.HtpController;
 import hexgui.htp.HtpError;
+import hexgui.htp.StreamCopy;
 import hexgui.version.Version;
 
 import java.io.*;
@@ -185,25 +186,29 @@ public final class HexGui
 	    return;
 
 	Runtime runtime = Runtime.getRuntime();
-	String cmd = "java hexgui/htp/HtpServer " + prog;
+	String cmd = prog;
 	System.out.println("Executing '" + cmd + "'...");
 	try {
 	    m_white_process = runtime.exec(cmd);
-	    Thread.sleep(1000);
+	    //Thread.sleep(1000);
 	}
 	catch (Throwable e) {
 	    showError("Error starting program: '" + e.getMessage() + "'");
 	    return;
 	}
+    
+	Process proc = m_white_process;
 
-	// DEBUGGING STUFF
-//  	Thread stdout = new Thread(new StreamCopy(proc.getInputStream(), 
-//  						  System.out));
-//  	Thread stderr = new Thread(new StreamCopy(proc.getErrorStream(), 
-//  						  System.out));
-	// DEBUGGING STUFF	
-
-	connect("localhost", 20000);
+	///////////////// ALSO IN connect() //////////////////////
+	System.out.print("Starting controller...");
+	System.out.flush();
+	m_white = new HtpController(proc.getInputStream(), 
+				    proc.getOutputStream());
+	System.out.println("success.");
+	htpSendNameCommand();
+	htpSendVersionCommand();
+        cmdNewGame();
+	///////////////// ALSO IN connect() //////////////////////
     }
 
     private void cmdNewGame()
@@ -347,7 +352,7 @@ public final class HexGui
     public void cbName()
     {
 	String str = m_white.getResponse();
-	m_white_name = str;
+	m_white_name = str.trim();
     }
 
     private void htpSendNameCommand()
@@ -363,7 +368,7 @@ public final class HexGui
     public void cbVersion()
     {
 	String str = m_white.getResponse();
-	m_white_version = str;
+	m_white_version = str.trim();
     }
 
     private void htpSendVersionCommand()
