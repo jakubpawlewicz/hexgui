@@ -147,28 +147,24 @@ public final class GuiMenuBar
 	item = new JRadioButtonMenuItem("10 x 10");
 	item.addActionListener(m_listener);
 	item.setActionCommand("newgame");
-	item.setSelected(true);
 	m_bsGroup.add(item);
 	menu.add(item);
 
 	item = new JRadioButtonMenuItem("9 x 9");
 	item.addActionListener(m_listener);
 	item.setActionCommand("newgame");
-	item.setSelected(true);
 	m_bsGroup.add(item);
 	menu.add(item);
 
 	item = new JRadioButtonMenuItem("8 x 8");
 	item.addActionListener(m_listener);
 	item.setActionCommand("newgame");
-	item.setSelected(true);
 	m_bsGroup.add(item);
 	menu.add(item);
 
 	item = new JRadioButtonMenuItem("7 x 7");
 	item.addActionListener(m_listener);
 	item.setActionCommand("newgame");
-	item.setSelected(true);
 	m_bsGroup.add(item);
 	menu.add(item);
 
@@ -273,13 +269,13 @@ public final class GuiMenuBar
 	item = new JRadioButtonMenuItem("Black on top");
 	item.addActionListener(m_listener);
 	item.setActionCommand("gui_board_orientation");
-	item.setSelected(true);
 	m_orGroup.add(item);
 	menu.add(item);
 
 	item = new JRadioButtonMenuItem("White on top");
 	item.addActionListener(m_listener);
 	item.setActionCommand("gui_board_orientation");
+	item.setSelected(true);
 	m_orGroup.add(item);
 	menu.add(item);
 

@@ -32,7 +32,7 @@ public final class GuiBoard
     private static final int DEFAULT_PREFERRED_WIDTH = 800;
     private static final int DEFAULT_PREFERRED_HEIGHT = 600;
 
-    private static final boolean DEFAULT_FLIPPED = false;
+    private static final boolean DEFAULT_FLIPPED = true;
 
 
     /** Constructor. */

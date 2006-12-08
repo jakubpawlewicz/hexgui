@@ -118,12 +118,14 @@ public final class HexGui
 	    if (m_current.getNext() != null) {
 		HexPoint point = m_current.getMove().getPoint();
 		m_guiboard.setColor(point, HexColor.EMPTY);
+		htpSendUndoCommand();
 
 		m_current = m_current.getNext();
 
 		HexColor color = m_current.getMove().getColor();
 		point = m_current.getMove().getPoint();
 		m_guiboard.setColor(point, color);
+		htpSendPlayCommand(m_current.getMove());
 		m_tomove = color.otherColor();
 		
 		m_guiboard.repaint();
@@ -133,12 +135,14 @@ public final class HexGui
 	    if (m_current.getPrev() != null) {
 		HexPoint point = m_current.getMove().getPoint();
 		m_guiboard.setColor(point, HexColor.EMPTY);
+		htpSendUndoCommand();
 
 		m_current = m_current.getPrev();
 
 		HexColor color = m_current.getMove().getColor();
 		point = m_current.getMove().getPoint();
 		m_guiboard.setColor(point, color);
+		htpSendPlayCommand(m_current.getMove());
 		m_tomove = color.otherColor();
 
 		m_guiboard.repaint();
@@ -198,6 +202,10 @@ public final class HexGui
 	}
     
 	Process proc = m_white_process;
+
+	Thread blah = new Thread(new StreamCopy(proc.getErrorStream(),
+						System.out));
+	blah.start();
 
 	///////////////// ALSO IN connect() //////////////////////
 	System.out.print("Starting controller...");
@@ -391,6 +399,12 @@ public final class HexGui
     }
 
     // FIXME: add a callback?
+    private void htpSendUndoCommand()
+    {
+	sendCommand("undo\n", null);
+    }
+
+    // FIXME: add a callback?
     private void htpSendBoardsizeCommand()
     {
         Dimension size = m_guiboard.getBoardSize();
@@ -460,6 +474,8 @@ public final class HexGui
 
 	    Move move = child.getMove();
 	    m_guiboard.setColor(move.getPoint(), move.getColor());
+	    htpSendPlayCommand(move);
+
 	    m_current = child;
 	    m_tomove = move.getColor().otherColor();
 	}
@@ -474,6 +490,7 @@ public final class HexGui
 
 	    Move move = m_current.getMove();
 	    m_guiboard.setColor(move.getPoint(), HexColor.EMPTY);
+	    htpSendUndoCommand();
 
 	    m_current = m_current.getParent();
 	}
