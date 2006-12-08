@@ -194,6 +194,8 @@ public final class HexGui
 
 	send("name\n");
 	send("version\n");
+
+        cmdNewGame();
     }
 
     private void cmdNewGame()
@@ -235,6 +237,7 @@ public final class HexGui
 	    m_guiboard.initSize(dim.width, dim.height);
 	    m_guiboard.repaint();
 	    m_toolbar.updateButtonStates(m_current);
+            htpDoBoardsizeCommand();
 	}
     }
 
@@ -327,11 +330,11 @@ public final class HexGui
 	    m_white.sendCommand(cmd, callback);
 	}
 	catch (HtpError e) {
-	    showError("Error sending command!");
+            showError(e.getMessage());
 	}
     }
 
-    private void doPlayCommand(Move move)
+    private void htpDoPlayCommand(Move move)
     {
 	// FIXME: add a callback here
 	sendCommand("play " + move.getColor().toString() + 
@@ -339,6 +342,14 @@ public final class HexGui
 		    "\n", 
 		    null);
 	sendCommand("showboard\n", null);
+    }
+
+    private void htpDoBoardsizeCommand()
+    {
+        Dimension size = m_guiboard.getBoardSize();
+        sendCommand("boardsize " + size.width + " " + size.height + "\n",
+                    null);
+        sendCommand("showboard\n", null);
     }
 
     private void getComputerMove()
@@ -375,8 +386,8 @@ public final class HexGui
 
     public void humanMove(Move move)
     {
-	doPlayCommand(move);
 	play(move);
+	htpDoPlayCommand(move);
 	getComputerMove();
     }
 

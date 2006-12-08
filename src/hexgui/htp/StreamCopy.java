@@ -21,12 +21,12 @@ public class StreamCopy
 
     public void run()
     {
-	System.out.println(this.toString() + ": run()");
+            //System.out.println(this.toString() + ": run()");
 
 	try {
 	    byte buffer[] = new byte[1024];
 	    while (true) {
-		System.out.println(this.toString() + ": blocking...");
+                    //System.out.println(this.toString() + ": blocking...");
 		int n = m_in.read(buffer);
 		if (n < 0) {
 		    m_out.close();
@@ -37,8 +37,8 @@ public class StreamCopy
 		    m_out.write(buffer, 0, n);
 		    m_out.flush();
 		    String str = new String(buffer, 0, n);
-		    System.out.println(this.toString() + " read/wrote: '" 
-				       + str.trim() + "'");
+		    //System.out.println(this.toString() + " read/wrote: '" 
+                    //		       + str.trim() + "'");
 		}
 	    }
 	} 

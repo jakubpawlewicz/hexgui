@@ -69,7 +69,7 @@ public class HtpController
 	} else {
 	    m_response = response;
 	    m_success = false;
-	    throw new HtpError("Invalid HTP response:\n" + response);
+	    throw new HtpError("Invalid HTP response:'" + response + "'.");
 	}
     }
 
