@@ -38,7 +38,7 @@ public class HtpController
         handleResponse(callback);
 
 	if (callback != null) {
-	    System.out.println("controller: running callback!");
+	    System.out.println("controller: running callback.");
 	    callback.run();
 	}
     }
@@ -58,19 +58,21 @@ public class HtpController
 	    throw new HtpError("IOException waiting for response!");
 	}
 
-	System.out.println("controller: response: '" + response.trim() + "'");
-
-	if (response.charAt(0) == '=') {
+	if (response.substring(0,2).equals("= ")) {
 	    m_success = true;
-	    m_response = response.substring(1);
-	} else if (response.charAt(0) == '?') {
+	    m_response = response.substring(2);
+	    System.out.print("controller: success: "); 
+	} else if (response.substring(0,2).equals("? ")) {
 	    m_success = false;
-	    m_response = response.substring(1);
+	    m_response = response.substring(2);
+	    System.out.print("controller: error: "); 
 	} else {
 	    m_response = response;
 	    m_success = false;
+	    System.out.print("controller: invalid: "); 
 	    throw new HtpError("Invalid HTP response:'" + response + "'.");
 	}
+	System.out.println("'" + m_response.trim() + "'");
     }
 
     private String waitResponse() throws IOException
@@ -83,7 +85,6 @@ public class HtpController
 	    String str = new String(buffer, 0, n);
 	    //System.out.println("controller: read '" + str + "', length = " + 
 	    //		       str.length());
-	    
 	    if (n == -1){
 		m_connected = false;
 		break;
