@@ -62,9 +62,14 @@ public final class GuiMenuBar
  	menu.add(item);
 
  	menu.addSeparator();
-	item = new JMenuItem("Attach Program...");
+	item = new JMenuItem("Connect to Remote Program...");
 	item.addActionListener(m_listener);
-	item.setActionCommand("attach-program");
+	item.setActionCommand("connect-program");
+ 	menu.add(item);
+
+	item = new JMenuItem("Connect to Local Program...");
+	item.addActionListener(m_listener);
+	item.setActionCommand("connect-local-program");
  	menu.add(item);
 
  	menu.addSeparator();

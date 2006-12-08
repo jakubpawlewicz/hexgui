@@ -72,8 +72,10 @@ public final class HexGui
 	//
 	if (cmd.equals("shutdown"))
 	    cmdShutdown();
-	else if (cmd.equals("attach-program"))
-	    cmdAttachProgram();
+	else if (cmd.equals("connect-program"))
+	    cmdConnectProgram();
+	else if (cmd.equals("connect-local-program"))
+	    cmdConnectLocalProgram();
 	//
 	// file/help commands
 	//
@@ -159,43 +161,49 @@ public final class HexGui
 	    return;
 
 	System.out.println("Shutting down...");
+
+	if (m_white_process != null) {
+	    System.out.println("Stopping [" + m_white_name + " " + 
+			       m_white_version + "] process...");
+	    m_white_process.destroy();
+	}
+
 	System.exit(0);
     }
 
-    private void cmdAttachProgram()
+    private void cmdConnectProgram()
     {
-	Runtime runtime = Runtime.getRuntime();
 	String hostname = "localhost";
 	int port = 20000;
-	HexColor color = HexColor.WHITE;
+	connect(hostname, port);
+    }
 
-	Socket socket;
+    private void cmdConnectLocalProgram()
+    {
+	String prog = LocalProgramDialog.show(this);
+	if (prog == null) // user aborted
+	    return;
+
+	Runtime runtime = Runtime.getRuntime();
+	String cmd = "java hexgui/htp/HtpServer " + prog;
+	System.out.println("Executing '" + cmd + "'...");
 	try {
-	    socket = new Socket(hostname, port);
+	    m_white_process = runtime.exec(cmd);
+	    Thread.sleep(1000);
 	}
-	catch (UnknownHostException e) {
-	    showError("Unknown host");
-	    return;
-	}
-	catch (IOException e) {
-	    showError("Error creating socket!");
+	catch (Throwable e) {
+	    showError("Error starting program: '" + e.getMessage() + "'");
 	    return;
 	}
 
-	try {
-	    m_white = new HtpController(socket.getInputStream(), 
-					socket.getOutputStream());
-	}
-	catch (IOException e) {
-	    showError("Error creating controller!");
-	    m_white = null;
-	    return;
-	}
+	// DEBUGGING STUFF
+//  	Thread stdout = new Thread(new StreamCopy(proc.getInputStream(), 
+//  						  System.out));
+//  	Thread stderr = new Thread(new StreamCopy(proc.getErrorStream(), 
+//  						  System.out));
+	// DEBUGGING STUFF	
 
-	send("name\n");
-	send("version\n");
-
-        cmdNewGame();
+	connect("localhost", 20000);
     }
 
     private void cmdNewGame()
@@ -237,7 +245,7 @@ public final class HexGui
 	    m_guiboard.initSize(dim.width, dim.height);
 	    m_guiboard.repaint();
 	    m_toolbar.updateButtonStates(m_current);
-            htpDoBoardsizeCommand();
+            htpSendBoardsizeCommand();
 	}
     }
 
@@ -324,7 +332,8 @@ public final class HexGui
 
     private void sendCommand(String cmd, Runnable callback)
     {
-	if (m_white == null) return;
+	if (m_white == null) 
+	    return;
 
 	try {
 	    m_white.sendCommand(cmd, callback);
@@ -334,9 +343,41 @@ public final class HexGui
 	}
     }
 
-    private void htpDoPlayCommand(Move move)
+    // FIXME: handle errors!
+    public void cbName()
     {
-	// FIXME: add a callback here
+	String str = m_white.getResponse();
+	m_white_name = str;
+    }
+
+    private void htpSendNameCommand()
+    {
+	Runnable callback = new Runnable() 
+	    { 
+		public void run() { cbName(); } 
+	    };
+	sendCommand("name\n", callback);
+    }
+
+    // FIXME: handle errors!
+    public void cbVersion()
+    {
+	String str = m_white.getResponse();
+	m_white_version = str;
+    }
+
+    private void htpSendVersionCommand()
+    {
+	Runnable callback = new Runnable()
+	    {
+		public void run() { cbVersion(); }
+	    };
+	sendCommand("version\n", callback);
+    }
+
+    // FIXME: add a callback?
+    private void htpSendPlayCommand(Move move)
+    {
 	sendCommand("play " + move.getColor().toString() + 
 		    " " + move.getPoint().toString() + 
 		    "\n", 
@@ -344,7 +385,8 @@ public final class HexGui
 	sendCommand("showboard\n", null);
     }
 
-    private void htpDoBoardsizeCommand()
+    // FIXME: add a callback?
+    private void htpSendBoardsizeCommand()
     {
         Dimension size = m_guiboard.getBoardSize();
         sendCommand("boardsize " + size.width + " " + size.height + "\n",
@@ -352,13 +394,23 @@ public final class HexGui
         sendCommand("showboard\n", null);
     }
 
+    public void cbComputerMove()
+    {
+	String str = m_white.getResponse();
+	HexPoint point = HexPoint.get(str.trim());
+	if (point == null) {
+	    System.out.println("Invalid move!!");
+	} else {
+	    play(new Move(point, m_tomove));
+	}
+    }
+
     private void getComputerMove()
     {
 	Runnable callback = new Runnable() 
 	    { 
-		public void run() { computerMove(); } 
+		public void run() { cbComputerMove(); } 
 	    };
-	
 	sendCommand("genmove " + m_tomove.toString() + "\n", callback);
 	sendCommand("showboard\n", null);
     }
@@ -373,21 +425,10 @@ public final class HexGui
 	}
     }
 
-    public void computerMove()
-    {
-	String str = m_white.getResponse();
-	HexPoint point = HexPoint.get(str.trim());
-	if (point == null) {
-	    System.out.println("Invalid move!!");
-	} else {
-	    play(new Move(point, m_tomove));
-	}
-    }
-
     public void humanMove(Move move)
     {
 	play(move);
-	htpDoPlayCommand(move);
+	htpSendPlayCommand(move);
 	getComputerMove();
     }
 
@@ -455,7 +496,10 @@ public final class HexGui
 	String filename = "untitled";
 	if (m_file != null) filename = m_file.getName();
 	if (gameChanged()) filename = filename + "*";
-	setTitle("HexGui - " + filename);
+	String name = "HexGui " + Version.id;
+	if (m_white != null) 
+	    name += " - [" + m_white_name + " " + m_white_version + "]";
+	setTitle(name + " - " + filename);
     }
 
     /** Returns false if action was aborted. */
@@ -522,6 +566,44 @@ public final class HexGui
 	return sgf;
     }
 
+    private void connect(String hostname, int port)
+    {
+	System.out.print("Connecting to HTP program at [" + hostname + 
+			 "] on port " + port + "...");
+	System.out.flush();
+
+	Socket socket;
+	try {
+	    socket = new Socket(hostname, port);
+	}
+	catch (UnknownHostException e) {
+	    showError("Unknown host: '" + e.getMessage() + "'");
+	    return;
+	}
+	catch (IOException e) {
+	    showError("Error creating socket: '" + e.getMessage() + "'");
+	    return;
+	}
+
+	System.out.println("connected.");
+	System.out.print("Starting controller...");
+	System.out.flush();
+	try {
+	    m_white = new HtpController(socket.getInputStream(), 
+					socket.getOutputStream());
+	}
+	catch (IOException e) {
+	    showError("Error creating controller!");
+	    m_white = null;
+	    return;
+	}
+
+	System.out.println("success.");
+	htpSendNameCommand();
+	htpSendVersionCommand();
+        cmdNewGame();
+    }
+
     private void send(String cmd)
     {
 	try {
@@ -577,6 +659,9 @@ public final class HexGui
     private boolean m_gameChanged;
 
     private HtpController m_white;
+    private String m_white_name;
+    private String m_white_version;
+    private Process m_white_process;
 
     private File m_file;
 }
