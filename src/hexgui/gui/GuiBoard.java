@@ -187,13 +187,23 @@ public final class GuiBoard
 	return null;
     }
 
-    /** Sets the field where the last stone was played. */
+    /** Marks the given point to show which move was played last, or
+        clears the mark if <code>point</code> is <code>null</code>. */
     public void setLastPlayed(HexPoint point)
     {
 	if (m_last_played != null) 
 	    m_last_played.clearAttributes(GuiField.FIELD_LAST_PLAYED);
-	m_last_played = getField(point);
-	m_last_played.setAttributes(GuiField.FIELD_LAST_PLAYED);
+	if (point != null) {
+	    m_last_played = getField(point);
+	    m_last_played.setAttributes(GuiField.FIELD_LAST_PLAYED);
+	} else {
+	    m_last_played = null;
+	}
+    }
+
+    public void paintImmediately()
+    {
+	super.paintImmediately(0, 0, getWidth(),getHeight());
     }
 
     //------------------------------------------------------------

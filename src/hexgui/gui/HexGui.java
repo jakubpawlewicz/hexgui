@@ -114,41 +114,11 @@ public final class HexGui
 	    forward(10);
 	else if (cmd.equals("game_end"))
 	    forward(1000);
-	else if (cmd.equals("game_up")) {
-	    if (m_current.getNext() != null) {
-		HexPoint point = m_current.getMove().getPoint();
-		m_guiboard.setColor(point, HexColor.EMPTY);
-		htpSendUndoCommand();
-
-		m_current = m_current.getNext();
-
-		HexColor color = m_current.getMove().getColor();
-		point = m_current.getMove().getPoint();
-		m_guiboard.setColor(point, color);
-		htpSendPlayCommand(m_current.getMove());
-		m_tomove = color.otherColor();
-		
-		m_guiboard.repaint();
-		m_toolbar.updateButtonStates(m_current);
-	    }
-	} else if (cmd.equals("game_down")) {
-	    if (m_current.getPrev() != null) {
-		HexPoint point = m_current.getMove().getPoint();
-		m_guiboard.setColor(point, HexColor.EMPTY);
-		htpSendUndoCommand();
-
-		m_current = m_current.getPrev();
-
-		HexColor color = m_current.getMove().getColor();
-		point = m_current.getMove().getPoint();
-		m_guiboard.setColor(point, color);
-		htpSendPlayCommand(m_current.getMove());
-		m_tomove = color.otherColor();
-
-		m_guiboard.repaint();
-		m_toolbar.updateButtonStates(m_current);
-	    }
-	} else if (cmd.equals("stop")) {
+	else if (cmd.equals("game_up"))
+	    up();
+	else if (cmd.equals("game_down")) 
+	    down();
+	else if (cmd.equals("stop")) {
 
 	}
 	//
@@ -462,7 +432,9 @@ public final class HexGui
 	setGameChanged(true);
 	setFrameTitle();
 
-	m_guiboard.repaint();
+	//m_guiboard.repaint();
+	setLastPlayed();
+	m_guiboard.paintImmediately();
 	m_toolbar.updateButtonStates(m_current);	
     }
 
@@ -479,6 +451,7 @@ public final class HexGui
 	    m_current = child;
 	    m_tomove = move.getColor().otherColor();
 	}
+	setLastPlayed();
 	m_guiboard.repaint();
 	m_toolbar.updateButtonStates(m_current);
     }
@@ -494,6 +467,7 @@ public final class HexGui
 
 	    m_current = m_current.getParent();
 	}
+	setLastPlayed();
 	m_guiboard.repaint();
 	m_toolbar.updateButtonStates(m_current);
 	    
@@ -502,6 +476,56 @@ public final class HexGui
 	else
 	    m_tomove = m_current.getMove().getColor().otherColor();
     }
+
+    private void up()
+    {
+	if (m_current.getNext() != null) {
+	    HexPoint point = m_current.getMove().getPoint();
+	    m_guiboard.setColor(point, HexColor.EMPTY);
+	    htpSendUndoCommand();
+	    
+	    m_current = m_current.getNext();
+	    
+	    HexColor color = m_current.getMove().getColor();
+	    point = m_current.getMove().getPoint();
+	    m_guiboard.setColor(point, color);
+	    htpSendPlayCommand(m_current.getMove());
+	    m_tomove = color.otherColor();
+	    
+	    setLastPlayed();
+	    m_guiboard.repaint();
+	    m_toolbar.updateButtonStates(m_current);
+	}
+    }
+
+    private void down()
+    {
+	if (m_current.getPrev() != null) {
+	    HexPoint point = m_current.getMove().getPoint();
+	    m_guiboard.setColor(point, HexColor.EMPTY);
+	    htpSendUndoCommand();
+	    
+	    m_current = m_current.getPrev();
+	    
+	    HexColor color = m_current.getMove().getColor();
+	    point = m_current.getMove().getPoint();
+	    m_guiboard.setColor(point, color);
+	    htpSendPlayCommand(m_current.getMove());
+	    m_tomove = color.otherColor();
+	    
+	    setLastPlayed();
+	    m_guiboard.repaint();
+	    m_toolbar.updateButtonStates(m_current);
+	}
+    }
+
+    private void setLastPlayed()
+    {
+	if (m_current != m_root)
+	    m_guiboard.setLastPlayed(m_current.getMove().getPoint());
+	else 
+	    m_guiboard.setLastPlayed(null);
+    }	
 
     private void setGameChanged(boolean changed) 
     {
