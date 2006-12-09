@@ -194,7 +194,6 @@ public final class HexGui
 	System.out.println("Executing '" + cmd + "'...");
 	try {
 	    m_white_process = runtime.exec(cmd);
-	    //Thread.sleep(1000);
 	}
 	catch (Throwable e) {
 	    showError("Error starting program: '" + e.getMessage() + "'");
@@ -458,6 +457,7 @@ public final class HexGui
 	m_current = node;
 
 	m_guiboard.setColor(move.getPoint(), m_tomove);
+	m_guiboard.setLastPlayed(move.getPoint());
 	m_tomove = m_tomove.otherColor();
 	setGameChanged(true);
 	setFrameTitle();

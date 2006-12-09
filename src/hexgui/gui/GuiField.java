@@ -16,8 +16,8 @@ import hexgui.util.*;
 
 public class GuiField
 {
-
     public static final int DRAW_CELL_OUTLINE = 1;
+    public static final int FIELD_LAST_PLAYED = 2;
 
     private static final Color COLOR_STONE_BLACK = Color.decode("#030303");
     private static final Color COLOR_STONE_BLACK_BRIGHT = Color.decode("#666666");
@@ -48,6 +48,7 @@ public class GuiField
     }
 
     public void clearAttributes() { m_attributes = 0; }
+    public void clearAttributes(int f) { m_attributes &= ~f; };
     public void setAttributes(int f)   { m_attributes |= f; }
     public int getAttributes() { return m_attributes; }
  
@@ -81,7 +82,7 @@ public class GuiField
         return paint;
     }
 
-    void draw(Graphics g, int x, int y, int w, int h)
+    private void draw(Graphics g, int x, int y, int w, int h)
     {
 	if (!g.hitClip(x, y, w, h))
             return;
@@ -105,9 +106,12 @@ public class GuiField
 	else if (m_color == HexColor.BLACK)
 	    drawStone(COLOR_STONE_BLACK, COLOR_STONE_BLACK_BRIGHT);
 
+	if ((m_attributes & FIELD_LAST_PLAYED) != 0) {
+	    drawLastPlayed();
+	}
     }
     
-    void drawStone(Color normal, Color bright)
+    private void drawStone(Color normal, Color bright)
     {
 	if (m_graphics2D != null) {
 	    RadialGradientPaint paint = getPaint(m_width, m_height, 
@@ -122,6 +126,12 @@ public class GuiField
 			    size*2, size*2);
 
 	m_graphics.setPaintMode();
+    }
+
+    private void drawLastPlayed()
+    {
+	m_graphics.setColor(Color.gray);
+	m_graphics.fillOval(m_width/2 - 2, m_height/2 - 2, 4, 4);
     }
 
     private HexPoint m_point;

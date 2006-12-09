@@ -187,6 +187,15 @@ public final class GuiBoard
 	return null;
     }
 
+    /** Sets the field where the last stone was played. */
+    public void setLastPlayed(HexPoint point)
+    {
+	if (m_last_played != null) 
+	    m_last_played.clearAttributes(GuiField.FIELD_LAST_PLAYED);
+	m_last_played = getField(point);
+	m_last_played.setAttributes(GuiField.FIELD_LAST_PLAYED);
+    }
+
     //------------------------------------------------------------
 
     private GuiField[] flipFields(GuiField field[])
@@ -258,6 +267,8 @@ public final class GuiBoard
 
     private Image m_image;
     private GuiField m_field[];
+
+    private GuiField m_last_played;
 
     private BoardDrawerBase m_drawer;
     private BoardPanel m_boardPanel;
