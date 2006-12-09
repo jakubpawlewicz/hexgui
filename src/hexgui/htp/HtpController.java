@@ -39,7 +39,7 @@ public class HtpController
         handleResponse(callback);
 
 	if (callback != null) {
-	    System.out.println("controller: running callback.");
+	    //System.out.println("controller: running callback.");
 	    callback.run();
 	}
     }
@@ -59,10 +59,11 @@ public class HtpController
 	    throw new HtpError("IOException waiting for response!");
 	}
 
+	//System.out.println("got: '" + response + "'");
 	if (response.substring(0,2).equals("= ")) {
 	    m_success = true;
 	    m_response = response.substring(2);
-	    System.out.print("controller: success: "); 
+	    System.out.print("controller: success: ");
 	} else if (response.substring(0,2).equals("? ")) {
 	    m_success = false;
 	    m_response = response.substring(2);
@@ -73,39 +74,34 @@ public class HtpController
 	    System.out.print("controller: invalid: "); 
 	    throw new HtpError("Invalid HTP response:'" + response + "'.");
 	}
+	//System.out.println("here");
 	System.out.println("'" + m_response.trim() + "'");
     }
 
     private String waitResponse() throws IOException
     {
 	StringBuilder ret = new StringBuilder();
-	char buffer[] = new char[1024];
 	while (true) {
-	    //System.out.println("controller: blocking on response...");
-	    int n = m_in.read(buffer, 0, 1024);
-	    String str = new String(buffer, 0, n);
-	    //System.out.println("controller: read '" + str + "', length = " + 
-	    //		       str.length());
-	    if (n == -1){
+	    //System.out.println("blocking on response");
+	    String line = m_in.readLine();
+	    //System.out.println("readline: '" + line + "'");
+	    if (line == null) {
+		//System.out.println("controller: Disconnected!");
 		m_connected = false;
 		break;
-	    } else if (n > 0) {
-		ret.append(cleanInput(new String(buffer,0,n)));
-		String sofar = ret.toString();
-		int len = sofar.length();
-		//System.out.println("controller: sofar = '" + sofar + "'");
-		if (len > 2 && 
-		    sofar.charAt(len-1) == '\n' && 
-		    sofar.charAt(len-2) == '\n') {
-		    break;
-		}
 	    }
+	    String clean = cleanInput(line);
+	    ret.append(clean);
+	    ret.append('\n');
+
+	    if (clean.equals(""))
+		break;
 	}
 	//System.out.println("controller: done waiting on response.");
 	return ret.toString();
     }
 
-    /** Cleans the input.  Removes all occurances of and '\r'. 
+    /** Cleans the input.  Removes all occurances of '\r'. 
 	Converts all '\t' to ' '. 
     */
     private String cleanInput(String in)

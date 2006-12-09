@@ -82,7 +82,7 @@ public class GuiField
         return paint;
     }
 
-    private void draw(Graphics g, int x, int y, int w, int h)
+    public void draw(Graphics g, int x, int y, int w, int h)
     {
 	if (!g.hitClip(x, y, w, h))
             return;

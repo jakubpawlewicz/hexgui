@@ -14,6 +14,10 @@ import java.awt.event.*;
 /** Menu bar. */
 public final class GuiMenuBar
 {
+    //
+    // TODO: coordinate all default options with preferences
+    //
+
     public GuiMenuBar(ActionListener listener)
     {
 	m_menuBar = new JMenuBar();
@@ -24,6 +28,8 @@ public final class GuiMenuBar
         m_menuBar.add(createEditMenu());
 	m_menuBar.add(createViewMenu());
 	m_menuBar.add(createHelpMenu());
+
+	setProgramConnected(false);
     }
 
     public JMenuBar getJMenuBar()
@@ -31,9 +37,12 @@ public final class GuiMenuBar
 	return m_menuBar;
     }
 
-    //
-    // TODO: coordinate all default options with preferences
-    //
+    public void setProgramConnected(boolean f)
+    {
+	m_connect_remote.setEnabled(!f);
+	m_connect_local.setEnabled(!f);
+	m_disconnect.setEnabled(f);
+    }
 
     //----------------------------------------------------------------------
 
@@ -62,14 +71,23 @@ public final class GuiMenuBar
  	menu.add(item);
 
  	menu.addSeparator();
-	item = new JMenuItem("Connect to Remote Program...");
+	item = new JMenuItem("Connect Remote Program...");
 	item.addActionListener(m_listener);
 	item.setActionCommand("connect-program");
+	m_connect_remote = item;
  	menu.add(item);
 
-	item = new JMenuItem("Connect to Local Program...");
+
+	item = new JMenuItem("Connect Local Program...");
 	item.addActionListener(m_listener);
 	item.setActionCommand("connect-local-program");
+	m_connect_local = item;
+ 	menu.add(item);
+
+	item = new JMenuItem("Disconnect Program");
+	item.addActionListener(m_listener);
+	item.setActionCommand("disconnect-program");
+	m_disconnect = item;
  	menu.add(item);
 
  	menu.addSeparator();
@@ -313,6 +331,8 @@ public final class GuiMenuBar
     private JMenuBar m_menuBar;
 
     private JCheckBoxMenuItem m_toolbar_visible;
+
+    private JMenuItem m_connect_local, m_connect_remote, m_disconnect;
 
     private ButtonGroup m_bsGroup;   // board sizes
     private ButtonGroup m_btGroup;   // board view types (diamond, flat, etc)

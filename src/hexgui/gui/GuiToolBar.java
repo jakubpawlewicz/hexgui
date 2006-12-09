@@ -42,6 +42,9 @@ public final class GuiToolBar
     {
 	m_stop.setEnabled(false);
     }
+
+    public void enablePlayButton() { m_play.setEnabled(true); }
+    public void disablePlayButton() { m_play.setEnabled(false); }
     
     public void updateButtonStates(Node node)
     {
@@ -131,6 +134,13 @@ public final class GuiToolBar
 
 	m_toolBar.addSeparator();
 
+	m_play = makeButton("hexgui/images/play.png",
+			    "computer-move",
+			    "Get computer move",
+			    "Play");
+	m_toolBar.add(m_play);
+	disablePlayButton();
+
 	m_stop = makeButton("hexgui/images/stop.png",
 			    "stop",
 			    "Stop Action",
@@ -165,9 +175,8 @@ public final class GuiToolBar
 
     private JButton m_beginning, m_back10, m_back;
     private JButton m_forward, m_forward10, m_end;
-    private JButton m_up;
-    private JButton m_down;
-    private JButton m_stop;
+    private JButton m_up, m_down;
+    private JButton m_play, m_stop;
 }
 
 //----------------------------------------------------------------------------
