@@ -189,7 +189,10 @@ public final class HexGui
 
     private void cmdConnectLocalProgram()
     {
-	String prog = LocalProgramDialog.show(this);
+        //String prog = LocalProgramDialog.show(this);
+        String prog = JOptionPane.showInputDialog(this, 
+                                                  "program to run",
+                                                   "./htphex");
 	if (prog == null) // user aborted
 	    return;
 
@@ -278,7 +281,7 @@ public final class HexGui
 	    m_guiboard.initSize(dim.width, dim.height);
 	    m_guiboard.repaint();
 	    m_toolbar.updateButtonStates(m_current);
-            htpSendBoardsizeCommand();
+            htpBoardsize();
 	}
     }
 
@@ -370,7 +373,7 @@ public final class HexGui
 	m_white = new HtpController(in, out);
 	System.out.println("success.");
 	htpSendNameCommand();
-	htpSendVersionCommand();
+	htpVersion();
 	m_toolbar.enablePlayButton();
         cmdNewGame();
     }
@@ -417,7 +420,7 @@ public final class HexGui
 	m_white_version = str.trim();
     }
 
-    private void htpSendVersionCommand()
+    private void htpVersion()
     {
 	Runnable callback = new Runnable()
 	    {
@@ -426,8 +429,13 @@ public final class HexGui
 	sendCommand("version\n", callback);
     }
 
+    public void cbEmptyResponse()
+    {
+
+    }
+
     // FIXME: add a callback?
-    private void htpSendPlayCommand(Move move)
+    private void htpPlay(Move move)
     {
 	sendCommand("play " + move.getColor().toString() + 
 		    " " + move.getPoint().toString() + 
@@ -437,13 +445,13 @@ public final class HexGui
     }
 
     // FIXME: add a callback?
-    private void htpSendUndoCommand()
+    private void htpUndo()
     {
 	sendCommand("undo\n", null);
     }
 
     // FIXME: add a callback?
-    private void htpSendBoardsizeCommand()
+    private void htpBoardsize()
     {
         Dimension size = m_guiboard.getBoardSize();
         sendCommand("boardsize " + size.width + " " + size.height + "\n",
@@ -485,8 +493,9 @@ public final class HexGui
     public void humanMove(Move move)
     {
 	play(move);
-	htpSendPlayCommand(move);
-	cmdComputerMove();
+	htpPlay(move);
+        if (!m_guiboard.isBoardFull())
+            cmdComputerMove();
     }
 
     private void play(Move move)
@@ -515,7 +524,7 @@ public final class HexGui
 
 	    Move move = child.getMove();
 	    m_guiboard.setColor(move.getPoint(), move.getColor());
-	    htpSendPlayCommand(move);
+	    htpPlay(move);
 
 	    m_current = child;
 	    m_tomove = move.getColor().otherColor();
@@ -532,7 +541,7 @@ public final class HexGui
 
 	    Move move = m_current.getMove();
 	    m_guiboard.setColor(move.getPoint(), HexColor.EMPTY);
-	    htpSendUndoCommand();
+	    htpUndo();
 
 	    m_current = m_current.getParent();
 	}
@@ -551,14 +560,14 @@ public final class HexGui
 	if (m_current.getNext() != null) {
 	    HexPoint point = m_current.getMove().getPoint();
 	    m_guiboard.setColor(point, HexColor.EMPTY);
-	    htpSendUndoCommand();
+	    htpUndo();
 	    
 	    m_current = m_current.getNext();
 	    
 	    HexColor color = m_current.getMove().getColor();
 	    point = m_current.getMove().getPoint();
 	    m_guiboard.setColor(point, color);
-	    htpSendPlayCommand(m_current.getMove());
+	    htpPlay(m_current.getMove());
 	    m_tomove = color.otherColor();
 	    
 	    setLastPlayed();
@@ -572,14 +581,14 @@ public final class HexGui
 	if (m_current.getPrev() != null) {
 	    HexPoint point = m_current.getMove().getPoint();
 	    m_guiboard.setColor(point, HexColor.EMPTY);
-	    htpSendUndoCommand();
+	    htpUndo();
 	    
 	    m_current = m_current.getPrev();
 	    
 	    HexColor color = m_current.getMove().getColor();
 	    point = m_current.getMove().getPoint();
 	    m_guiboard.setColor(point, color);
-	    htpSendPlayCommand(m_current.getMove());
+	    htpPlay(m_current.getMove());
 	    m_tomove = color.otherColor();
 	    
 	    setLastPlayed();

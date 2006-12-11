@@ -201,6 +201,15 @@ public final class GuiBoard
 	}
     }
 
+    public boolean isBoardFull()
+    {
+        for (int x=0; x<m_field.length; x++) {
+            if (m_field[x].getColor() == HexColor.EMPTY)
+                return false;
+        }
+        return true;
+    }
+
     public void paintImmediately()
     {
 	super.paintImmediately(0, 0, getWidth(),getHeight());

@@ -186,6 +186,12 @@ public final class GuiMenuBar
 	m_bsGroup.add(item);
 	menu.add(item);
 
+	item = new JRadioButtonMenuItem("3 x 3");
+	item.addActionListener(m_listener);
+	item.setActionCommand("newgame");
+	m_bsGroup.add(item);
+	menu.add(item);
+
 	menu.addSeparator();
 
 	item = new JRadioButtonMenuItem("Other...");

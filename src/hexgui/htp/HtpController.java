@@ -44,10 +44,8 @@ public class HtpController
 	}
     }
 
-    public String getResponse()
-    {
-	return m_response;
-    }
+    public boolean wasSuccess() { return m_success; }
+    public String getResponse() { return m_response; }
 
     private void handleResponse(Runnable callback) throws HtpError
     {
