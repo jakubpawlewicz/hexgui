@@ -115,7 +115,6 @@ public class HtpController
 	return out.toString();
     }
 
-
     private boolean m_connected;
     private BufferedReader m_in;
     private PrintStream m_out;   

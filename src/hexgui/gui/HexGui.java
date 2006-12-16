@@ -189,10 +189,7 @@ public final class HexGui
 
     private void cmdConnectLocalProgram()
     {
-        //String prog = LocalProgramDialog.show(this);
-        String prog = JOptionPane.showInputDialog(this, 
-                                                  "program to run",
-                                                   "./htphex");
+        String prog = LocalProgramDialog.show(this);
 	if (prog == null) // user aborted
 	    return;
 
