@@ -222,6 +222,16 @@ public final class GuiMenuBar
 	return m_toolbar_visible.getState();
     }
 
+    public boolean getShellVisible()
+    {
+	return m_shell_visible.getState();
+    }
+
+    public void setShellVisible(boolean f) 
+    {
+	m_shell_visible.setState(f);
+    }
+
     private JMenu createViewMenu()
     {
 	JMenu menu = new JMenu("View");
@@ -233,6 +243,13 @@ public final class GuiMenuBar
 	m_toolbar_visible.addActionListener(m_listener);
 	m_toolbar_visible.setActionCommand("gui_toolbar_visible");
 	menu.add(m_toolbar_visible);
+
+	m_shell_visible = new JCheckBoxMenuItem("Show Shell");
+	// FIXME: coordinate with preferences
+	m_shell_visible.setState(true);  
+	m_shell_visible.addActionListener(m_listener);
+	m_shell_visible.setActionCommand("gui_shell_visible");
+	menu.add(m_shell_visible);
 
 	menu.addSeparator();
 
@@ -337,6 +354,7 @@ public final class GuiMenuBar
     private JMenuBar m_menuBar;
 
     private JCheckBoxMenuItem m_toolbar_visible;
+    private JCheckBoxMenuItem m_shell_visible;
 
     private JMenuItem m_connect_local, m_connect_remote, m_disconnect;
 

@@ -61,7 +61,7 @@ public final class HexGui
     //------------------------------------------------------------
     public void actionPerformed(ActionEvent e) 
     {
-//      System.out.println("-----------------");
+// 	System.out.println("-----------------");
 // 	System.out.println("Received Action Event: ");
 // 	System.out.println(e.getActionCommand());
 // 	System.out.println(e.paramString());
@@ -97,6 +97,8 @@ public final class HexGui
 	//
 	else if (cmd.equals("gui_toolbar_visible"))
 	    cmdGuiToolbarVisible();
+	else if (cmd.equals("gui_shell_visible"))
+	    cmdGuiShellVisible();
 	else if (cmd.equals("gui_board_draw_type"))
 	    cmdGuiBoardDrawType();
 	else if (cmd.equals("gui_board_orientation"))
@@ -184,7 +186,6 @@ public final class HexGui
 	    return;
 	}
 	startController(in, out);
-	m_menubar.setProgramConnected(true);
     }
 
     private void cmdConnectLocalProgram()
@@ -345,6 +346,13 @@ public final class HexGui
 	m_toolbar.setVisible(visible);
     }
 
+    private void cmdGuiShellVisible()
+    {
+	if (m_shell == null) return;
+	boolean visible = m_menubar.getShellVisible();
+	m_shell.setVisible(visible);
+    }
+
     private void cmdGuiBoardDrawType()
     {
 	String type = m_menubar.getCurrentBoardDrawType();
@@ -365,13 +373,25 @@ public final class HexGui
 
     private void startController(InputStream in, OutputStream out)
     {
-	System.out.print("Starting controller...");
-	System.out.flush();
-	m_white = new HtpController(in, out);
-	System.out.println("success.");
-	htpSendNameCommand();
+	m_shell = new HtpShell(this);
+	m_shell.addWindowListener(new WindowAdapter() 
+	    {
+		public void windowClosing(WindowEvent winEvt) {
+		    m_menubar.setShellVisible(false);
+		}
+	    });
+
+	m_white = new HtpController(in, out, m_shell);
+
+	htpName();
 	htpVersion();
+
+	m_shell.setTitle("HexGui: [" + m_white_name + " " + 
+			 m_white_version + "] Shell");
+			 
 	m_toolbar.enablePlayButton();
+	m_menubar.setProgramConnected(true);
+
         cmdNewGame();
     }
 
@@ -401,7 +421,7 @@ public final class HexGui
 	m_white_name = str.trim();
     }
 
-    private void htpSendNameCommand()
+    private void htpName()
     {
 	Runnable callback = new Runnable() 
 	    { 
@@ -728,6 +748,7 @@ public final class HexGui
     private GuiBoard m_guiboard;
     private GuiToolBar m_toolbar;
     private GuiMenuBar m_menubar;
+    private HtpShell m_shell;
 
     private Node m_root;
     private Node m_current;
