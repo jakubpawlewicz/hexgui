@@ -1,10 +1,21 @@
 HexGui TODO
 
-[06/11/26]
+[06/12/08]
 
-+ connect to outside hex-playing program
-  ? use Runtime.exec for this?
-  ? connect over sockets to allow distributed programs?
+* handle 'swap', 'forfeit' and 'resign' moves
+
+* allow computer to play white or black
+
+* program shell
+  * close it properly when program is disconnected/dies/etc
+  * add color
+  * add ability to send commands
+
+* put remote program in its own thread (a total bitch, probably)
+
+* implement htp interrupts
+  + implement 'stop' button
+  + get info while search is on
 
 + 'about' dialog
 
@@ -17,13 +28,8 @@ HexGui TODO
 * support more sgf properties
   * allow game information to be edited
 
-* optimize/fix board drawing
-  + allow single hexes to be redrawn and use this when a move is made
-  * fix doubled up that sometimes appear 
+* allow single hexes to be redrawn and use this when a move is made
 
 * better Makefile
   * compile to a jar
   * use Ant to build?
-
-
-
