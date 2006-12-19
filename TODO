@@ -1,6 +1,6 @@
 HexGui TODO
 
-[06/12/17]
+[06/12/18]
 
 * handle 'swap', 'forfeit' and 'resign' moves
 
@@ -8,8 +8,7 @@ HexGui TODO
 
 * program shell
   * close it properly when program is disconnected/dies/etc
-  * add color
-  * add ability to send commands
+  * select available commands from a list
 
 * put remote program in its own thread (a total bitch, probably)
 
