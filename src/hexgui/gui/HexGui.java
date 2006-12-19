@@ -26,7 +26,7 @@ import java.net.*;
 /** HexGui. */
 public final class HexGui 
     extends JFrame 
-    implements ActionListener, GuiBoard.Listener
+    implements ActionListener, GuiBoard.Listener, HtpShell.Callback
 {
     public HexGui()
     {
@@ -220,7 +220,7 @@ public final class HexGui
 	if (m_white == null) 
 	    return;
 
-	htpSendQuit();
+	htpQuit();
 	try {
 	    if (m_white_process != null) {
 		m_white_process.waitFor();
@@ -373,7 +373,7 @@ public final class HexGui
 
     private void startController(InputStream in, OutputStream out)
     {
-	m_shell = new HtpShell(this);
+	m_shell = new HtpShell(this, this);
 	m_shell.addWindowListener(new WindowAdapter() 
 	    {
 		public void windowClosing(WindowEvent winEvt) {
@@ -395,6 +395,22 @@ public final class HexGui
         cmdNewGame();
     }
 
+    /** HtpShell Callback */
+    public void commandEntered(String cmd)
+    {
+	String c = cmd.trim();
+	if (c.equals("name"))
+	    htpName();
+	else if (c.equals("version"))
+	    htpVersion();
+	else if (c.equals("genmove"))
+	    cmdComputerMove();
+	else if (c.equals("quit"))
+	    htpQuit();
+	else
+	    sendCommand(cmd, null);
+    }
+
     private void sendCommand(String cmd, Runnable callback)
     {
 	if (m_white == null) 
@@ -409,7 +425,7 @@ public final class HexGui
     }
 
     // FIXME: add callback?
-    private void htpSendQuit()
+    private void htpQuit()
     {
 	sendCommand("quit\n", null);
     }

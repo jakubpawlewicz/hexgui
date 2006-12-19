@@ -20,6 +20,7 @@ public class HtpController
     {
 	void sentCommand(String str);
 	void receivedResponse(String str);
+	void receivedError(String str);
     }
 
     /** Constructor */
@@ -67,15 +68,16 @@ public class HtpController
 	}
 
 	//System.out.println("got: '" + response + "'");
-	m_io.receivedResponse(response);
 	if (response.substring(0,2).equals("= ")) {
 	    m_success = true;
 	    m_response = response.substring(2);
 	    System.out.print("controller: success: ");
+	    m_io.receivedResponse(response);
 	} else if (response.substring(0,2).equals("? ")) {
 	    m_success = false;
 	    m_response = response.substring(2);
 	    System.out.print("controller: error: "); 
+	    m_io.receivedError(response);
 	} else {
 	    m_response = response;
 	    m_success = false;
