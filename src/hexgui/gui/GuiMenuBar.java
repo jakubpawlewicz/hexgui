@@ -42,6 +42,7 @@ public final class GuiMenuBar
 	m_connect_remote.setEnabled(!f);
 	m_connect_local.setEnabled(!f);
 	m_disconnect.setEnabled(f);
+	setShellVisible(f);
     }
 
     //----------------------------------------------------------------------

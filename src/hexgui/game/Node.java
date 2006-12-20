@@ -118,6 +118,21 @@ public class Node
     */
     public Node getChild() { return getChild(0); }
 
+    /** Returns the child that contains <code>node</code> in its subtree. */
+    public Node getChildContainingNode(Node node)
+    {
+	for (int i=0; i<numChildren(); i++) {
+	    Node c = getChild(i);
+	    if (c == node) return c;
+	}
+	for (int i=0; i<numChildren(); i++) {
+	    Node c = getChild(i);
+	    if (c.getChildContainingNode(node) != null)
+		return c;
+	}
+	return null;
+    }
+
     //----------------------------------------------------------------------
 
     /** Adds a property to this node. 

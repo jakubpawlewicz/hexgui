@@ -157,8 +157,8 @@ public final class HexGui
 	int port = 20000;
 	String hostname = "localhost";
 
-	System.out.print("Connecting to HTP program at [" + 
-			 hostname + "] on port " + port + "...");
+	System.out.print("Connecting to HTP program at [" + hostname + 
+			 "] on port " + port + "...");
 	System.out.flush();
 
 	try {
@@ -185,7 +185,8 @@ public final class HexGui
 	    m_white = null;
 	    return;
 	}
-	startController(in, out);
+
+	connectProgram(in, out);
     }
 
     private void cmdConnectLocalProgram()
@@ -204,17 +205,47 @@ public final class HexGui
 	    showError("Error starting program: '" + e.getMessage() + "'");
 	    return;
 	}
-    
+
+	///////////////////////////////
+	/// FIXME: DEBUGING!!! REMOVE!
 	Process proc = m_white_process;
 	Thread blah = new Thread(new StreamCopy(proc.getErrorStream(),
 						System.out));
 	blah.start();
+	///////////////////////////////
 
-	startController(proc.getInputStream(), proc.getOutputStream());
-	m_menubar.setProgramConnected(true);
+	connectProgram(proc.getInputStream(), proc.getOutputStream());
     }
 
-    // FIXME: implement this
+    private void connectProgram(InputStream in, OutputStream out)
+    {
+	m_shell = new HtpShell(this, this);
+	m_shell.addWindowListener(new WindowAdapter() 
+	    {
+		public void windowClosing(WindowEvent winEvt) {
+		    m_menubar.setShellVisible(false);
+		}
+	    });
+	m_white = new HtpController(in, out, m_shell);
+
+	htpName();
+	htpVersion();
+
+	m_shell.setTitle("HexGui: [" + m_white_name + " " + 
+			 m_white_version + "] Shell");
+			 
+	m_toolbar.setProgramConnected(true);
+	m_menubar.setProgramConnected(true);
+
+	htpBoardsize();
+
+	Node cur = m_root;
+	while (cur != m_current) {
+	    cur = cur.getChildContainingNode(m_current);
+	    htpPlay(cur.getMove());
+	}
+    }
+
     private void cmdDisconnectProgram()
     {
 	if (m_white == null) 
@@ -231,6 +262,8 @@ public final class HexGui
 		m_white_socket = null;
 	    }
 	    m_white = null;
+	    m_shell.dispose();
+	    m_shell = null;
 	    m_menubar.setProgramConnected(false);
 	}
 	catch (Throwable e) {
@@ -370,30 +403,6 @@ public final class HexGui
     }
 
     //------------------------------------------------------------
-
-    private void startController(InputStream in, OutputStream out)
-    {
-	m_shell = new HtpShell(this, this);
-	m_shell.addWindowListener(new WindowAdapter() 
-	    {
-		public void windowClosing(WindowEvent winEvt) {
-		    m_menubar.setShellVisible(false);
-		}
-	    });
-
-	m_white = new HtpController(in, out, m_shell);
-
-	htpName();
-	htpVersion();
-
-	m_shell.setTitle("HexGui: [" + m_white_name + " " + 
-			 m_white_version + "] Shell");
-			 
-	m_toolbar.enablePlayButton();
-	m_menubar.setProgramConnected(true);
-
-        cmdNewGame();
-    }
 
     /** HtpShell Callback */
     public void commandEntered(String cmd)

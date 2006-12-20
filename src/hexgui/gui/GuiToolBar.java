@@ -43,8 +43,10 @@ public final class GuiToolBar
 	m_stop.setEnabled(false);
     }
 
-    public void enablePlayButton() { m_play.setEnabled(true); }
-    public void disablePlayButton() { m_play.setEnabled(false); }
+    public void setProgramConnected(boolean f)
+    {
+	m_play.setEnabled(f);
+    }
     
     public void updateButtonStates(Node node)
     {
@@ -139,7 +141,7 @@ public final class GuiToolBar
 			    "Get computer move",
 			    "Play");
 	m_toolBar.add(m_play);
-	disablePlayButton();
+	m_play.setEnabled(false);
 
 	m_stop = makeButton("hexgui/images/stop.png",
 			    "stop",
