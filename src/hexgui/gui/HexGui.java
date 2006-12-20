@@ -487,12 +487,6 @@ public final class HexGui
     }
 
     // FIXME: add a callback?
-    private void htpUndo()
-    {
-	sendCommand("undo\n", null);
-    }
-
-    // FIXME: add a callback?
     private void htpBoardsize()
     {
         Dimension size = m_guiboard.getBoardSize();
@@ -583,7 +577,7 @@ public final class HexGui
 
 	    Move move = m_current.getMove();
 	    m_guiboard.setColor(move.getPoint(), HexColor.EMPTY);
-	    htpUndo();
+	    htpPlay(new Move(move.getPoint(), HexColor.EMPTY));
 
 	    m_current = m_current.getParent();
 	}
@@ -602,7 +596,7 @@ public final class HexGui
 	if (m_current.getNext() != null) {
 	    HexPoint point = m_current.getMove().getPoint();
 	    m_guiboard.setColor(point, HexColor.EMPTY);
-	    htpUndo();
+	    htpPlay(new Move(point, HexColor.EMPTY));
 	    
 	    m_current = m_current.getNext();
 	    
@@ -623,7 +617,7 @@ public final class HexGui
 	if (m_current.getPrev() != null) {
 	    HexPoint point = m_current.getMove().getPoint();
 	    m_guiboard.setColor(point, HexColor.EMPTY);
-	    htpUndo();
+	    htpPlay(new Move(point, HexColor.EMPTY));
 	    
 	    m_current = m_current.getPrev();
 	    
