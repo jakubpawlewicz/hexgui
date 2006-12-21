@@ -1,4 +1,13 @@
-HexGui README [06/11/26]
+HexGui README [06/12/21]
+
+To build: 
+  cd src/
+  make
+
+To run (must be in src/):
+  make run
+
+
 
 
       
