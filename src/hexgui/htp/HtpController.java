@@ -4,12 +4,15 @@
 
 package hexgui.htp;
 
+import hexgui.hex.HexPoint;
+
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.BufferedReader;
 import java.io.PrintStream;
 import java.io.IOException;
+import java.util.Vector;
 
 //----------------------------------------------------------------------------
 
@@ -22,6 +25,21 @@ public class HtpController
 	void receivedResponse(String str);
 	void receivedError(String str);
     }
+
+    //------------------------------------------------------------
+
+    public static Vector<HexPoint> parsePointList(String str)
+    {
+	Vector<HexPoint> ret = new Vector<HexPoint>();
+	String[] pts = str.trim().split(" ");
+	for (int i=0; i<pts.length; i++) {
+	    HexPoint p = HexPoint.get(pts[i].trim());
+	    ret.add(p);
+	}
+	return ret;
+    }
+
+    //------------------------------------------------------------
 
     /** Constructor */
     public HtpController(InputStream in, OutputStream out, IOInterface io)
