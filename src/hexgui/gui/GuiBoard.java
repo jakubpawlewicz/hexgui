@@ -192,13 +192,19 @@ public final class GuiBoard
     public void setLastPlayed(HexPoint point)
     {
 	if (m_last_played != null) 
-	    m_last_played.clearAttributes(GuiField.FIELD_LAST_PLAYED);
+	    m_last_played.clearAttributes(GuiField.LAST_PLAYED);
 	if (point != null) {
 	    m_last_played = getField(point);
-	    m_last_played.setAttributes(GuiField.FIELD_LAST_PLAYED);
+	    m_last_played.setAttributes(GuiField.LAST_PLAYED);
 	} else {
 	    m_last_played = null;
 	}
+    }
+
+    /** Sets the given points alpha color. */
+    public void setAlphaColor(HexPoint point, Color color)
+    {
+	getField(point).setAlphaColor(color);
     }
 
     public boolean isBoardFull()

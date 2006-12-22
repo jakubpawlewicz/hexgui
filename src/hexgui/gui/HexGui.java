@@ -405,6 +405,7 @@ public final class HexGui
     //------------------------------------------------------------
 
     /** HtpShell Callback */
+    // FIXME: do this the right way!!
     public void commandEntered(String cmd)
     {
 	String c = cmd.trim();
@@ -414,6 +415,8 @@ public final class HexGui
 	    htpVersion();
 	else if (c.equals("genmove"))
 	    cmdComputerMove();
+	else if (c.equals("all_legal_moves"))
+	    htpAllLegalMoves();
 	else if (c.equals("quit"))
 	    htpQuit();
 	else
@@ -471,27 +474,36 @@ public final class HexGui
 	sendCommand("version\n", callback);
     }
 
+    // FIXME: check for errors
     public void cbEmptyResponse()
     {
-
     }
 
     // FIXME: add a callback?
     private void htpPlay(Move move)
     {
+	Runnable callback = new Runnable()
+	    {
+		public void run() { cbEmptyResponse(); }
+	    };
+
 	sendCommand("play " + move.getColor().toString() + 
-		    " " + move.getPoint().toString() + 
-		    "\n", 
-		    null);
+		    " " + move.getPoint().toString() + "\n", 
+		    callback);
 	sendCommand("showboard\n", null);
     }
 
     // FIXME: add a callback?
     private void htpBoardsize()
     {
+	Runnable callback = new Runnable()
+	    {
+		public void run() { cbEmptyResponse(); }
+	    };
+
         Dimension size = m_guiboard.getBoardSize();
         sendCommand("boardsize " + size.width + " " + size.height + "\n",
-                    null);
+                    callback);
         sendCommand("showboard\n", null);
     }
 
@@ -514,6 +526,30 @@ public final class HexGui
 	    };
 	sendCommand("genmove " + m_tomove.toString() + "\n", callback);
 	sendCommand("showboard\n", null);
+    }
+
+    public void cbAllLegalMoves()
+    {
+	if (!m_white.wasSuccess()) 
+	    return;
+
+	String str = m_white.getResponse();
+	Collection<HexPoint> points = HtpController.parsePointList(str);
+	Iterator<HexPoint> it = points.iterator();
+	while (it.hasNext()) {
+	    HexPoint p = it.next();
+	    m_guiboard.setAlphaColor(p, Color.green);
+	}
+	m_guiboard.repaint();
+    }
+
+    private void htpAllLegalMoves()
+    {
+	Runnable callback = new Runnable() 
+	    { 
+		public void run() { cbAllLegalMoves(); } 
+	    };
+	sendCommand("all_legal_moves\n", callback);
     }
 
     /** Callback from GuiBoard. 
