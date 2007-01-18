@@ -26,21 +26,20 @@ public final class GuiBoard
     private static final int DEFAULT_WIDTH = 11;
     private static final int DEFAULT_HEIGHT = 11;    
 
-    // FIXME: coordinate these with GuiMenuBar default!!
+    // FIXME: coordinate this with GuiMenuBar default!!
     private static final String DEFAULT_DRAW_TYPE = "Diamond";
 
     private static final int DEFAULT_PREFERRED_WIDTH = 800;
     private static final int DEFAULT_PREFERRED_HEIGHT = 600;
 
-    private static final boolean DEFAULT_WHITE_ON_TOP = true;
-
+    private static final boolean DEFAULT_FLIPPED = true;
 
     /** Constructor. */
     public GuiBoard(Listener listener)
     {
 	m_image = null;
 	m_listener = listener;
-	m_white_on_top = DEFAULT_WHITE_ON_TOP;
+	m_flipped = DEFAULT_FLIPPED;
 
 	initSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 
@@ -90,20 +89,14 @@ public final class GuiBoard
     */
     public void setOrientation(String orient)
     {
-	boolean my_white_on_top = false;
 	if (orient.equals("Black on top"))
-	    my_white_on_top = false;
+	    m_flipped = false;
 	else if (orient.equals("White on top"))
-	    my_white_on_top = true;
+	    m_flipped = true;
 	else {
-	    my_white_on_top = false;
+	    m_flipped = false;
 	    System.out.println("GuiBoard: unknown orientation '" + 
 			       orient + "'.");
-	}
-
-	if (m_white_on_top != my_white_on_top) {
-	    m_white_on_top = my_white_on_top;
-	    flipFields(m_field);
 	}
     }
 
@@ -129,10 +122,8 @@ public final class GuiBoard
 	m_field[w*h+1] = new GuiField(HexPoint.SOUTH);
 	m_field[w*h+2] = new GuiField(HexPoint.WEST);
 	m_field[w*h+3] = new GuiField(HexPoint.EAST);
+	
 	clearAll();
-
-	if (m_white_on_top)
-	    flipFields(m_field);
     }
 
     /** Creates a board with the given dimensions.
@@ -231,23 +222,25 @@ public final class GuiBoard
 
     //------------------------------------------------------------
 
-    private void flipFields(GuiField[] field)
+    private GuiField[] flipFields(GuiField field[])
     {
 	GuiField out[] = new GuiField[field.length];
 	for (int i=0; i<field.length; i++) {
 	    HexPoint p = field[i].getPoint();
+	    out[i] = new GuiField(field[i]);
 	    if (p == HexPoint.NORTH)
-		field[i].setPoint(HexPoint.WEST);
+		out[i].setPoint(HexPoint.WEST);
 	    else if (p == HexPoint.WEST)
-		field[i].setPoint(HexPoint.NORTH);
+		out[i].setPoint(HexPoint.NORTH);
 	    else if (p == HexPoint.EAST)
-		field[i].setPoint(HexPoint.SOUTH);
+		out[i].setPoint(HexPoint.SOUTH);
 	    else if (p == HexPoint.SOUTH)
-		field[i].setPoint(HexPoint.EAST);
+		out[i].setPoint(HexPoint.EAST);
 	    else {
-		field[i].setPoint(HexPoint.get(p.y, p.x));
+		out[i].setPoint(HexPoint.get(p.y, p.x));
 	    }	    
 	}
+	return out;
     }
 
     private class BoardPanel
@@ -269,13 +262,14 @@ public final class GuiBoard
 
 	    int bw = m_width;
 	    int bh = m_height;
-	    if (m_white_on_top) {
+	    GuiField ff[] = m_field;
+	    if (m_flipped) {
 		bw = m_height;
 		bh = m_width;
+		ff = flipFields(m_field);
 	    }
 
-	    m_drawer.draw(m_image.getGraphics(), w, h, bw, bh,
-			  m_white_on_top, m_field);
+	    m_drawer.draw(m_image.getGraphics(), w, h, bw, bh, m_flipped, ff);
 	    graphics.drawImage(m_image, 0, 0, null);
 	}
 
@@ -293,7 +287,7 @@ public final class GuiBoard
 
     private int m_width, m_height;
     private Dimension m_size;
-    private boolean m_white_on_top;
+    private boolean m_flipped;
 
     private Image m_image;
     private GuiField m_field[];
