@@ -1,0 +1,4 @@
+* going backward and then asking for a move causes problems
+* connect program then disconnect, then reconnect, terminal is quiet
+* check for correct moves from program
+
