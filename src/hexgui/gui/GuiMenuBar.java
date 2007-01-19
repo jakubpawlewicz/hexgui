@@ -44,7 +44,15 @@ public final class GuiMenuBar
 	m_connect_remote.setEnabled(!f);
 	m_connect_local.setEnabled(!f);
 	m_disconnect.setEnabled(f);
-	setShellVisible(f);
+	
+	if (f == false) {
+	    setShellVisible(false);
+	    m_shell_visible.setEnabled(false);
+	} else {
+	    m_shell_visible.setEnabled(true);
+	    setShellVisible(m_preferences.
+			    getBoolean("gui-shell-show-after-connect"));
+	}
     }
 
     //----------------------------------------------------------------------
@@ -241,17 +249,16 @@ public final class GuiMenuBar
 	menu.setMnemonic(KeyEvent.VK_V);
 
 	m_toolbar_visible = new JCheckBoxMenuItem("Show Toolbar");
-	if (m_preferences.getBoolean("gui-show-toolbar"))
+	if (m_preferences.getBoolean("gui-toolbar-visible"))
 	    m_toolbar_visible.setState(true);  
 	m_toolbar_visible.addActionListener(m_listener);
 	m_toolbar_visible.setActionCommand("gui_toolbar_visible");
 	menu.add(m_toolbar_visible);
 
 	m_shell_visible = new JCheckBoxMenuItem("Show Shell");
-	if (m_preferences.getBoolean("gui-show-shell"))
-	    m_shell_visible.setState(true);  
 	m_shell_visible.addActionListener(m_listener);
 	m_shell_visible.setActionCommand("gui_shell_visible");
+	m_shell_visible.setEnabled(false);
 	menu.add(m_shell_visible);
 
 	menu.addSeparator();

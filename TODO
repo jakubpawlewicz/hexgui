@@ -1,6 +1,8 @@
 HexGui TODO
 
-[06/12/18]
+[07/01/18]
+
+* implement more Preferences
 
 * handle 'swap', 'forfeit' and 'resign' moves
 
@@ -9,6 +11,7 @@ HexGui TODO
 * program shell
   * close it properly when program is disconnected/dies/etc
   * select available commands from a list
+  * store location/size as preferences
 
 * put remote program in its own thread (a total bitch, probably)
 
@@ -17,8 +20,6 @@ HexGui TODO
   + get info while search is on
 
 + 'about' dialog
-
-+ use java.util.Preferences for user preferences
 
 * logging, instead of printing to stdout
 

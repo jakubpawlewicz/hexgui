@@ -22,8 +22,9 @@ public final class GuiPreferences
 	    {"gui-board-width",                   "11"},
 	    {"gui-board-height",                  "11"},
 
-	    {"gui-show-toolbar",                  "true"},
-	    {"gui-show-shell",                    "true"},
+	    {"gui-toolbar-visible",               "true"},
+
+	    {"gui-shell-show-after-connect",      "true"},
 
 	    {"path-local-program",                "./htpwolve"},
 	    {"path-load-game",                    "../games/"},

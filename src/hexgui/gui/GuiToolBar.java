@@ -19,10 +19,12 @@ public final class GuiToolBar
     public GuiToolBar(ActionListener listener, GuiPreferences preferences)
     {
 	m_preferences = preferences;
+	m_listener = listener;
 
 	m_toolBar = new JToolBar();
-	m_listener = listener;
 	createToolBar();
+
+	setVisible(m_preferences.getBoolean("gui-toolbar-visible"));
     }
 
     public JToolBar getJToolBar()
@@ -33,6 +35,7 @@ public final class GuiToolBar
     public void setVisible(boolean visible)
     {
 	m_toolBar.setVisible(visible);
+	m_preferences.put("gui-toolbar-visible", visible);
     }
 
     public void enableStopButton(String actionCommand)

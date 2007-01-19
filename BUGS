@@ -1,4 +1,6 @@
 * going backward and then asking for a move causes problems
 * connect program then disconnect, then reconnect, terminal is quiet
 * check for correct moves from program
-
+* File -> Disconnect Program sometimes stalls out when listening for an
+  empty response.  (The process dies and the stream is closed?)
+* Variations with same start move can be created
