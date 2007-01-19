@@ -78,9 +78,11 @@ public abstract class BoardDrawerBase
 	The size of the region to draw to, the size of the board, and the
 	field to draw must be given.  The position of each field is 
 	then calculated and the board drawn. 
+	FIXME: switch "flipped" parameter to a HexColor?
 	@param g graphics context to draw to
 	@param w the width of the region to draw in
 	@param h the height of the region to draw in
+	@param flipped true if white is on top, otherwise black
 	@param bw the width of the board (in fields)
 	@param bh the height of the board (in fields)
     */

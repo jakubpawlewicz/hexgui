@@ -23,29 +23,23 @@ public final class GuiBoard
 	void fieldClicked(HexPoint point);
     }
 
-    private static final int DEFAULT_WIDTH = 11;
-    private static final int DEFAULT_HEIGHT = 11;    
-
-    // FIXME: coordinate this with GuiMenuBar default!!
-    private static final String DEFAULT_DRAW_TYPE = "Diamond";
-
-    private static final int DEFAULT_PREFERRED_WIDTH = 800;
-    private static final int DEFAULT_PREFERRED_HEIGHT = 600;
-
     private static final boolean DEFAULT_FLIPPED = true;
 
     /** Constructor. */
-    public GuiBoard(Listener listener)
+    public GuiBoard(Listener listener, GuiPreferences preferences)
     {
 	m_image = null;
 	m_listener = listener;
-	m_flipped = DEFAULT_FLIPPED;
+	m_preferences = preferences;
 
-	initSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+	initSize(m_preferences.getInt("gui-board-width"),
+		 m_preferences.getInt("gui-board-height"));
 
-	setDrawType(DEFAULT_DRAW_TYPE);   
-	setPreferredSize(new Dimension(DEFAULT_PREFERRED_WIDTH, 
-				       DEFAULT_PREFERRED_HEIGHT));
+	setDrawType(m_preferences.get("gui-board-type"));   
+
+	setPreferredSize(new Dimension
+			 (m_preferences.getInt("gui-board-pixel-width"),
+	  	          m_preferences.getInt("gui-board-pixel-height")));
 
 	setLayout(new BoardLayout());
 	m_boardPanel = new BoardPanel();
@@ -71,13 +65,16 @@ public final class GuiBoard
     */
     public void setDrawType(String name)
     {
-	if (name.equals("Go"))
+	if (name.equals("Go")) {
 	    m_drawer = new BoardDrawerGo();
-	else if (name.equals("Diamond"))
+	    m_preferences.put("gui-board-type", "Go");
+	} else if (name.equals("Diamond")) {
 	    m_drawer = new BoardDrawerDiamond();
-	else if (name.equals("Flat")) 
+	    m_preferences.put("gui-board-type", "Diamond");
+	} else if (name.equals("Flat")) {
 	    m_drawer = new BoardDrawerFlat();
-	else {
+	    m_preferences.put("gui-board-type", "Flat");
+	} else {
 	    System.out.println("GuiBoard: unknown draw type '" + name + "'.");
 	    m_drawer = new BoardDrawerDiamond();
 	} 
@@ -90,11 +87,10 @@ public final class GuiBoard
     public void setOrientation(String orient)
     {
 	if (orient.equals("Black on top"))
-	    m_flipped = false;
+	    m_preferences.put("gui-board-on-top", "black");
 	else if (orient.equals("White on top"))
-	    m_flipped = true;
+	    m_preferences.put("gui-board-on-top", "white");
 	else {
-	    m_flipped = false;
 	    System.out.println("GuiBoard: unknown orientation '" + 
 			       orient + "'.");
 	}
@@ -263,13 +259,16 @@ public final class GuiBoard
 	    int bw = m_width;
 	    int bh = m_height;
 	    GuiField ff[] = m_field;
-	    if (m_flipped) {
+	    boolean flipped = false;
+
+	    if (m_preferences.get("gui-board-on-top").equals("white")) {
 		bw = m_height;
 		bh = m_width;
+		flipped = true;
 		ff = flipFields(m_field);
 	    }
 
-	    m_drawer.draw(m_image.getGraphics(), w, h, bw, bh, m_flipped, ff);
+	    m_drawer.draw(m_image.getGraphics(), w, h, bw, bh, flipped, ff);
 	    graphics.drawImage(m_image, 0, 0, null);
 	}
 
@@ -287,7 +286,6 @@ public final class GuiBoard
 
     private int m_width, m_height;
     private Dimension m_size;
-    private boolean m_flipped;
 
     private Image m_image;
     private GuiField m_field[];
@@ -298,6 +296,7 @@ public final class GuiBoard
     private BoardPanel m_boardPanel;
 
     private Listener m_listener;
+    private GuiPreferences m_preferences;
 }
 
 //----------------------------------------------------------------------------

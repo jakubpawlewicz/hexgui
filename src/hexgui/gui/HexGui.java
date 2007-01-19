@@ -42,14 +42,16 @@ public final class HexGui
 		    cmdShutdown();
 		}
 	    });
+
+	m_preferences = new GuiPreferences(getClass());
 	
-	m_menubar = new GuiMenuBar(this);
+	m_menubar = new GuiMenuBar(this, m_preferences);
 	setJMenuBar(m_menubar.getJMenuBar());
 
-	m_toolbar = new GuiToolBar(this);
+	m_toolbar = new GuiToolBar(this, m_preferences);
         getContentPane().add(m_toolbar.getJToolBar(), BorderLayout.NORTH);
 
-	m_guiboard = new GuiBoard(this);
+	m_guiboard = new GuiBoard(this, m_preferences);
         getContentPane().add(m_guiboard, BorderLayout.CENTER);
 
 	cmdNewGame();
@@ -191,7 +193,8 @@ public final class HexGui
 
     private void cmdConnectLocalProgram()
     {
-        String prog = LocalProgramDialog.show(this);
+	String defaultCommand = m_preferences.get("path-local-program");
+        String prog = LocalProgramDialog.show(this, defaultCommand);
 	if (prog == null) // user aborted
 	    return;
 
@@ -205,6 +208,8 @@ public final class HexGui
 	    showError("Error starting program: '" + e.getMessage() + "'");
 	    return;
 	}
+
+	m_preferences.put("path-local-program", prog);
 
 	///////////////////////////////
 	/// FIXME: DEBUGING!!! REMOVE!
@@ -326,6 +331,7 @@ public final class HexGui
 	    if (save(m_file)) {
 		setGameChanged(false);
 		setFrameTitle();
+		m_preferences.put("path-save-game", m_file.getPath());
 		return true;
 	    }
 	}
@@ -363,6 +369,8 @@ public final class HexGui
 	    m_file = file;
 	    setGameChanged(false);
 	    setFrameTitle();
+
+	    m_preferences.put("path-load-game", file.getPath());
 	}
     }
 
@@ -778,8 +786,7 @@ public final class HexGui
     */
     private File showSaveAsDialog()
     {
-	// FIXME: use most recent path here
-	JFileChooser fc = new JFileChooser("../games/");
+	JFileChooser fc = new JFileChooser(m_preferences.get("path-save-game"));
 	if (m_file != null) fc.setSelectedFile(m_file);
 	int ret = fc.showSaveDialog(this);
 	if (ret == JFileChooser.APPROVE_OPTION)
@@ -792,14 +799,14 @@ public final class HexGui
     */
     private File showOpenDialog()
     {
-	// FIXME: use most recent path here
-	JFileChooser fc = new JFileChooser("../games/");
+	JFileChooser fc = new JFileChooser(m_preferences.get("path-load-game"));
 	int ret = fc.showOpenDialog(this);
 	if (ret == JFileChooser.APPROVE_OPTION)
 	    return fc.getSelectedFile();
 	return null;
     }
 
+    private GuiPreferences m_preferences;
     private GuiBoard m_guiboard;
     private GuiToolBar m_toolbar;
     private GuiMenuBar m_menubar;

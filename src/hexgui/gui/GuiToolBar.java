@@ -16,8 +16,10 @@ import java.net.URL;
 
 public final class GuiToolBar
 {
-    public GuiToolBar(ActionListener listener)
+    public GuiToolBar(ActionListener listener, GuiPreferences preferences)
     {
+	m_preferences = preferences;
+
 	m_toolBar = new JToolBar();
 	m_listener = listener;
 	createToolBar();
@@ -172,6 +174,7 @@ public final class GuiToolBar
 
     //----------------------------------------------------------------------
 
+    private GuiPreferences m_preferences;
     private JToolBar m_toolBar;
     private ActionListener m_listener;
 

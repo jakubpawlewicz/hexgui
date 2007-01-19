@@ -18,8 +18,10 @@ public final class GuiMenuBar
     // TODO: coordinate all default options with preferences
     //
 
-    public GuiMenuBar(ActionListener listener)
+    public GuiMenuBar(ActionListener listener, GuiPreferences preferences)
     {
+	m_preferences = preferences;
+
 	m_menuBar = new JMenuBar();
 
 	m_listener = listener;
@@ -239,15 +241,15 @@ public final class GuiMenuBar
 	menu.setMnemonic(KeyEvent.VK_V);
 
 	m_toolbar_visible = new JCheckBoxMenuItem("Show Toolbar");
-	// FIXME: coordinate with preferences
-	m_toolbar_visible.setState(true);  
+	if (m_preferences.getBoolean("gui-show-toolbar"))
+	    m_toolbar_visible.setState(true);  
 	m_toolbar_visible.addActionListener(m_listener);
 	m_toolbar_visible.setActionCommand("gui_toolbar_visible");
 	menu.add(m_toolbar_visible);
 
 	m_shell_visible = new JCheckBoxMenuItem("Show Shell");
-	// FIXME: coordinate with preferences
-	m_shell_visible.setState(true);  
+	if (m_preferences.getBoolean("gui-show-shell"))
+	    m_shell_visible.setState(true);  
 	m_shell_visible.addActionListener(m_listener);
 	m_shell_visible.setActionCommand("gui_shell_visible");
 	menu.add(m_shell_visible);
@@ -269,23 +271,30 @@ public final class GuiMenuBar
         JMenu menu = new JMenu("Board Type");
 	m_btGroup = new ButtonGroup();
 
+	String defaultType = m_preferences.get("gui-board-type");
+
 	JRadioButtonMenuItem item;
 	item = new JRadioButtonMenuItem("Diamond");
 	item.addActionListener(m_listener);
 	item.setActionCommand("gui_board_draw_type");
-	item.setSelected(true);
+	if (defaultType.equals("Diamond"))
+	    item.setSelected(true);
 	m_btGroup.add(item);
 	menu.add(item);
 
 	item = new JRadioButtonMenuItem("Flat");
 	item.addActionListener(m_listener);
 	item.setActionCommand("gui_board_draw_type");
+	if (defaultType.equals("Flat"))
+	    item.setSelected(true);
 	m_btGroup.add(item);
 	menu.add(item);
 
 	item = new JRadioButtonMenuItem("Go");
 	item.addActionListener(m_listener);
 	item.setActionCommand("gui_board_draw_type");
+	if (defaultType.equals("Go"))
+	    item.setSelected(true);
 	m_btGroup.add(item);
 	menu.add(item);
 
@@ -307,17 +316,20 @@ public final class GuiMenuBar
         JMenu menu = new JMenu("Board Orientation");
 	m_orGroup = new ButtonGroup();
 
+	String pref = m_preferences.get("gui-board-on-top");
+
 	JRadioButtonMenuItem item;
 	item = new JRadioButtonMenuItem("Black on top");
 	item.addActionListener(m_listener);
 	item.setActionCommand("gui_board_orientation");
+	if (pref.equals("black")) item.setSelected(true);
 	m_orGroup.add(item);
 	menu.add(item);
 
 	item = new JRadioButtonMenuItem("White on top");
 	item.addActionListener(m_listener);
 	item.setActionCommand("gui_board_orientation");
-	item.setSelected(true);
+	if (pref.equals("white")) item.setSelected(true);
 	m_orGroup.add(item);
 	menu.add(item);
 
@@ -350,7 +362,8 @@ public final class GuiMenuBar
 
 	return menu;
     }
-    
+
+    private GuiPreferences m_preferences;
     private ActionListener m_listener;
     private JMenuBar m_menuBar;
 
