@@ -580,20 +580,30 @@ public final class HexGui
 
     private void play(Move move)
     {
-	Node node = new Node(move);
-	m_current.addChild(node);
-	m_current = node;
+	int variation = -1;
+	for (int i=0; i<m_current.numChildren(); i++) {
+	    if (move.equals(m_current.getChild(i).getMove())) {
+		variation = i;
+		break;
+	    }
+	}
+	
+	if (variation != -1) {
+	    m_current = m_current.getChild(variation);
+	} else {
+	    Node node = new Node(move);
+	    m_current.addChild(node);
+	    m_current = node;
+	}
 
 	m_guiboard.setColor(move.getPoint(), m_tomove);
-	m_guiboard.setLastPlayed(move.getPoint());
-	m_tomove = m_tomove.otherColor();
-	setGameChanged(true);
-	setFrameTitle();
-
-	//m_guiboard.repaint();
 	setLastPlayed();
 	m_guiboard.paintImmediately();
 	m_toolbar.updateButtonStates(m_current);	
+	setGameChanged(true);
+	setFrameTitle();
+
+	m_tomove = m_tomove.otherColor();
     }
 
     private void forward(int n)

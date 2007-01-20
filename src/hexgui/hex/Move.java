@@ -22,6 +22,17 @@ public final class Move
 	m_color = c;
     }
 
+    /** Determines whether this move is equal to the given move. 
+	@param other move to compare it to.
+	@return true if points and colors are equal, false otherwise.
+    */
+    public boolean equals(Move other)
+    {
+	if (m_point == other.getPoint() &&  m_color == other.getColor())
+	    return true;
+	return false;
+    }
+
     /** Returns the point of this move. 
 	@return HexPoint of the location.
     */
