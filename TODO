@@ -3,10 +3,18 @@ HexGui TODO
 [07/01/18]
 
 * implement more Preferences
+  * store board dimensions
+  * gui placement
 
+* gui test tools 
+  * display sets of moves
+    eg: rollouts, virtual connections, simplicial, dead, etdc. 
+  
 * handle 'swap', 'forfeit' and 'resign' moves
 
 * allow computer to play white or black
+  * auto-respond on/off
+  * self play
 
 * program shell
   * close it properly when program is disconnected/dies/etc

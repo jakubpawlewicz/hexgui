@@ -1,5 +1,8 @@
-* going backward and then asking for a move causes problems
 * connect program then disconnect, then reconnect, terminal is quiet
 * check for correct moves from program
 * File -> Disconnect Program sometimes stalls out when listening for an
   empty response.  (The process dies and the stream is closed?)
+* Clicking close button then 'cancel' (or cancel to save query) 
+  still closes program.
+
+
