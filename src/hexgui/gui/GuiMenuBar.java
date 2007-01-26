@@ -152,57 +152,44 @@ public final class GuiMenuBar
         JMenu menu = new JMenu("Board Size");
 	m_bsGroup = new ButtonGroup();
 
+	String sizes[] = new String[] 
+	    {
+		"19 x 19",
+		"14 x 14",
+		"11 x 11",
+		"10 x 10",
+		"9 x 9",
+		"8 x 8",
+		"7 x 7",
+		"3 x 3"
+	    };
+
+	String preferred = m_preferences.get("gui-board-width") + " x "
+	                 + m_preferences.get("gui-board-height");
+	
+	boolean found = false;
 	JRadioButtonMenuItem item;
-	item = new JRadioButtonMenuItem("19 x 19");
-	item.addActionListener(m_listener);
-	item.setActionCommand("newgame");
-	m_bsGroup.add(item);
-	menu.add(item);
+	for (int i=0; i<sizes.length; i++) {
+	    item = new JRadioButtonMenuItem(sizes[i]);
+	    item.addActionListener(m_listener);
+	    item.setActionCommand("newgame");
+	    if (preferred.equals(sizes[i])) {
+		item.setSelected(true);
+		found = true;
+	    }
+	    m_bsGroup.add(item);
+	    menu.add(item);
+	}
 
-	item = new JRadioButtonMenuItem("14 x 14");
-	item.addActionListener(m_listener);
-	item.setActionCommand("newgame");
-	m_bsGroup.add(item);
-	menu.add(item);
-
-	// FIXME: coordinate default with GuiBoard!!
-	item = new JRadioButtonMenuItem("11 x 11");
-	item.addActionListener(m_listener);
-	item.setActionCommand("newgame");
-	item.setSelected(true);
-	m_bsGroup.add(item);
-	menu.add(item);
-
-	item = new JRadioButtonMenuItem("10 x 10");
-	item.addActionListener(m_listener);
-	item.setActionCommand("newgame");
-	m_bsGroup.add(item);
-	menu.add(item);
-
-	item = new JRadioButtonMenuItem("9 x 9");
-	item.addActionListener(m_listener);
-	item.setActionCommand("newgame");
-	m_bsGroup.add(item);
-	menu.add(item);
-
-	item = new JRadioButtonMenuItem("8 x 8");
-	item.addActionListener(m_listener);
-	item.setActionCommand("newgame");
-	m_bsGroup.add(item);
-	menu.add(item);
-
-	item = new JRadioButtonMenuItem("7 x 7");
-	item.addActionListener(m_listener);
-	item.setActionCommand("newgame");
-	m_bsGroup.add(item);
-	menu.add(item);
-
-	item = new JRadioButtonMenuItem("3 x 3");
-	item.addActionListener(m_listener);
-	item.setActionCommand("newgame");
-	m_bsGroup.add(item);
-	menu.add(item);
-
+	if (!found) {
+	    item = new JRadioButtonMenuItem(preferred);
+	    item.addActionListener(m_listener);
+	    item.setActionCommand("newgame");
+	    item.setSelected(true);
+	    m_bsGroup.add(item);
+	    menu.add(item);
+	}
+	
 	menu.addSeparator();
 
 	item = new JRadioButtonMenuItem("Other...");

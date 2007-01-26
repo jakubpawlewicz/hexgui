@@ -317,7 +317,12 @@ public final class HexGui
 	    
 	    m_guiboard.initSize(dim.width, dim.height);
 	    m_guiboard.repaint();
+
+	    m_preferences.put("gui-board-width", dim.width);
+	    m_preferences.put("gui-board-height", dim.height);
+
 	    m_toolbar.updateButtonStates(m_current);
+
             htpBoardsize();
 	}
     }
