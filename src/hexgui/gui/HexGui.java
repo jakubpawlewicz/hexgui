@@ -36,6 +36,7 @@ public final class HexGui
 			   + "; build " + Version.build + "\n");
 	
 	// Catch the close action and shutdown nicely
+	setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 	addWindowListener(new java.awt.event.WindowAdapter() 
 	    {
 		public void windowClosing(WindowEvent winEvt) {
@@ -580,6 +581,12 @@ public final class HexGui
 
     private void play(Move move)
     {
+	if (m_guiboard.getColor(move.getPoint()) != HexColor.EMPTY) {
+	    showError("Cell '" + move.getPoint().toString() + 
+		      "' already occupied.");
+	    return;
+	}
+
 	int variation = -1;
 	for (int i=0; i<m_current.numChildren(); i++) {
 	    if (move.equals(m_current.getChild(i).getMove())) {
