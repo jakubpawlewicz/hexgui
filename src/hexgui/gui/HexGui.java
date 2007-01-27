@@ -212,12 +212,13 @@ public final class HexGui
 
 	m_preferences.put("path-local-program", prog);
 
+ 	Process proc = m_white_process;
+
 	///////////////////////////////
 	/// FIXME: DEBUGING!!! REMOVE!
-	Process proc = m_white_process;
-	Thread blah = new Thread(new StreamCopy(proc.getErrorStream(),
-						System.out));
-	blah.start();
+// 	Thread blah = new Thread(new StreamCopy(proc.getErrorStream(),
+// 						System.out));
+// 	blah.start();
 	///////////////////////////////
 
 	connectProgram(proc.getInputStream(), proc.getOutputStream());
@@ -271,6 +272,7 @@ public final class HexGui
 	    m_shell.dispose();
 	    m_shell = null;
 	    m_menubar.setProgramConnected(false);
+	    m_toolbar.setProgramConnected(false);
 	}
 	catch (Throwable e) {
 	    showError("Error: " + e.getMessage());

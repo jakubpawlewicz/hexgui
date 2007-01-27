@@ -127,8 +127,33 @@ public final class GuiMenuBar
  	menu.add(item);
 
 	menu.addSeparator();
+	
+	JMenu submenu;
+	submenu = createClockMenu();
+	menu.add(submenu);
 
+	menu.addSeparator();
+
+	// FIXME: implement!!
 	item = new JMenuItem("Resign");
+	menu.add(item);
+
+	return menu;
+    }
+
+    // FIXME: implement!
+    private JMenu createClockMenu()
+    {
+	JMenu menu = new JMenu("Clock");
+	JMenuItem item;
+	
+	item = new JMenuItem("Start");
+	menu.add(item);
+
+	item = new JMenuItem("Pause");
+	menu.add(item);
+
+	item = new JMenuItem("Resume");
 	menu.add(item);
 
 	return menu;
@@ -143,6 +168,13 @@ public final class GuiMenuBar
 
 	JMenu size = createBoardSizeMenu();
 	menu.add(size);
+
+	menu.addSeparator();
+	
+	JMenuItem item;
+	item = new JMenuItem("Preferences...");
+	// FIXME: implement this!!
+	menu.add(item);
 
 	return menu;
     }

@@ -44,6 +44,7 @@ public class HtpController
     /** Constructor */
     public HtpController(InputStream in, OutputStream out, IOInterface io)
     {
+	System.out.println("controller: in constructor.");
 	m_in = new BufferedReader(new InputStreamReader(in));
 	m_out = new PrintStream(out);
 	m_io = io;

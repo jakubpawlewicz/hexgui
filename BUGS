@@ -1,5 +1,9 @@
-* connect program then disconnect, then reconnect, terminal is quiet
 * File -> Disconnect Program sometimes stalls out when listening for an
   empty response.  (The process dies and the stream is closed?)
 
 
+* Connect program then disconnect, then reconnect, terminal is quiet.
+  #### This occurs if the debugging code in the method 'cmdConnectLocalProg'
+  is uncommented -- this code copies the procedures error stream to stdout. 
+  Something bad seems to happen when the process is killed and this
+  StreamCopy is still active...?
