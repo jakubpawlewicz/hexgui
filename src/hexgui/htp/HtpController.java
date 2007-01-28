@@ -87,7 +87,16 @@ public class HtpController
 	}
 
 	//System.out.println("got: '" + response + "'");
-	if (response.substring(0,2).equals("= ")) {
+
+	if (response == null) {
+	    m_success = false;
+	    m_response = "";
+	    throw new HtpError("Null response received!");
+	} else if (response.length() < 2) {
+	    m_success = false;
+	    m_response = response;
+	    throw new HtpError("Response length too short! '"+response+"'");
+	} else if (response.substring(0,2).equals("= ")) {
 	    m_success = true;
 	    m_response = response.substring(2);
 	    System.out.print("controller: success: ");
@@ -103,7 +112,6 @@ public class HtpController
 	    System.out.print("controller: invalid: "); 
 	    throw new HtpError("Invalid HTP response:'" + response + "'.");
 	}
-	//System.out.println("here");
 	System.out.println("'" + m_response.trim() + "'");
     }
 
@@ -115,7 +123,7 @@ public class HtpController
 	    String line = m_in.readLine();
 	    //System.out.println("readline: '" + line + "'");
 	    if (line == null) {
-		//System.out.println("controller: Disconnected!");
+		System.out.println("controller: Disconnected!");
 		m_connected = false;
 		break;
 	    }
