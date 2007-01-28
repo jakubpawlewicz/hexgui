@@ -29,7 +29,6 @@ public class StreamCopy
 		//System.out.println(this.toString() + ": blocking...");
 		int n = m_in.read(buffer);
 		if (n < 0) {
-		    m_out.close();
 		    break;
 		} else if (n == 0) {
 		    Thread.sleep(100);

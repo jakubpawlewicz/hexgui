@@ -216,9 +216,9 @@ public final class HexGui
 
 	///////////////////////////////
 	/// FIXME: DEBUGING!!! REMOVE!
-// 	Thread blah = new Thread(new StreamCopy(proc.getErrorStream(),
-// 						System.out));
-// 	blah.start();
+	Thread blah = new Thread(new StreamCopy(proc.getErrorStream(),
+						System.out));
+	blah.start();
 	///////////////////////////////
 
 	connectProgram(proc.getInputStream(), proc.getOutputStream());
