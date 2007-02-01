@@ -106,6 +106,8 @@ public final class HexGui
 	    cmdGuiBoardDrawType();
 	else if (cmd.equals("gui_board_orientation"))
 	    cmdGuiBoardOrientation();
+        else if (cmd.equals("show-preferences"))
+            cmdShowPreferences();
 	//
         // game navigation commands  
 	//
@@ -416,6 +418,11 @@ public final class HexGui
 	System.out.println(type);
 	m_guiboard.setOrientation(type);
 	m_guiboard.repaint();
+    }
+
+    private void cmdShowPreferences()
+    {
+        new PreferencesDialog(this, m_preferences);
     }
 
     //------------------------------------------------------------

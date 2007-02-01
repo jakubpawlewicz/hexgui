@@ -24,7 +24,9 @@ public final class GuiPreferences
 
 	    {"gui-toolbar-visible",               "true"},
 
-	    {"gui-shell-show-after-connect",      "true"},
+	    {"shell-show-on-connect",             "true"},
+
+            {"auto-respond",                      "true"},
 
 	    {"path-local-program",                "./htpwolve"},
 	    {"path-load-game",                    "../games/"},

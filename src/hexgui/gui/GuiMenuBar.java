@@ -173,7 +173,9 @@ public final class GuiMenuBar
 	
 	JMenuItem item;
 	item = new JMenuItem("Preferences...");
-	// FIXME: implement this!!
+	item.addActionListener(m_listener);
+	item.setActionCommand("show-preferences");
+
 	menu.add(item);
 
 	return menu;

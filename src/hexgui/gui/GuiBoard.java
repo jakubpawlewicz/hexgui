@@ -175,9 +175,13 @@ public final class GuiBoard
     /** Gets the field at the specified point. */
     public GuiField getField(HexPoint point)
     {
-	for (int x=0; x<m_field.length; x++) 
+        System.out.println("Searching for: '" + point.toString() + "'");
+	for (int x=0; x<m_field.length; x++) {
+            System.out.println(m_field[x].getPoint().toString());
 	    if (m_field[x].getPoint() == point) 
 		return m_field[x];
+        }
+        System.out.println("Not found! '" + point.toString() + "'");
 	assert(false);
 	return null;
     }
