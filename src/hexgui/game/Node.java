@@ -74,7 +74,7 @@ public class Node
     {
 	child.setNext(null);
 	child.setParent(this);
-
+        
 	if (m_child == null) {
 	    m_child = child;
 	    child.setPrev(null);
@@ -131,6 +131,29 @@ public class Node
 		return c;
 	}
 	return null;
+    }
+
+    /** Returns the depth of this node.
+     */
+    public int getDepth()
+    {
+        Node cur;
+        int depth = 0;
+        for (cur = this; ; depth++) {
+            Node parent = cur.getParent();
+            if (parent == null) break;
+            cur = parent;
+        }
+        return depth;
+    }
+
+    /** Determines if a swap move is allowed at this node.
+        Returns <code>true</code> if we are on move #2. 
+    */
+    public boolean isSwapAllowed()
+    {
+        if (getDepth() == 1) return true;
+        return false;
     }
 
     //----------------------------------------------------------------------

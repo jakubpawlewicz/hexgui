@@ -127,6 +127,8 @@ public final class HexGui
 	    up();
 	else if (cmd.equals("game_down")) 
 	    down();
+        else if (cmd.equals("game_swap"))
+            humanMove(new Move(HexPoint.get("swap-pieces"), m_tomove));
 	else if (cmd.equals("computer-move")) 
 	    cmdComputerMove();
 	else if (cmd.equals("stop")) {
@@ -326,6 +328,7 @@ public final class HexGui
 	    m_preferences.put("gui-board-height", dim.height);
 
 	    m_toolbar.updateButtonStates(m_current);
+            m_menubar.updateMenuStates(m_current);
 
             htpBoardsize();
 	}
@@ -595,36 +598,51 @@ public final class HexGui
 
     private void play(Move move)
     {
-	if (m_guiboard.getColor(move.getPoint()) != HexColor.EMPTY) {
-	    showError("Cell '" + move.getPoint().toString() + 
-		      "' already occupied.");
-	    return;
+        int variation = -1;
+        for (int i=0; i<m_current.numChildren(); i++) {
+            if (move.equals(m_current.getChild(i).getMove())) {
+                variation = i;
+                break;
+            }
 	}
 
-	int variation = -1;
-	for (int i=0; i<m_current.numChildren(); i++) {
-	    if (move.equals(m_current.getChild(i).getMove())) {
-		variation = i;
-		break;
-	    }
-	}
-	
 	if (variation != -1) {
+
 	    m_current = m_current.getChild(variation);
+
 	} else {
+
+            if (move.getPoint() == HexPoint.SWAP_PIECES) {
+                if (!m_current.isSwapAllowed()) {
+                    showError("Swap move not allowed!");
+                    return;
+                }
+            } else {
+                if (m_guiboard.getColor(move.getPoint()) !=  HexColor.EMPTY) {
+                    showError("Cell '" + move.getPoint().toString() + 
+                              "' already occupied.");
+                    return;
+                }
+            }
+
 	    Node node = new Node(move);
 	    m_current.addChild(node);
 	    m_current = node;
 	}
 
-	m_guiboard.setColor(move.getPoint(), m_tomove);
+        if (m_current.getMove().getPoint() != HexPoint.SWAP_PIECES)
+            m_tomove = m_tomove.otherColor();
+
+	m_guiboard.setColor(m_current.getMove().getPoint(), 
+                            m_current.getMove().getColor());
 	setLastPlayed();
+
 	m_guiboard.paintImmediately();
 	m_toolbar.updateButtonStates(m_current);	
+        m_menubar.updateMenuStates(m_current);
+
 	setGameChanged(true);
 	setFrameTitle();
-
-	m_tomove = m_tomove.otherColor();
     }
 
     private void forward(int n)
@@ -637,12 +655,15 @@ public final class HexGui
 	    m_guiboard.setColor(move.getPoint(), move.getColor());
 	    htpPlay(move);
 
+            if (move.getPoint() != HexPoint.SWAP_PIECES)
+                m_tomove = move.getColor().otherColor();
+
 	    m_current = child;
-	    m_tomove = move.getColor().otherColor();
 	}
 	setLastPlayed();
 	m_guiboard.repaint();
 	m_toolbar.updateButtonStates(m_current);
+        m_menubar.updateMenuStates(m_current);
     }
 
     private void backward(int n)
@@ -659,10 +680,11 @@ public final class HexGui
 	setLastPlayed();
 	m_guiboard.repaint();
 	m_toolbar.updateButtonStates(m_current);
+        m_menubar.updateMenuStates(m_current);
 	    
 	if (m_current == m_root) 
 	    m_tomove = HexColor.BLACK;
-	else
+	else if (m_current.getMove().getPoint() != HexPoint.SWAP_PIECES)
 	    m_tomove = m_current.getMove().getColor().otherColor();
     }
 
@@ -679,11 +701,13 @@ public final class HexGui
 	    point = m_current.getMove().getPoint();
 	    m_guiboard.setColor(point, color);
 	    htpPlay(m_current.getMove());
-	    m_tomove = color.otherColor();
+            if (point != HexPoint.SWAP_PIECES)
+                m_tomove = color.otherColor();
 	    
 	    setLastPlayed();
 	    m_guiboard.repaint();
 	    m_toolbar.updateButtonStates(m_current);
+            m_menubar.updateMenuStates(m_current);
 	}
     }
 
@@ -700,20 +724,28 @@ public final class HexGui
 	    point = m_current.getMove().getPoint();
 	    m_guiboard.setColor(point, color);
 	    htpPlay(m_current.getMove());
-	    m_tomove = color.otherColor();
+            if (point != HexPoint.SWAP_PIECES)
+                m_tomove = color.otherColor();
 	    
 	    setLastPlayed();
 	    m_guiboard.repaint();
 	    m_toolbar.updateButtonStates(m_current);
+            m_menubar.updateMenuStates(m_current);
 	}
     }
+
 
     //------------------------------------------------------------
 
     private void setLastPlayed()
     {
-	if (m_current != m_root)
-	    m_guiboard.setLastPlayed(m_current.getMove().getPoint());
+        // FIXME: assumes swap move always has a parent node!!
+	if (m_current != m_root) {
+            if (m_current.getMove().getPoint() == HexPoint.SWAP_PIECES)
+                m_guiboard.setLastPlayed(m_current.getParent().getMove().getPoint());
+            else
+                m_guiboard.setLastPlayed(m_current.getMove().getPoint());
+        }
 	else 
 	    m_guiboard.setLastPlayed(null);
     }	

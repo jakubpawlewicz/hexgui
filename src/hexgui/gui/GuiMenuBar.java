@@ -4,6 +4,8 @@
 
 package hexgui.gui;
 
+import hexgui.game.Node;
+
 import java.util.*;
 import javax.swing.*;          
 import java.awt.*;
@@ -14,10 +16,6 @@ import java.awt.event.*;
 /** Menu bar. */
 public final class GuiMenuBar
 {
-    //
-    // TODO: coordinate all default options with preferences
-    //
-
     public GuiMenuBar(ActionListener listener, GuiPreferences preferences)
     {
 	m_preferences = preferences;
@@ -53,6 +51,11 @@ public final class GuiMenuBar
 	    setShellVisible(m_preferences.
 			    getBoolean("gui-shell-show-after-connect"));
 	}
+    }
+
+    public void updateMenuStates(Node current)
+    {
+        m_swap.setEnabled(current.isSwapAllowed());
     }
 
     //----------------------------------------------------------------------
@@ -134,9 +137,14 @@ public final class GuiMenuBar
 
 	menu.addSeparator();
 
+        m_swap = new JMenuItem("Swap");
+        m_swap.addActionListener(m_listener);
+        m_swap.setActionCommand("game_swap");
+        menu.add(m_swap);
+
 	// FIXME: implement!!
-	item = new JMenuItem("Resign");
-	menu.add(item);
+	m_resign = new JMenuItem("Resign");
+	menu.add(m_resign);
 
 	return menu;
     }
@@ -399,6 +407,8 @@ public final class GuiMenuBar
     private JCheckBoxMenuItem m_shell_visible;
 
     private JMenuItem m_connect_local, m_connect_remote, m_disconnect;
+
+    private JMenuItem m_resign, m_swap;
 
     private ButtonGroup m_bsGroup;   // board sizes
     private ButtonGroup m_btGroup;   // board view types (diamond, flat, etc)

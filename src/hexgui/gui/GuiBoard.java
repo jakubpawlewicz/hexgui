@@ -153,11 +153,17 @@ public final class GuiBoard
     }
 
     /** Sets the given point to the given color.
+        Special points are ignored (SWAP_PIECES, RESIGN, etc).
 	@param point the point
 	@param color the color to set it to.
     */
     public void setColor(HexPoint point, HexColor color)
     {
+        if (HexPoint.SWAP_SIDES  == point || HexPoint.SWAP_PIECES == point || 
+            HexPoint.RESIGN == point || HexPoint.FORFEIT == point) {
+            return;
+        }
+
 	GuiField f = getField(point);
 	f.setColor(color);
     }
@@ -172,9 +178,16 @@ public final class GuiBoard
 	return f.getColor();
     }
 
-    /** Gets the field at the specified point. */
+    /** Gets the field at the specified point. 
+        Special points are ignored (SWAP_PIECES, etc).
+    */
     public GuiField getField(HexPoint point)
     {
+        if (HexPoint.SWAP_SIDES  == point || HexPoint.SWAP_PIECES == point || 
+            HexPoint.RESIGN == point || HexPoint.FORFEIT == point) {
+            return null;
+        }
+        
 	for (int x=0; x<m_field.length; x++) {
 	    if (m_field[x].getPoint() == point) 
 		return m_field[x];
@@ -187,6 +200,8 @@ public final class GuiBoard
         clears the mark if <code>point</code> is <code>null</code>. */
     public void setLastPlayed(HexPoint point)
     {
+        assert(point != HexPoint.SWAP_PIECES);
+
 	if (m_last_played != null) 
 	    m_last_played.clearAttributes(GuiField.LAST_PLAYED);
 	if (point != null) {

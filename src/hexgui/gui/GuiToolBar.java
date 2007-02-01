@@ -65,6 +65,8 @@ public final class GuiToolBar
 
 	m_up.setEnabled(node.getNext() != null);
 	m_down.setEnabled(node.getPrev() != null);
+
+        m_swap.setEnabled(node.isSwapAllowed());
     }
 
     //----------------------------------------------------------------------
@@ -141,6 +143,15 @@ public final class GuiToolBar
 
 	m_toolBar.addSeparator();
 
+	m_swap = makeButton("hexgui/images/swap.png",
+			    "game_swap",
+			    "Play Swap Move",
+			    "Swap");
+	m_toolBar.add(m_swap);
+	m_swap.setEnabled(false);
+
+	m_toolBar.addSeparator();
+
 	m_play = makeButton("hexgui/images/play.png",
 			    "computer-move",
 			    "Get computer move",
@@ -184,7 +195,7 @@ public final class GuiToolBar
     private JButton m_beginning, m_back10, m_back;
     private JButton m_forward, m_forward10, m_end;
     private JButton m_up, m_down;
-    private JButton m_play, m_stop;
+    private JButton m_play, m_stop, m_swap;
 }
 
 //----------------------------------------------------------------------------
