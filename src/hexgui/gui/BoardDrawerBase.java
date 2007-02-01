@@ -82,13 +82,13 @@ public abstract class BoardDrawerBase
 	@param g graphics context to draw to
 	@param w the width of the region to draw in
 	@param h the height of the region to draw in
-	@param flipped true if white is on top, otherwise black
+	@param alphaontop true if letters are on top, otherwise numbers
 	@param bw the width of the board (in fields)
 	@param bh the height of the board (in fields)
     */
     public void draw(Graphics g, 
 		     int w, int h, int bw, int bh, 
-		     boolean flipped, 
+		     boolean alphaontop,
 		     GuiField field[])
     {
 	m_width = w;
@@ -103,7 +103,7 @@ public abstract class BoardDrawerBase
 	setAntiAliasing(g);
 	drawBackground(g);
 	drawCells(g, field);
-	drawLabels(g, !flipped);
+	drawLabels(g, alphaontop);
 	drawShadows(g, field);
 	drawFields(g, field);
     }
@@ -124,13 +124,13 @@ public abstract class BoardDrawerBase
     protected Point getLocation(HexPoint pos)
     {
 	if (pos == HexPoint.NORTH) {
-	    return getLocation(m_bwidth/2+1, -2);
-	} else if (pos == HexPoint.SOUTH) { 
-	    return getLocation(m_bwidth/2-1, m_bheight+1);
-	} else if (pos == HexPoint.EAST) { 
 	    return getLocation(m_bwidth+1, m_bheight/2-1);
-	} else if (pos == HexPoint.WEST) { 
+	} else if (pos == HexPoint.SOUTH) { 
 	    return getLocation(-2, m_bheight/2+1);
+	} else if (pos == HexPoint.EAST) { 
+	    return getLocation(m_bwidth/2-1, m_bheight+1);
+	} else if (pos == HexPoint.WEST) { 
+	    return getLocation(m_bwidth/2+1, -2);
 	}
 	return getLocation(pos.x, pos.y);
     }

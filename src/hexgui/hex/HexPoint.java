@@ -105,7 +105,7 @@ public final class HexPoint
 	s_points = new HexPoint[width][height];
 	for (int x=0; x<width; x++) {
 	    for (int y=0; y<height; y++) {
-		String name = "" + (char)('a' + x) + (y+1);
+		String name = "" + (char)('a' + y) + (x+1);
 		s_points[x][y] = new HexPoint(x, y, name);
 	    }
 	}

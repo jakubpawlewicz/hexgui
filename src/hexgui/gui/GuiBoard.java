@@ -175,13 +175,10 @@ public final class GuiBoard
     /** Gets the field at the specified point. */
     public GuiField getField(HexPoint point)
     {
-        System.out.println("Searching for: '" + point.toString() + "'");
 	for (int x=0; x<m_field.length; x++) {
-            System.out.println(m_field[x].getPoint().toString());
 	    if (m_field[x].getPoint() == point) 
 		return m_field[x];
         }
-        System.out.println("Not found! '" + point.toString() + "'");
 	assert(false);
 	return null;
     }
@@ -263,16 +260,17 @@ public final class GuiBoard
 	    int bw = m_width;
 	    int bh = m_height;
 	    GuiField ff[] = m_field;
-	    boolean flipped = false;
+	    boolean alphaontop = false;
 
-	    if (m_preferences.get("gui-board-on-top").equals("white")) {
+	    if (m_preferences.get("gui-board-on-top").equals("black")) {
+                System.out.println("Black on top");
 		bw = m_height;
 		bh = m_width;
-		flipped = true;
+		alphaontop = true;
 		ff = flipFields(m_field);
 	    }
 
-	    m_drawer.draw(m_image.getGraphics(), w, h, bw, bh, flipped, ff);
+	    m_drawer.draw(m_image.getGraphics(), w, h, bw, bh, alphaontop, ff);
 	    graphics.drawImage(m_image, 0, 0, null);
 	}
 
