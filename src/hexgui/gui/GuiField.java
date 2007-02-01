@@ -18,7 +18,8 @@ public class GuiField
 {
     public static final int DRAW_CELL_OUTLINE = 1;
     public static final int LAST_PLAYED = 2;
-    public static final int DRAW_ALPHA = 4;
+    public static final int SWAP_PLAYED = 4;
+    public static final int DRAW_ALPHA = 8;
 
     private static final Color COLOR_STONE_BLACK = Color.decode("#030303");
     private static final Color COLOR_STONE_BLACK_BRIGHT = Color.decode("#666666");
@@ -121,6 +122,9 @@ public class GuiField
 	if ((m_attributes & LAST_PLAYED) != 0) 
 	    drawLastPlayed();
 
+        if ((m_attributes & SWAP_PLAYED) != 0)
+            drawSwapPlayed();
+
 	if ((m_attributes & DRAW_ALPHA) != 0) 
 	    drawAlpha();
 	
@@ -147,6 +151,12 @@ public class GuiField
     {
 	m_graphics.setColor(Color.gray);
 	m_graphics.fillOval(m_width/2 - 2, m_height/2 - 2, 4, 4);
+    }
+
+    private void drawSwapPlayed()
+    {
+        m_graphics.setColor(Color.white);
+        m_graphics.drawString("S", m_width/2-3, m_height/2+3);
     }
 
     private void drawAlpha()

@@ -635,7 +635,7 @@ public final class HexGui
 
 	m_guiboard.setColor(m_current.getMove().getPoint(), 
                             m_current.getMove().getColor());
-	setLastPlayed();
+	markLastPlayedStone();
 
 	m_guiboard.paintImmediately();
 	m_toolbar.updateButtonStates(m_current);	
@@ -660,7 +660,7 @@ public final class HexGui
 
 	    m_current = child;
 	}
-	setLastPlayed();
+	markLastPlayedStone();
 	m_guiboard.repaint();
 	m_toolbar.updateButtonStates(m_current);
         m_menubar.updateMenuStates(m_current);
@@ -677,7 +677,7 @@ public final class HexGui
 
 	    m_current = m_current.getParent();
 	}
-	setLastPlayed();
+	markLastPlayedStone();
 	m_guiboard.repaint();
 	m_toolbar.updateButtonStates(m_current);
         m_menubar.updateMenuStates(m_current);
@@ -704,7 +704,7 @@ public final class HexGui
             if (point != HexPoint.SWAP_PIECES)
                 m_tomove = color.otherColor();
 	    
-	    setLastPlayed();
+	    markLastPlayedStone();
 	    m_guiboard.repaint();
 	    m_toolbar.updateButtonStates(m_current);
             m_menubar.updateMenuStates(m_current);
@@ -727,7 +727,7 @@ public final class HexGui
             if (point != HexPoint.SWAP_PIECES)
                 m_tomove = color.otherColor();
 	    
-	    setLastPlayed();
+	    markLastPlayedStone();
 	    m_guiboard.repaint();
 	    m_toolbar.updateButtonStates(m_current);
             m_menubar.updateMenuStates(m_current);
@@ -737,17 +737,27 @@ public final class HexGui
 
     //------------------------------------------------------------
 
-    private void setLastPlayed()
+    private void markLastPlayedStone()
     {
-        // FIXME: assumes swap move always has a parent node!!
-	if (m_current != m_root) {
-            if (m_current.getMove().getPoint() == HexPoint.SWAP_PIECES)
-                m_guiboard.setLastPlayed(m_current.getParent().getMove().getPoint());
-            else
-                m_guiboard.setLastPlayed(m_current.getMove().getPoint());
+        if (m_current == m_root) {
+            m_guiboard.markSwapPlayed(null);
+	    m_guiboard.markLastPlayed(null);            
+            return;
         }
-	else 
-	    m_guiboard.setLastPlayed(null);
+        
+        Move move = m_current.getMove();
+
+        if (move.getPoint() == HexPoint.SWAP_PIECES) {
+            Node parent = m_current.getParent();
+            assert(parent != null);
+
+            m_guiboard.markLastPlayed(null);
+            m_guiboard.markSwapPlayed(parent.getMove().getPoint());
+
+        } else {
+            m_guiboard.markLastPlayed(move.getPoint());
+            m_guiboard.markSwapPlayed(null);
+        }
     }	
 
     private void setGameChanged(boolean changed) 

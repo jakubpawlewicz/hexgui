@@ -198,7 +198,11 @@ public final class GuiBoard
 
     /** Marks the given point to show which move was played last, or
         clears the mark if <code>point</code> is <code>null</code>. */
-    public void setLastPlayed(HexPoint point)
+
+    // FIXME: don't store the last played move here, just get it from
+    //        the game tree. 
+
+    public void markLastPlayed(HexPoint point)
     {
         assert(point != HexPoint.SWAP_PIECES);
 
@@ -212,7 +216,21 @@ public final class GuiBoard
 	}
     }
 
-    /** Sets the given points alpha color. */
+    /** Marks the given point to show which move was swapped. */
+    public void markSwapPlayed(HexPoint point)
+    {
+        if (point == null) {
+            if (m_swap_played != null) {
+                m_swap_played.clearAttributes(GuiField.SWAP_PLAYED);
+                m_swap_played = null;
+            }
+        } else {
+            m_swap_played = getField(point);
+            m_swap_played.setAttributes(GuiField.SWAP_PLAYED);
+        }
+    }
+
+    /** Sets the given points's alpha color. */
     public void setAlphaColor(HexPoint point, Color color)
     {
 	getField(point).setAlphaColor(color);
@@ -308,6 +326,7 @@ public final class GuiBoard
     private GuiField m_field[];
 
     private GuiField m_last_played;
+    private GuiField m_swap_played;
 
     private BoardDrawerBase m_drawer;
     private BoardPanel m_boardPanel;
