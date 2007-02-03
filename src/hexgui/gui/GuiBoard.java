@@ -8,6 +8,7 @@ import hexgui.hex.*;
 import hexgui.util.*;
 
 import javax.swing.*;          
+import javax.swing.border.EtchedBorder;
 import java.awt.*;
 import java.awt.event.*;
 
@@ -41,6 +42,7 @@ public final class GuiBoard
 			 (m_preferences.getInt("gui-board-pixel-width"),
 	  	          m_preferences.getInt("gui-board-pixel-height")));
 
+        setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
 	setLayout(new BoardLayout());
 	m_boardPanel = new BoardPanel();
 	add(m_boardPanel);
@@ -296,7 +298,6 @@ public final class GuiBoard
 	    boolean alphaontop = false;
 
 	    if (m_preferences.get("gui-board-on-top").equals("black")) {
-                System.out.println("Black on top");
 		bw = m_height;
 		bh = m_width;
 		alphaontop = true;

@@ -17,8 +17,8 @@ public final class GuiPreferences
 	{ 
 	    {"gui-board-type",                    "Diamond"},
 	    {"gui-board-on-top",                  "white"},
-	    {"gui-board-pixel-width",             "800"},
-	    {"gui-board-pixel-height",            "600"},
+	    {"gui-board-pixel-width",             "750"},
+	    {"gui-board-pixel-height",            "500"},
 	    {"gui-board-width",                   "11"},
 	    {"gui-board-height",                  "11"},
 
