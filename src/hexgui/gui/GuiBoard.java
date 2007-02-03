@@ -154,6 +154,15 @@ public final class GuiBoard
 	getField(HexPoint.EAST).setColor(HexColor.WHITE);
     }
 
+    /** Clears dynamnic marks, leaving stones intact. */
+    public void clearMarks()
+    {
+	for (int x=0; x<m_field.length; x++) 
+	    m_field[x].clearAttributes(GuiField.LAST_PLAYED | 
+                                       GuiField.SWAP_PLAYED | 
+                                       GuiField.DRAW_ALPHA);
+    }
+
     /** Sets the given point to the given color.
         Special points are ignored (SWAP_PIECES, RESIGN, etc).
 	@param point the point

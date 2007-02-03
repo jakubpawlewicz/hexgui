@@ -42,14 +42,15 @@ public final class GuiMenuBar
 	m_connect_remote.setEnabled(!f);
 	m_connect_local.setEnabled(!f);
 	m_disconnect.setEnabled(f);
-	
+        m_genmove.setEnabled(f);
+
 	if (f == false) {
 	    setShellVisible(false);
 	    m_shell_visible.setEnabled(false);
 	} else {
 	    m_shell_visible.setEnabled(true);
 	    setShellVisible(m_preferences.
-			    getBoolean("gui-shell-show-after-connect"));
+			    getBoolean("shell-show-on-connect"));
 	}
     }
 
@@ -137,10 +138,15 @@ public final class GuiMenuBar
 
 	menu.addSeparator();
 
-        m_swap = new JMenuItem("Swap");
+        m_swap = new JMenuItem("Play Swap Move");
         m_swap.addActionListener(m_listener);
         m_swap.setActionCommand("game_swap");
         menu.add(m_swap);
+
+        m_genmove = new JMenuItem("Generate Computer Move");
+        m_genmove.addActionListener(m_listener);
+        m_genmove.setActionCommand("genmove");
+        menu.add(m_genmove);
 
 	// FIXME: implement!!
 	m_resign = new JMenuItem("Resign");
@@ -408,7 +414,7 @@ public final class GuiMenuBar
 
     private JMenuItem m_connect_local, m_connect_remote, m_disconnect;
 
-    private JMenuItem m_resign, m_swap;
+    private JMenuItem m_resign, m_swap, m_genmove;
 
     private ButtonGroup m_bsGroup;   // board sizes
     private ButtonGroup m_btGroup;   // board view types (diamond, flat, etc)

@@ -129,8 +129,8 @@ public final class HexGui
 	    down();
         else if (cmd.equals("game_swap"))
             humanMove(new Move(HexPoint.get("swap-pieces"), m_tomove));
-	else if (cmd.equals("computer-move")) 
-	    cmdComputerMove();
+	else if (cmd.equals("genmove")) 
+	    htpGenMove(m_tomove);
 	else if (cmd.equals("stop")) {
 
 	}
@@ -248,8 +248,9 @@ public final class HexGui
 	m_toolbar.setProgramConnected(true);
 	m_menubar.setProgramConnected(true);
 
-	htpBoardsize();
+	htpBoardsize(m_guiboard.getBoardSize());
 
+        // play up to current move
 	Node cur = m_root;
 	while (cur != m_current) {
 	    cur = cur.getChildContainingNode(m_current);
@@ -330,7 +331,7 @@ public final class HexGui
 	    m_toolbar.updateButtonStates(m_current);
             m_menubar.updateMenuStates(m_current);
 
-            htpBoardsize();
+            htpBoardsize(m_guiboard.getBoardSize());
 	}
     }
 
@@ -428,6 +429,7 @@ public final class HexGui
         new PreferencesDialog(this, m_preferences);
     }
 
+
     //------------------------------------------------------------
 
     /** HtpShell Callback */
@@ -440,7 +442,7 @@ public final class HexGui
 	else if (c.equals("version"))
 	    htpVersion();
 	else if (c.equals("genmove"))
-	    cmdComputerMove();
+	    htpGenMove(m_tomove);
 	else if (c.equals("all_legal_moves"))
 	    htpAllLegalMoves();
 	else if (c.equals("quit"))
@@ -505,7 +507,6 @@ public final class HexGui
     {
     }
 
-    // FIXME: add a callback?
     private void htpPlay(Move move)
     {
 	Runnable callback = new Runnable()
@@ -530,21 +531,19 @@ public final class HexGui
 	sendCommand("showboard\n", null);
     }
 
-    // FIXME: add a callback?
-    private void htpBoardsize()
+    private void htpBoardsize(Dimension size)
     {
 	Runnable callback = new Runnable()
 	    {
 		public void run() { cbEmptyResponse(); }
 	    };
 
-        Dimension size = m_guiboard.getBoardSize();
         sendCommand("boardsize " + size.width + " " + size.height + "\n",
                     callback);
         sendCommand("showboard\n", null);
     }
 
-    public void cbComputerMove()
+    public void cbGenMove()
     {
 	String str = m_white.getResponse();
 	HexPoint point = HexPoint.get(str.trim());
@@ -555,13 +554,13 @@ public final class HexGui
 	}
     }
 
-    private void cmdComputerMove()
+    private void htpGenMove(HexColor color)
     {
 	Runnable callback = new Runnable() 
 	    { 
-		public void run() { cbComputerMove(); } 
+		public void run() { cbGenMove(); } 
 	    };
-	sendCommand("genmove " + m_tomove.toString() + "\n", callback);
+	sendCommand("genmove " + color.toString() + "\n", callback);
 	sendCommand("showboard\n", null);
     }
 
@@ -589,6 +588,10 @@ public final class HexGui
 	sendCommand("all_legal_moves\n", callback);
     }
 
+    
+    //------------------------------------------------------------
+
+
     /** Callback from GuiBoard. 
 	Handle a mouse click.
     */
@@ -604,7 +607,7 @@ public final class HexGui
 	play(move);
 	htpPlay(move);
         if (!m_guiboard.isBoardFull())
-            cmdComputerMove();
+            htpGenMove(m_tomove);
     }
 
     private void play(Move move)
@@ -646,6 +649,8 @@ public final class HexGui
 
 	m_guiboard.setColor(m_current.getMove().getPoint(), 
                             m_current.getMove().getColor());
+
+        m_guiboard.clearMarks();
 	markLastPlayedStone();
 
 	m_guiboard.paintImmediately();
@@ -671,7 +676,10 @@ public final class HexGui
 
 	    m_current = child;
 	}
+
+        m_guiboard.clearMarks();
 	markLastPlayedStone();
+
 	m_guiboard.repaint();
 	m_toolbar.updateButtonStates(m_current);
         m_menubar.updateMenuStates(m_current);
@@ -685,11 +693,13 @@ public final class HexGui
 	    Move move = m_current.getMove();
 	    m_guiboard.setColor(move.getPoint(), HexColor.EMPTY);
             htpUndo();
-	    //htpPlay(new Move(move.getPoint(), HexColor.EMPTY));
 
 	    m_current = m_current.getParent();
 	}
+
+        m_guiboard.clearMarks();
 	markLastPlayedStone();
+
 	m_guiboard.repaint();
 	m_toolbar.updateButtonStates(m_current);
         m_menubar.updateMenuStates(m_current);
@@ -706,7 +716,6 @@ public final class HexGui
 	    HexPoint point = m_current.getMove().getPoint();
 	    m_guiboard.setColor(point, HexColor.EMPTY);
             htpUndo();
-	    //htpPlay(new Move(point, HexColor.EMPTY));
 	    
 	    m_current = m_current.getNext();
 	    
@@ -716,8 +725,10 @@ public final class HexGui
 	    htpPlay(m_current.getMove());
             if (point != HexPoint.SWAP_PIECES)
                 m_tomove = color.otherColor();
-	    
+
+            m_guiboard.clearMarks();	    
 	    markLastPlayedStone();
+
 	    m_guiboard.repaint();
 	    m_toolbar.updateButtonStates(m_current);
             m_menubar.updateMenuStates(m_current);
@@ -730,7 +741,6 @@ public final class HexGui
 	    HexPoint point = m_current.getMove().getPoint();
 	    m_guiboard.setColor(point, HexColor.EMPTY);
             htpUndo();
-	    //htpPlay(new Move(point, HexColor.EMPTY));
 	    
 	    m_current = m_current.getPrev();
 	    
@@ -741,7 +751,9 @@ public final class HexGui
             if (point != HexPoint.SWAP_PIECES)
                 m_tomove = color.otherColor();
 	    
+            m_guiboard.clearMarks();
 	    markLastPlayedStone();
+
 	    m_guiboard.repaint();
 	    m_toolbar.updateButtonStates(m_current);
             m_menubar.updateMenuStates(m_current);

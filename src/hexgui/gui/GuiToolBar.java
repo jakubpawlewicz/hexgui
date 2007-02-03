@@ -145,7 +145,7 @@ public final class GuiToolBar
 
 	m_swap = makeButton("hexgui/images/swap.png",
 			    "game_swap",
-			    "Play Swap Move",
+			    "Play swap move",
 			    "Swap");
 	m_toolBar.add(m_swap);
 	m_swap.setEnabled(false);
@@ -153,8 +153,8 @@ public final class GuiToolBar
 	m_toolBar.addSeparator();
 
 	m_play = makeButton("hexgui/images/play.png",
-			    "computer-move",
-			    "Get computer move",
+			    "genmove",
+			    "Generate computer move",
 			    "Play");
 	m_toolBar.add(m_play);
 	m_play.setEnabled(false);
