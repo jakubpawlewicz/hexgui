@@ -39,6 +39,17 @@ public class HtpController
 	return ret;
     }
 
+    public static Vector<String> parseStringList(String str)
+    {
+	Vector<String> ret = new Vector<String>();
+	String[] strs = str.trim().split("\n");
+	for (int i=0; i<strs.length; i++) {
+	    String cur = strs[i].trim();
+	    ret.add(cur);
+	}
+	return ret;
+    }
+
     //------------------------------------------------------------
 
     /** Constructor */

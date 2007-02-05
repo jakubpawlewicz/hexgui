@@ -19,7 +19,8 @@ public class GuiField
     public static final int DRAW_CELL_OUTLINE = 1;
     public static final int LAST_PLAYED = 2;
     public static final int SWAP_PLAYED = 4;
-    public static final int DRAW_ALPHA = 8;
+    public static final int DRAW_TEXT = 8;
+    public static final int DRAW_ALPHA = 16;
 
     private static final Color COLOR_STONE_BLACK = Color.decode("#030303");
     private static final Color COLOR_STONE_BLACK_BRIGHT = Color.decode("#666666");
@@ -29,13 +30,15 @@ public class GuiField
 
     public GuiField(HexPoint p)
     {
-	this(p, HexColor.EMPTY, 0, null);
+	this(p, HexColor.EMPTY, 0, null, null);
     }
 
-    public GuiField(HexPoint p, HexColor c, int attributes, Color alpha)
+    public GuiField(HexPoint p, HexColor c, int attributes, 
+                    String text, Color alpha)
     {
 	m_point = p;
 	m_color = c;
+        m_text = text;
 	m_alpha_color = alpha;
 	m_attributes = attributes;
     }
@@ -44,7 +47,7 @@ public class GuiField
     public GuiField(GuiField f)
     {
 	this(f.getPoint(), f.getColor(), f.getAttributes(), 
-	     f.getAlphaColor());
+	     f.getText(), f.getAlphaColor());
     }
 
     public static int getStoneMargin(int width)
@@ -59,6 +62,18 @@ public class GuiField
  
     public void setColor(HexColor c) { m_color = c; }
     public HexColor getColor() { return m_color; }
+
+    public void setText(String str)
+    {
+        m_text = str;
+        if (str == null)
+            clearAttributes(DRAW_TEXT);
+        else
+            setAttributes(DRAW_TEXT);
+    }
+
+    public String getText() { return m_text; }
+
 
     public void setAlphaColor(Color c)
     {
@@ -127,6 +142,9 @@ public class GuiField
 
 	if ((m_attributes & DRAW_ALPHA) != 0) 
 	    drawAlpha();
+
+        if ((m_attributes & DRAW_TEXT) != 0)
+            drawText();
 	
     }
     
@@ -174,11 +192,19 @@ public class GuiField
 
     }
 
+    private void drawText()
+    {
+        m_graphics.setColor(Color.white);
+        m_graphics.drawString(m_text, m_width/2-3, m_height/2+3);
+    }
+
     private HexPoint m_point;
     private HexColor m_color;
     private int m_attributes;
 
     private Color m_alpha_color;
+
+    private String m_text;
 
     private int m_width;
     private int m_height;

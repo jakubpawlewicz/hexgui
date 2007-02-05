@@ -26,6 +26,8 @@ public final class GuiPreferences
 
 	    {"shell-show-on-connect",             "true"},
 
+            {"analyze-show-on-connect",           "true"},
+
             {"auto-respond",                      "true"},
 
 	    {"path-local-program",                "./htpwolve"},

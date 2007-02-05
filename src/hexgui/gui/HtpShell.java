@@ -37,10 +37,11 @@ public class HtpShell
 		     JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
 	Dimension size = owner.getSize();
-	m_scrollpane.setPreferredSize(new Dimension(400, size.height));
-	m_scrollpane.setMinimumSize(new Dimension(400, 200));
-	setLocation(size.width, 0);
 	getContentPane().add(m_scrollpane, BorderLayout.CENTER);
+
+	setPreferredSize(new Dimension(400, size.height));
+	setMinimumSize(new Dimension(400, 200));
+	setLocation(size.width, 0);
 
 	m_field = new JTextField();
 	m_field.addActionListener(this);

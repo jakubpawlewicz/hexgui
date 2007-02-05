@@ -160,6 +160,7 @@ public final class GuiBoard
 	for (int x=0; x<m_field.length; x++) 
 	    m_field[x].clearAttributes(GuiField.LAST_PLAYED | 
                                        GuiField.SWAP_PLAYED | 
+                                       GuiField.DRAW_TEXT | 
                                        GuiField.DRAW_ALPHA);
     }
 
@@ -245,6 +246,12 @@ public final class GuiBoard
     public void setAlphaColor(HexPoint point, Color color)
     {
 	getField(point).setAlphaColor(color);
+    }
+
+    /** Sets the given points's text. */
+    public void setText(HexPoint point, String str)
+    {
+        getField(point).setText(str);
     }
 
     public boolean isBoardFull()

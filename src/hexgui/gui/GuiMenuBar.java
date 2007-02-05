@@ -47,10 +47,16 @@ public final class GuiMenuBar
 	if (f == false) {
 	    setShellVisible(false);
 	    m_shell_visible.setEnabled(false);
+	    setAnalyzeVisible(false);
+	    m_analyze_visible.setEnabled(false);
 	} else {
 	    m_shell_visible.setEnabled(true);
+            m_analyze_visible.setEnabled(true);
+
 	    setShellVisible(m_preferences.
 			    getBoolean("shell-show-on-connect"));
+            setAnalyzeVisible(m_preferences.
+                              getBoolean("analyze-show-on-connect"));
 	}
     }
 
@@ -278,6 +284,16 @@ public final class GuiMenuBar
 	m_shell_visible.setState(f);
     }
 
+    public boolean getAnalyzeVisible()
+    {
+        return m_analyze_visible.getState();
+    }
+
+    public void setAnalyzeVisible(boolean f)
+    {
+        m_analyze_visible.setState(f);
+    }
+
     private JMenu createViewMenu()
     {
 	JMenu menu = new JMenu("View");
@@ -295,6 +311,12 @@ public final class GuiMenuBar
 	m_shell_visible.setActionCommand("gui_shell_visible");
 	m_shell_visible.setEnabled(false);
 	menu.add(m_shell_visible);
+
+	m_analyze_visible = new JCheckBoxMenuItem("Show Analyze");
+	m_analyze_visible.addActionListener(m_listener);
+	m_analyze_visible.setActionCommand("gui_analyze_visible");
+	m_analyze_visible.setEnabled(false);
+	menu.add(m_analyze_visible);
 
 	menu.addSeparator();
 
@@ -411,6 +433,7 @@ public final class GuiMenuBar
 
     private JCheckBoxMenuItem m_toolbar_visible;
     private JCheckBoxMenuItem m_shell_visible;
+    private JCheckBoxMenuItem m_analyze_visible;
 
     private JMenuItem m_connect_local, m_connect_remote, m_disconnect;
 

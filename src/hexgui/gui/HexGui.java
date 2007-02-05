@@ -26,7 +26,8 @@ import java.net.*;
 /** HexGui. */
 public final class HexGui 
     extends JFrame 
-    implements ActionListener, GuiBoard.Listener, HtpShell.Callback
+    implements ActionListener, GuiBoard.Listener, HtpShell.Callback,
+               AnalyzeDialog.Callback
 {
     public HexGui()
     {
@@ -102,6 +103,8 @@ public final class HexGui
 	    cmdGuiToolbarVisible();
 	else if (cmd.equals("gui_shell_visible"))
 	    cmdGuiShellVisible();
+	else if (cmd.equals("gui_analyze_visible"))
+            cmdGuiAnalyzeVisible();
 	else if (cmd.equals("gui_board_draw_type"))
 	    cmdGuiBoardDrawType();
 	else if (cmd.equals("gui_board_orientation"))
@@ -230,6 +233,14 @@ public final class HexGui
 
     private void connectProgram(InputStream in, OutputStream out)
     {
+        m_analyze = new AnalyzeDialog(this, this);
+	m_analyze.addWindowListener(new WindowAdapter() 
+	    {
+		public void windowClosing(WindowEvent winEvt) {
+		    m_menubar.setAnalyzeVisible(false);
+		}
+	    });
+
 	m_shell = new HtpShell(this, this);
 	m_shell.addWindowListener(new WindowAdapter() 
 	    {
@@ -242,9 +253,13 @@ public final class HexGui
 	htpName();
 	htpVersion();
 
-	m_shell.setTitle("HexGui: [" + m_white_name + " " + 
-			 m_white_version + "] Shell");
-			 
+	m_shell.setTitle("HexGui: [" + m_white_name + " " 
+                            + m_white_version + "] Shell");
+
+        htpListCommands();   // FIXME: make sure we block until its
+                             // callback is finished (when we do stuff
+                             // in separate threads. Not an issue now. 
+		 
 	m_toolbar.setProgramConnected(true);
 	m_menubar.setProgramConnected(true);
 
@@ -276,6 +291,8 @@ public final class HexGui
 	    m_white = null;
 	    m_shell.dispose();
 	    m_shell = null;
+            m_analyze.dispose();
+            m_analyze = null;
 	    m_menubar.setProgramConnected(false);
 	    m_toolbar.setProgramConnected(false);
 	}
@@ -408,6 +425,13 @@ public final class HexGui
 	m_shell.setVisible(visible);
     }
 
+    private void cmdGuiAnalyzeVisible()
+    {
+	if (m_analyze == null) return;
+	boolean visible = m_menubar.getAnalyzeVisible();
+	m_analyze.setVisible(visible);
+    }
+
     private void cmdGuiBoardDrawType()
     {
 	String type = m_menubar.getCurrentBoardDrawType();
@@ -432,7 +456,13 @@ public final class HexGui
 
     //------------------------------------------------------------
 
-    /** HtpShell Callback */
+    /** Analyze dialog callback; calls the commandEntered method. */
+    public void analyzeCommand(String cmd)
+    {
+        commandEntered(cmd);
+    }
+
+    /** HtpShell Callback. */
     // FIXME: do this the right way!!
     public void commandEntered(String cmd)
     {
@@ -445,6 +475,8 @@ public final class HexGui
 	    htpGenMove(m_tomove);
 	else if (c.equals("all_legal_moves"))
 	    htpAllLegalMoves();
+        else if (c.equals("mohex-show-rollout"))
+            htpMohexShowRollout();
 	else if (c.equals("quit"))
 	    htpQuit();
 	else
@@ -501,6 +533,29 @@ public final class HexGui
 	    };
 	sendCommand("version\n", callback);
     }
+
+    private void cbListCommands()
+    {
+        if (m_analyze == null) {
+            System.out.println("No analyze dialog!!");
+            return;
+        }
+        
+        String str = m_white.getResponse();
+	Vector<String> cmds = HtpController.parseStringList(str);
+        m_analyze.setCommands(cmds);
+
+    }
+
+    private void htpListCommands()
+    {
+	Runnable callback = new Runnable()
+	    {
+		public void run() { cbListCommands(); }
+	    };
+	sendCommand("list_commands\n", callback);
+    }
+
 
     // FIXME: check for errors
     public void cbEmptyResponse()
@@ -588,6 +643,32 @@ public final class HexGui
 	sendCommand("all_legal_moves\n", callback);
     }
 
+    //==================================================
+    // commands specific to mohex
+    
+    public void cbMohexShowRollout()
+    {
+	if (!m_white.wasSuccess()) 
+	    return;
+
+	String str = m_white.getResponse();
+	Vector<HexPoint> points = HtpController.parsePointList(str);
+        for (int i=0; i<points.size(); i++) {
+	    HexPoint p = points.get(i);
+	    m_guiboard.setAlphaColor(p, Color.green);
+            m_guiboard.setText(p,Integer.toString(i));
+	}
+	m_guiboard.repaint();
+    }
+
+    private void htpMohexShowRollout()
+    {
+	Runnable callback = new Runnable() 
+	    { 
+		public void run() { cbMohexShowRollout(); } 
+	    };
+	sendCommand("mohex-show-rollout\n", callback);
+    }
     
     //------------------------------------------------------------
 
@@ -910,6 +991,7 @@ public final class HexGui
     private GuiToolBar m_toolbar;
     private GuiMenuBar m_menubar;
     private HtpShell m_shell;
+    private AnalyzeDialog m_analyze;
 
     private Node m_root;
     private Node m_current;

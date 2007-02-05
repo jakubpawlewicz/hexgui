@@ -70,9 +70,13 @@ public final class PreferencesDialog
         showShellOnConnect = createCheckBox("Show Shell on Program Connect",
                                             "shell-show-on-connect");
 
+        showAnalyzeOnConnect = createCheckBox("Show Analyze on Program Connect",
+                                            "analyze-show-on-connect");
+
         autoRespond = createCheckBox("Auto-respond", "auto-respond");
 
         panel.add(showShellOnConnect);
+        panel.add(showAnalyzeOnConnect);
         panel.add(autoRespond);
 
         return panel;
@@ -110,7 +114,7 @@ public final class PreferencesDialog
         return box;
     }
 
-    JCheckBox showShellOnConnect;
+    JCheckBox showShellOnConnect, showAnalyzeOnConnect;
     JCheckBox autoRespond;
     
     GuiPreferences m_preferences;
