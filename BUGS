@@ -1,2 +1,0 @@
-* File -> Disconnect Program sometimes stalls out when listening for an
-  empty response.  (The process dies and the stream is closed?)

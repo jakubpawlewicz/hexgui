@@ -2,6 +2,10 @@ HexGui TODO
 
 [07/01/18]
 
+* draw stones in rollout!
+
+* keep S on swap move
+
 * implement more Preferences
   * gui placement
 
@@ -9,15 +13,17 @@ HexGui TODO
   * display sets of moves
     eg: rollouts, virtual connections, simplicial, dead, etdc. 
   
-* handle 'swap', 'forfeit' and 'resign' moves
+* handle 'forfeit' and 'resign' moves
 
 * allow computer to play white or black
   * auto-respond on/off
   * self play
 
+* analyze dialog
+  * come up with a way to pass parameters
+
 * program shell
   * close it properly when program is disconnected/dies/etc
-  * select available commands from a list
   * store location/size as preferences
 
 * put remote program in its own thread (a total bitch, probably)
@@ -25,8 +31,6 @@ HexGui TODO
 * implement htp interrupts
   + implement 'stop' button
   + get info while search is on
-
-+ 'about' dialog
 
 * logging, instead of printing to stdout
 
