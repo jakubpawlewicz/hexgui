@@ -543,6 +543,7 @@ public final class HexGui
         
         String str = m_white.getResponse();
 	Vector<String> cmds = HtpController.parseStringList(str);
+        Collections.sort(cmds);
         m_analyze.setCommands(cmds);
 
     }
