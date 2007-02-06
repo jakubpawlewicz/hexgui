@@ -85,7 +85,7 @@ public class AnalyzeDialog
         if (what.equals("run")) {
             int index = m_list.getSelectedIndex();
             if (index != -1) {
-                String cmd = m_commands.get(index);
+                String cmd = m_commands.get(index) + "\n";
                 m_callback.analyzeCommand(cmd);
             }
         }
