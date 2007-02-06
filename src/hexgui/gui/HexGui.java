@@ -5,6 +5,7 @@
 package hexgui.gui;
 
 import hexgui.hex.*;
+import hexgui.util.Pair;
 import hexgui.game.Node;
 import hexgui.game.GameInfo;
 import hexgui.sgf.SgfWriter;
@@ -646,17 +647,25 @@ public final class HexGui
 
     //==================================================
     // commands specific to mohex
-    
+    //==================================================
+
     public void cbMohexShowRollout()
     {
 	if (!m_white.wasSuccess()) 
 	    return;
 
 	String str = m_white.getResponse();
-	Vector<HexPoint> points = HtpController.parsePointList(str);
-        for (int i=0; i<points.size(); i++) {
-	    HexPoint p = points.get(i);
-	    m_guiboard.setAlphaColor(p, Color.green);
+        Vector<Pair<String, String> > pairs = 
+            HtpController.parseStringPairList(str);
+
+        for (int i=0; i<pairs.size(); i++) {
+	    HexPoint p = HexPoint.get(pairs.get(i).first);
+            String value = pairs.get(i).second;
+            if (value.equals("#"))
+                m_guiboard.setAlphaColor(p, Color.green);
+            else
+                m_guiboard.setAlphaColor(p, Color.red);
+
             m_guiboard.setText(p,Integer.toString(i));
 	}
 	m_guiboard.repaint();
@@ -668,7 +677,8 @@ public final class HexGui
 	    { 
 		public void run() { cbMohexShowRollout(); } 
 	    };
-	sendCommand("mohex-show-rollout\n", callback);
+	sendCommand("mohex-show-rollout " + m_tomove.toString() + "\n",
+                    callback);
     }
     
     //------------------------------------------------------------

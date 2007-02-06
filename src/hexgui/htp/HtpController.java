@@ -5,6 +5,7 @@
 package hexgui.htp;
 
 import hexgui.hex.HexPoint;
+import hexgui.util.Pair;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -28,6 +29,11 @@ public class HtpController
 
     //------------------------------------------------------------
 
+    //
+    // FIXME: preprocess the input strings by turning all whitespace
+    // into single occurances of " "!!!
+    //
+
     public static Vector<HexPoint> parsePointList(String str)
     {
 	Vector<HexPoint> ret = new Vector<HexPoint>();
@@ -46,6 +52,18 @@ public class HtpController
 	for (int i=0; i<strs.length; i++) {
 	    String cur = strs[i].trim();
 	    ret.add(cur);
+	}
+	return ret;
+    }
+
+    public static Vector<Pair<String, String> > parseStringPairList(String str)
+    {
+	Vector<Pair<String, String> > ret = new Vector<Pair<String, String> >();
+	String[] strs = str.trim().split(" ");
+	for (int i=0; i<strs.length; i+=2) {
+	    String c1 = strs[i].trim();
+            String c2 = strs[i+1].trim();
+	    ret.add(new Pair<String, String>(c1, c2));
 	}
 	return ret;
     }
