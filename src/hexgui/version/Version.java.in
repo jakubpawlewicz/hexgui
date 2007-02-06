@@ -1,4 +1,10 @@
+//----------------------------------------------------------------------------
+// $Id$
+//----------------------------------------------------------------------------
+
 package hexgui.version;
+
+//----------------------------------------------------------------------------
 
 /** Version information.
     Contains the current version number, the svn build number, and
@@ -15,3 +21,5 @@ public final class Version
     public static String build = "@BUILD@";
     public static String date = "@DATE@";
 }
+
+//----------------------------------------------------------------------------
