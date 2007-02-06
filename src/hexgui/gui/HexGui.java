@@ -46,6 +46,8 @@ public final class HexGui
 		}
 	    });
 
+        m_about = new AboutDialog(this);
+
 	m_preferences = new GuiPreferences(getClass());
 	
 	m_menubar = new GuiMenuBar(this, m_preferences);
@@ -408,7 +410,7 @@ public final class HexGui
 
     private void cmdAbout()
     {
-	
+        m_about.setVisible(true);
     }
 
     //------------------------------------------------------------
@@ -997,6 +999,7 @@ public final class HexGui
 	return null;
     }
 
+    private AboutDialog m_about;
     private GuiPreferences m_preferences;
     private GuiBoard m_guiboard;
     private GuiToolBar m_toolbar;
