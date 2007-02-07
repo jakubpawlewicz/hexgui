@@ -46,6 +46,8 @@ public final class HexGui
 		}
 	    });
 
+        m_selected_cells = new Vector<HexPoint>();
+
         m_about = new AboutDialog(this);
 
 	m_preferences = new GuiPreferences(getClass());
@@ -678,11 +680,19 @@ public final class HexGui
 
     private void htpMohexShowRollout()
     {
+        // FIXME: prompt user to select a cell
+        if (m_selected_cells.size() < 1)
+            return;
+
+        HexPoint point = m_selected_cells.get(0);
+
 	Runnable callback = new Runnable() 
 	    { 
 		public void run() { cbMohexShowRollout(); } 
 	    };
-	sendCommand("mohex-show-rollout " + m_tomove.toString() + "\n",
+
+	sendCommand("mohex-show-rollout " + m_tomove.toString() 
+                    + " " + point.toString() + "\n",
                     callback);
     }
     
@@ -692,11 +702,45 @@ public final class HexGui
     /** Callback from GuiBoard. 
 	Handle a mouse click.
     */
-    public void fieldClicked(HexPoint point)
+    public void fieldClicked(HexPoint point, boolean ctrl, boolean shift)
     {
-	if (m_guiboard.getColor(point) == HexColor.EMPTY) {
-	    humanMove(new Move(point, m_tomove));
-	}
+        if (ctrl) {
+
+            if (!shift) {
+                for (int i=0; i<m_selected_cells.size(); i++) {
+                    HexPoint p = m_selected_cells.get(i);
+                    m_guiboard.setSelected(p, false);
+                }
+                m_selected_cells.clear();
+
+                m_guiboard.setSelected(point, true);
+                m_selected_cells.add(point);
+            } else {
+                
+                int found_at = -1;
+                for (int i=0; i<m_selected_cells.size() && found_at == -1; i++) {
+                    if (m_selected_cells.get(i) == point) 
+                        found_at = i;
+                }
+           
+                if (found_at != -1) {
+                    m_guiboard.setSelected(point, false);
+                    m_selected_cells.remove(found_at);
+                } else {
+                    m_guiboard.setSelected(point, true);
+                    m_selected_cells.add(point);
+                }
+            }
+
+            m_guiboard.repaint();
+            
+        } else {
+
+            if (m_guiboard.getColor(point) == HexColor.EMPTY) {
+                humanMove(new Move(point, m_tomove));
+            }
+
+        }
     }
 
     public void humanMove(Move move)
@@ -1016,6 +1060,8 @@ public final class HexGui
     private GameInfo m_gameinfo;
     private HexColor m_tomove;
     private boolean m_gameChanged;
+
+    private Vector<HexPoint> m_selected_cells;
 
     private HtpController m_white;
     private String m_white_name;

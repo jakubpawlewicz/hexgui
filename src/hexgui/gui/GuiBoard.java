@@ -21,7 +21,7 @@ public final class GuiBoard
     /** Callback for clicks on a field. */
     public interface Listener
     {
-	void fieldClicked(HexPoint point);
+	void fieldClicked(HexPoint point, boolean ctrl, boolean shift);
     }
 
     private static final boolean DEFAULT_FLIPPED = true;
@@ -53,7 +53,11 @@ public final class GuiBoard
 	    {
 		GuiField f = m_drawer.getFieldContaining(e.getPoint(), m_field);
 		if (f == null) return;
-		m_listener.fieldClicked(f.getPoint());
+
+                int modifiers = e.getModifiers();
+                boolean ctrl = (modifiers & ActionEvent.CTRL_MASK) != 0;
+                boolean shift = (modifiers & ActionEvent.SHIFT_MASK) != 0;
+		m_listener.fieldClicked(f.getPoint(), ctrl, shift);
 	    }
 	};
 	m_boardPanel.addMouseListener(mouseAdapter);
@@ -245,6 +249,9 @@ public final class GuiBoard
     /** Sets the given points's alpha color. */
     public void setAlphaColor(HexPoint point, Color color)
     {
+        if (point == HexPoint.get("swap-pieces"))
+            return;
+
 	getField(point).setAlphaColor(color);
     }
 
@@ -252,6 +259,12 @@ public final class GuiBoard
     public void setText(HexPoint point, String str)
     {
         getField(point).setText(str);
+    }
+
+    /** Sets wheither this cell is selected. */
+    public void setSelected(HexPoint point, boolean selected)
+    {
+        getField(point).setSelected(selected);
     }
 
     public boolean isBoardFull()

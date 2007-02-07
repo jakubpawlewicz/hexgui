@@ -21,6 +21,7 @@ public class GuiField
     public static final int SWAP_PLAYED = 4;
     public static final int DRAW_TEXT = 8;
     public static final int DRAW_ALPHA = 16;
+    public static final int SELECTED = 32;
 
     private static final Color COLOR_STONE_BLACK = Color.decode("#030303");
     private static final Color COLOR_STONE_BLACK_BRIGHT = Color.decode("#666666");
@@ -86,6 +87,14 @@ public class GuiField
 
     public Color getAlphaColor() { return m_alpha_color; }
 
+    public void setSelected(boolean f) 
+    { 
+        if (f) 
+            setAttributes(SELECTED);
+        else
+            clearAttributes(SELECTED);
+    }
+
     public void setPoint(HexPoint p) { m_point = p; }
     public HexPoint getPoint() { return m_point; }
     
@@ -140,8 +149,11 @@ public class GuiField
         if ((m_attributes & SWAP_PLAYED) != 0)
             drawSwapPlayed();
 
-	if ((m_attributes & DRAW_ALPHA) != 0) 
-	    drawAlpha();
+        // FIXME: this is done in BoardDrawer since we don't know anything about
+        // our shape and size and we want to cover the entire field.
+        // Should all drawing be done in board drawer?
+        // 	if ((m_attributes & DRAW_ALPHA) != 0) 
+        // 	    drawAlpha();
 
         if ((m_attributes & DRAW_TEXT) != 0)
             drawText();

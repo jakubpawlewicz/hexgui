@@ -106,6 +106,7 @@ public abstract class BoardDrawerBase
 	drawLabels(g, alphaontop);
 	drawShadows(g, field);
 	drawFields(g, field);
+        drawAlpha(g, field);
     }
 
     //------------------------------------------------------------
@@ -178,6 +179,13 @@ public abstract class BoardDrawerBase
 	g.setColor(Color.black);
 	for (int i=0; i<m_outline.length; i++) {
 	    if ((field[i].getAttributes() & GuiField.DRAW_CELL_OUTLINE) != 0) {
+		g.drawPolygon(m_outline[i]);
+	    }
+	}
+
+	g.setColor(Color.yellow);
+	for (int i=0; i<m_outline.length; i++) {
+	    if ((field[i].getAttributes() & GuiField.SELECTED) != 0) {
 		g.drawPolygon(m_outline[i]);
 	    }
 	}
@@ -264,6 +272,28 @@ public abstract class BoardDrawerBase
 	for (int x=0; x<field.length; x++) {
 	    Point p = getLocation(field[x].getPoint());
 	    field[x].draw(g, p.x, p.y, m_fieldWidth, m_fieldHeight);
+	}
+    }
+
+    protected void drawAlpha(Graphics g, GuiField field[])
+    {
+	if (g instanceof Graphics2D) {
+	    Graphics2D g2d = (Graphics2D)g;
+
+            for (int i=0; i<m_outline.length; i++) {
+                if ((field[i].getAttributes() & GuiField.DRAW_ALPHA) == 0)
+                    continue;
+
+                Color color = field[i].getAlphaColor();
+                if (color == null)
+                    continue;
+
+                g2d.setComposite(AlphaComposite.
+                                 getInstance(AlphaComposite.SRC_OVER, 0.3f));
+                
+                g2d.setColor(color);
+		g2d.fillPolygon(m_outline[i]);
+	    }
 	}
     }
 
