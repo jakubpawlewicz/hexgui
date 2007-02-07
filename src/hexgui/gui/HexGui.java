@@ -56,6 +56,9 @@ public final class HexGui
 	m_toolbar = new GuiToolBar(this, m_preferences);
         getContentPane().add(m_toolbar.getJToolBar(), BorderLayout.NORTH);
 
+        m_statusbar = new StatusBar();
+        getContentPane().add(m_statusbar, BorderLayout.SOUTH);
+
 	m_guiboard = new GuiBoard(this, m_preferences);
         getContentPane().add(m_guiboard, BorderLayout.CENTER);
 
@@ -1003,6 +1006,7 @@ public final class HexGui
     private GuiPreferences m_preferences;
     private GuiBoard m_guiboard;
     private GuiToolBar m_toolbar;
+    private StatusBar m_statusbar;
     private GuiMenuBar m_menubar;
     private HtpShell m_shell;
     private AnalyzeDialog m_analyze;
