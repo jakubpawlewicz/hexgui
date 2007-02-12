@@ -30,6 +30,8 @@ public final class GuiPreferences
 
             {"auto-respond",                      "true"},
 
+            {"remote-host-name",                  "localhost"},
+
 	    {"path-local-program",                "./htpwolve"},
 	    {"path-load-game",                    "../games/"},
 	    {"path-save-game",                    "../games/"},

@@ -175,6 +175,12 @@ public final class HexGui
 	int port = 20000;
 	String hostname = "localhost";
 
+        String remote = m_preferences.get("remote-host-name");
+        String name = RemoteProgramDialog.show(this, remote);
+        if (name == null) // user aborted
+            return;
+
+        hostname = name;
 	System.out.print("Connecting to HTP program at [" + hostname + 
 			 "] on port " + port + "...");
 	System.out.flush();
@@ -184,13 +190,16 @@ public final class HexGui
 	}
 	catch (UnknownHostException e) {
 	    showError("Unknown host: '" + e.getMessage() + "'");
+            System.out.println("\nconnection attempt aborted.");
 	    return;
 	}
 	catch (IOException e) {
 	    showError("Error creating socket: '" + e.getMessage() + "'");
+            System.out.println("\nconnection attempt aborted.");
 	    return;
 	}
 	System.out.println("connected.");
+
 
 	InputStream in;
 	OutputStream out;
@@ -203,6 +212,8 @@ public final class HexGui
 	    m_white = null;
 	    return;
 	}
+
+        m_preferences.put("remote-host-name", hostname);
 
 	connectProgram(in, out);
     }
