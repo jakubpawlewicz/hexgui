@@ -311,7 +311,7 @@ public final class GuiBoard
         Vector<HexPoint> ret = new Vector<HexPoint>();
 
         for (int i=0; i<str.length(); i++) {
-            BigInteger big = new BigInteger(StringUtils.reverse(str));
+            BigInteger big = new BigInteger(StringUtils.reverse(str), 16);
             for (int j=0; j<m_field.length; j++) {
                 if (big.testBit(j))
                     ret.add(m_field[j].getPoint());

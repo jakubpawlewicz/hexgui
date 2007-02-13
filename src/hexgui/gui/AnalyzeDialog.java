@@ -74,9 +74,7 @@ public class AnalyzeDialog
 
     public void valueChanged(ListSelectionEvent e)
     {
-        int index = e.getFirstIndex();
-        String cmd = m_commands.get(index);
-        System.out.println(index +": '" + cmd + "'");
+        int index = m_list.getSelectedIndex();
     }
 
     public void actionPerformed(ActionEvent e)
