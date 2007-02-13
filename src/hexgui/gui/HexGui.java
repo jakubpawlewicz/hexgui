@@ -6,6 +6,7 @@ package hexgui.gui;
 
 import hexgui.hex.*;
 import hexgui.util.Pair;
+import hexgui.util.StringUtils;
 import hexgui.game.Node;
 import hexgui.game.GameInfo;
 import hexgui.sgf.SgfWriter;
@@ -481,25 +482,39 @@ public final class HexGui
         commandEntered(cmd);
     }
 
-    /** HtpShell Callback. */
-    // FIXME: do this the right way!!
+    /** HtpShell Callback. 
+        By the name of the command it choose the propery callback function.
+        Arguments are passed as given. 
+    */
+    
     public void commandEntered(String cmd)
     {
-	String c = cmd.trim();
+        String cleaned = StringUtils.cleanWhiteSpace(cmd.trim());
+        String args[] = cleaned.split(" ");
+	String c = args[0];
+
+        Runnable cb = new Runnable() { public void run() { cbEmptyResponse(); } };
+
 	if (c.equals("name"))
-	    htpName();
-	else if (c.equals("version"))
-	    htpVersion();
-	else if (c.equals("genmove"))
-	    htpGenMove(m_tomove);
-	else if (c.equals("all_legal_moves"))
-	    htpAllLegalMoves();
-        else if (c.equals("mohex-show-rollout"))
-            htpMohexShowRollout();
-	else if (c.equals("quit"))
-	    htpQuit();
-	else
-	    sendCommand(cmd, null);
+            cb = new Runnable() { public void run() { cbName(); } };
+        else if (c.equals("version")) 
+            cb = new Runnable() { public void run() { cbVersion(); } };
+        else if (c.equals("genmove")) 
+            cb = new Runnable() { public void run() { cbGenMove(); } };
+        else if (c.equals("all_legal_moves")) 
+            cb = new Runnable() { public void run() { cbDisplayPointList(); } };
+
+        else if (c.equals("vc-connected-to")) 
+            cb = new Runnable() { public void run() { cbDisplayPointList(); } };
+        else if (c.equals("vc-between-cells"))
+            cb = new Runnable() { public void run() { cbBetweenCells(); } };       
+
+        else if (c.equals("mohex-show-rollout")) 
+            cb = new Runnable() { public void run() { cbMohexShowRollout(); } };
+        else if (c.equals("quit")) 
+            cb = new Runnable() { public void run() { cbEmptyResponse(); } };
+        
+        sendCommand(cmd, cb);
     }
 
     private void sendCommand(String cmd, Runnable callback)
@@ -561,7 +576,7 @@ public final class HexGui
         }
         
         String str = m_white.getResponse();
-	Vector<String> cmds = HtpController.parseStringList(str);
+	Vector<String> cmds = StringUtils.parseStringList(str);
         Collections.sort(cmds);
         m_analyze.setCommands(cmds);
 
@@ -620,6 +635,9 @@ public final class HexGui
 
     public void cbGenMove()
     {
+        if (!m_white.wasSuccess())
+            return;
+
 	String str = m_white.getResponse();
 	HexPoint point = HexPoint.get(str.trim());
 	if (point == null) {
@@ -639,17 +657,16 @@ public final class HexGui
 	sendCommand("showboard\n", null);
     }
 
-    public void cbAllLegalMoves()
+    public void cbDisplayPointList()
     {
 	if (!m_white.wasSuccess()) 
 	    return;
 
 	String str = m_white.getResponse();
-	Collection<HexPoint> points = HtpController.parsePointList(str);
-	Iterator<HexPoint> it = points.iterator();
-	while (it.hasNext()) {
-	    HexPoint p = it.next();
-	    m_guiboard.setAlphaColor(p, Color.green);
+	Vector<HexPoint> points = StringUtils.parsePointList(str);
+        m_guiboard.clearMarks();
+        for (int i=0; i<points.size(); i++) {
+	    m_guiboard.setAlphaColor(points.get(i), Color.green);
 	}
 	m_guiboard.repaint();
     }
@@ -658,9 +675,24 @@ public final class HexGui
     {
 	Runnable callback = new Runnable() 
 	    { 
-		public void run() { cbAllLegalMoves(); } 
+		public void run() { cbDisplayPointList(); } 
 	    };
 	sendCommand("all_legal_moves\n", callback);
+    }
+
+    //==================================================
+    // vc commands
+    //==================================================
+
+    public void cbBetweenCells()
+    {
+	if (!m_white.wasSuccess()) 
+	    return;
+        
+        String str = m_white.getResponse();
+        Vector<VC> vcs = StringUtils.parseVCList(str);
+        new VCDisplayDialog(this, m_guiboard, vcs);
+        
     }
 
     //==================================================
@@ -674,8 +706,9 @@ public final class HexGui
 
 	String str = m_white.getResponse();
         Vector<Pair<String, String> > pairs = 
-            HtpController.parseStringPairList(str);
+            StringUtils.parseStringPairList(str);
 
+        m_guiboard.clearMarks();
         for (int i=0; i<pairs.size(); i++) {
 	    HexPoint p = HexPoint.get(pairs.get(i).first);
             String value = pairs.get(i).second;
@@ -689,21 +722,14 @@ public final class HexGui
 	m_guiboard.repaint();
     }
 
-    private void htpMohexShowRollout()
+    private void htpMohexShowRollout(HexPoint point, HexColor color)
     {
-        // FIXME: prompt user to select a cell
-        if (m_selected_cells.size() < 1)
-            return;
-
-        HexPoint point = m_selected_cells.get(0);
-
 	Runnable callback = new Runnable() 
 	    { 
 		public void run() { cbMohexShowRollout(); } 
 	    };
 
-	sendCommand("mohex-show-rollout " + m_tomove.toString() 
-                    + " " + point.toString() + "\n",
+	sendCommand("mohex-show-rollout " + color + " " + point.toString() + "\n",
                     callback);
     }
     

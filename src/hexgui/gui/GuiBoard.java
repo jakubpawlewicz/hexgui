@@ -7,6 +7,8 @@ package hexgui.gui;
 import hexgui.hex.*;
 import hexgui.util.*;
 
+import java.util.Vector;
+import java.math.BigInteger;
 import javax.swing.*;          
 import javax.swing.border.EtchedBorder;
 import java.awt.*;
@@ -281,7 +283,43 @@ public final class GuiBoard
 	super.paintImmediately(0, 0, getWidth(),getHeight());
     }
 
+    /** Displays this vc on the board. */
+    public void displayVC(VC vc)
+    {
+        getField(vc.getFrom()).setAlphaColor(Color.blue);
+        getField(vc.getTo()).setAlphaColor(Color.blue);
+        Vector<HexPoint> key = vc.getKey();
+        for (int i=0; i<key.size(); i++)
+            getField(key.get(i)).setAlphaColor(Color.yellow);
+        
+        Vector<HexPoint> carrier = convertHexString(vc.getCarrier());
+        for (int i=0; i<carrier.size(); i++) 
+            getField(carrier.get(i)).setAlphaColor(Color.green);
+    }
+
     //------------------------------------------------------------
+
+    /** Converts a hex string representing a bitset into a vector of
+        HexPoints.  This relies on m_field being ordered in a particular
+        fashion.
+        
+        FIXME: switch carriers to be printed as a list of HexPoints instead of 
+        as hex strings?
+    */
+    private Vector<HexPoint> convertHexString(String str)
+    {
+        Vector<HexPoint> ret = new Vector<HexPoint>();
+
+        for (int i=0; i<str.length(); i++) {
+            BigInteger big = new BigInteger(StringUtils.reverse(str));
+            for (int j=0; j<m_field.length; j++) {
+                if (big.testBit(j))
+                    ret.add(m_field[j].getPoint());
+            }
+        }
+
+        return ret;
+    }
 
     private GuiField[] flipFields(GuiField field[])
     {

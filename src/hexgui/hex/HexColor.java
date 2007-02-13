@@ -29,6 +29,14 @@ public final class HexColor
 	return m_otherColor;
     }
 
+    public static HexColor get(String name)
+    {
+        if (name.equals("black")) return BLACK;
+        if (name.equals("white")) return WHITE;
+        if (name.equals("empty")) return EMPTY;
+        return null;
+    }
+
     private final String m_string;
     private HexColor m_otherColor;
 
