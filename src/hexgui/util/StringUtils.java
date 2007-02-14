@@ -94,24 +94,27 @@ public final class StringUtils
             int type;
             String carrier;
             Vector<HexPoint> key = new Vector<HexPoint>();
+            String source;
 
             try {
                 from = HexPoint.get(vcs[i+0]);
                 to = HexPoint.get(vcs[i+1]);
                 color = HexColor.get(vcs[i+2]);
                 type = Integer.parseInt(vcs[i+3]);
-                carrier = vcs[i+4];
-                for (j=5; j<5+type; j++) {
+                source = vcs[i+4];
+                carrier = vcs[i+5];
+                for (j=6; j<6+type; j++) {
                     HexPoint p = HexPoint.get(vcs[i+j]);
                     key.add(p);
                 }
+
             }
             catch(Throwable t) {
                 System.out.println("Exception occured while parsing VC!");
                 return ret;                
             }
 
-            ret.add(new VC(from, to, color, type, carrier, key));
+            ret.add(new VC(from, to, color, type, carrier, key, source));
         }
         return ret;
     }

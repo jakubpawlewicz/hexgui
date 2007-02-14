@@ -288,13 +288,14 @@ public final class GuiBoard
     {
         getField(vc.getFrom()).setAlphaColor(Color.blue);
         getField(vc.getTo()).setAlphaColor(Color.blue);
-        Vector<HexPoint> key = vc.getKey();
-        for (int i=0; i<key.size(); i++)
-            getField(key.get(i)).setAlphaColor(Color.yellow);
         
         Vector<HexPoint> carrier = convertHexString(vc.getCarrier());
         for (int i=0; i<carrier.size(); i++) 
             getField(carrier.get(i)).setAlphaColor(Color.green);
+
+        Vector<HexPoint> key = vc.getKey();
+        for (int i=0; i<key.size(); i++)
+            getField(key.get(i)).setAlphaColor(Color.yellow);
     }
 
     //------------------------------------------------------------
