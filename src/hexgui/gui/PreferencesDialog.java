@@ -59,7 +59,15 @@ public final class PreferencesDialog
 
     private void savePreferences()
     {
-        System.out.println("Saving preferences...(IMPLEMENT ME)");
+        System.out.println("Saving preferences...");
+
+        m_preferences.put("shell-show-on-connect", 
+                          (showShellOnConnect.getSelectedObjects() != null));
+        m_preferences.put("analyze-show-on-connect", 
+                          (showAnalyzeOnConnect.getSelectedObjects() != null));
+        m_preferences.put("auto-respond", 
+                          (autoRespond.getSelectedObjects() != null));
+        
     }
 
     private JPanel createGeneralPanel()

@@ -789,7 +789,7 @@ public final class HexGui
 	play(move);
 	htpPlay(move);
         htpShowboard();
-        if (!m_guiboard.isBoardFull())
+        if (!m_guiboard.isBoardFull() && m_preferences.getBoolean("auto-respond"))
             htpGenMove(m_tomove);
     }
 
