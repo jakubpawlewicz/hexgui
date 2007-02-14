@@ -291,6 +291,7 @@ public final class HexGui
 	    cur = cur.getChildContainingNode(m_current);
 	    htpPlay(cur.getMove());
 	}
+        htpShowboard();
     }
 
     private void cmdDisconnectProgram()
@@ -369,6 +370,7 @@ public final class HexGui
             m_menubar.updateMenuStates(m_current);
 
             htpBoardsize(m_guiboard.getBoardSize());
+            htpShowboard();
 	}
     }
 
@@ -597,6 +599,11 @@ public final class HexGui
     {
     }
 
+    private void htpShowboard()
+    {
+        sendCommand("showboard\n", null);
+    }
+
     private void htpPlay(Move move)
     {
 	Runnable callback = new Runnable()
@@ -607,7 +614,6 @@ public final class HexGui
 	sendCommand("play " + move.getColor().toString() + 
 		    " " + move.getPoint().toString() + "\n", 
 		    callback);
-	sendCommand("showboard\n", null);
     }
 
     private void htpUndo()
@@ -618,7 +624,6 @@ public final class HexGui
 	    };
 
 	sendCommand("undo\n", callback);
-	sendCommand("showboard\n", null);
     }
 
     private void htpBoardsize(Dimension size)
@@ -630,7 +635,6 @@ public final class HexGui
 
         sendCommand("boardsize " + size.width + " " + size.height + "\n",
                     callback);
-        sendCommand("showboard\n", null);
     }
 
     public void cbGenMove()
@@ -784,6 +788,7 @@ public final class HexGui
     {
 	play(move);
 	htpPlay(move);
+        htpShowboard();
         if (!m_guiboard.isBoardFull())
             htpGenMove(m_tomove);
     }
@@ -848,6 +853,7 @@ public final class HexGui
 	    Move move = child.getMove();
 	    m_guiboard.setColor(move.getPoint(), move.getColor());
 	    htpPlay(move);
+            htpShowboard();
 
             if (move.getPoint() != HexPoint.SWAP_PIECES)
                 m_tomove = move.getColor().otherColor();
@@ -871,6 +877,7 @@ public final class HexGui
 	    Move move = m_current.getMove();
 	    m_guiboard.setColor(move.getPoint(), HexColor.EMPTY);
             htpUndo();
+            htpShowboard();
 
 	    m_current = m_current.getParent();
 	}
@@ -894,6 +901,7 @@ public final class HexGui
 	    HexPoint point = m_current.getMove().getPoint();
 	    m_guiboard.setColor(point, HexColor.EMPTY);
             htpUndo();
+            htpShowboard();
 	    
 	    m_current = m_current.getNext();
 	    
@@ -901,6 +909,7 @@ public final class HexGui
 	    point = m_current.getMove().getPoint();
 	    m_guiboard.setColor(point, color);
 	    htpPlay(m_current.getMove());
+            htpShowboard();
             if (point != HexPoint.SWAP_PIECES)
                 m_tomove = color.otherColor();
 
@@ -919,6 +928,7 @@ public final class HexGui
 	    HexPoint point = m_current.getMove().getPoint();
 	    m_guiboard.setColor(point, HexColor.EMPTY);
             htpUndo();
+            htpShowboard();
 	    
 	    m_current = m_current.getPrev();
 	    
@@ -926,6 +936,7 @@ public final class HexGui
 	    point = m_current.getMove().getPoint();
 	    m_guiboard.setColor(point, color);
 	    htpPlay(m_current.getMove());
+            htpShowboard();
             if (point != HexPoint.SWAP_PIECES)
                 m_tomove = color.otherColor();
 	    
