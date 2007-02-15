@@ -48,6 +48,16 @@ public final class GuiToolBar
 	m_stop.setEnabled(false);
     }
 
+    public String getToMove()
+    {
+        return m_tomove.getText();
+    }
+    
+    public void setToMove(String string)
+    {
+        m_tomove.setText(string);
+    }
+
     public void setProgramConnected(boolean f)
     {
 	m_play.setEnabled(f);
@@ -165,6 +175,13 @@ public final class GuiToolBar
 			    "Stop");
 	m_toolBar.add(m_stop);
 	disableStopButton();
+
+	m_tomove = makeButton(null,
+			    "toggle_tomove",
+			    "Color of current player",
+			    "black");
+	m_toolBar.add(m_tomove);
+
     }
 
     private JButton makeButton(String imageFile, String actionCommand,
@@ -175,9 +192,13 @@ public final class GuiToolBar
 	button.setActionCommand(actionCommand);
 	button.setToolTipText(tooltip);
 
-        ClassLoader classLoader = getClass().getClassLoader();
-	URL imageURL = classLoader.getResource(imageFile);
-	if (imageURL != null) {
+        URL imageURL = null;
+        if (imageFile != null) {
+            ClassLoader classLoader = getClass().getClassLoader();
+            imageURL = classLoader.getResource(imageFile);
+        }
+
+        if (imageURL != null) {
 	    button.setIcon(new ImageIcon(imageURL, altText));
 	} else {
 	    button.setText(altText);
@@ -196,6 +217,8 @@ public final class GuiToolBar
     private JButton m_forward, m_forward10, m_end;
     private JButton m_up, m_down;
     private JButton m_play, m_stop, m_swap;
+
+    private JButton m_tomove;
 }
 
 //----------------------------------------------------------------------------
