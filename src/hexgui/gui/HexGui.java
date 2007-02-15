@@ -29,7 +29,7 @@ import java.net.*;
 public final class HexGui 
     extends JFrame 
     implements ActionListener, GuiBoard.Listener, HtpShell.Callback,
-               AnalyzeDialog.Callback
+               AnalyzeDialog.Callback, AnalyzeDialog.SelectionCallback
 {
     public HexGui()
     {
@@ -257,7 +257,7 @@ public final class HexGui
 
     private void connectProgram(InputStream in, OutputStream out)
     {
-        m_analyze = new AnalyzeDialog(this, this);
+        m_analyze = new AnalyzeDialog(this, this, this, m_statusbar);
 	m_analyze.addWindowListener(new WindowAdapter() 
 	    {
 		public void windowClosing(WindowEvent winEvt) {
@@ -793,6 +793,11 @@ public final class HexGui
             }
 
         }
+    }
+
+    public Vector<HexPoint> getSelectedCells()
+    {
+        return m_selected_cells;
     }
 
     public void humanMove(Move move)

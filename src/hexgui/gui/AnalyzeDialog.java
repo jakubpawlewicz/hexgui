@@ -17,6 +17,8 @@ import java.awt.event.*;
 
 import java.util.*;
 
+//----------------------------------------------------------------------------
+
 /** Non-modal dialog displaying list of htp commands of the connected
     HTP compatible program. */
 public class AnalyzeDialog 
@@ -28,11 +30,22 @@ public class AnalyzeDialog
 	void analyzeCommand(String str);
     }
 
-    public AnalyzeDialog(JFrame owner, Callback callback)
+    public interface SelectionCallback
+    {
+        Vector<HexPoint> getSelectedCells();
+    }
+
+
+    public AnalyzeDialog(JFrame owner, 
+                         Callback callback, 
+                         SelectionCallback selection,
+                         StatusBar statusbar)
     {
 	super(owner, "HexGui: Analyze");
 
         m_callback = callback;
+        m_selection = selection;
+        m_statusbar = statusbar;
 
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -50,8 +63,15 @@ public class AnalyzeDialog
         m_run = new JButton("Run");
         m_run.addActionListener(this);
         m_run.setActionCommand("run");
+        
+        m_color = new JComboBox(m_colors);
+        m_color.setEditable(false);
+        m_type = new JComboBox(m_types);
+        m_type.setEditable(false);
 
         runpanel.add(m_run);
+        runpanel.add(m_color);
+        runpanel.add(m_type);
 
         panel.add(m_scrollpane);
         panel.add(runpanel);
@@ -82,18 +102,82 @@ public class AnalyzeDialog
         String what = e.getActionCommand();
         if (what.equals("run")) {
             int index = m_list.getSelectedIndex();
-            if (index != -1) {
-                String cmd = m_commands.get(index) + "\n";
-                m_callback.analyzeCommand(cmd);
+            if (index == -1) return;
+
+            Vector<HexPoint> selected = m_selection.getSelectedCells();
+
+            StringBuilder cmd = new StringBuilder();
+            String name = m_commands.get(index);
+
+            cmd.append(name);
+            if (name.equals("vc-connected-to")) {
+                if (selected.size() < 1) {
+                    m_statusbar.setMessage("Please select cell before running.");
+                    return;
+                }
+                
+                HexPoint p = selected.get(0);
+                HexColor c = getSelectedColor();
+                int t = getSelectedType();
+
+                cmd.append(" " + p.toString());
+                cmd.append(" " + c.toString());
+                cmd.append(" " + t);
+
+            } else if (name.equals("vc-between-cells")) {
+
+                if (selected.size() < 2) {
+                    m_statusbar.setMessage("Please select at least two cells " + 
+                                           "before running.");
+                    return;
+                }
+                
+                HexPoint p1 = selected.get(0);
+                HexPoint p2 = selected.get(1);
+                HexColor c = getSelectedColor();
+                int t = getSelectedType();
+
+                cmd.append(" " + p1.toString());
+                cmd.append(" " + p2.toString());
+                cmd.append(" " + c.toString());
+                cmd.append(" " + t);
+
             }
+
+            cmd.append("\n");
+            m_callback.analyzeCommand(cmd.toString());
         }
     }
 
+    //------------------------------------------------------------
+
+    private HexColor getSelectedColor()
+    {
+        if (m_colors[m_color.getSelectedIndex()].equals("white"))
+            return HexColor.WHITE;
+        return HexColor.BLACK;
+    }
+
+    private int getSelectedType()
+    {
+        return m_type.getSelectedIndex();
+    }
+
+
     Callback m_callback;
-    
+    SelectionCallback m_selection;
+    StatusBar m_statusbar;
+
     JList m_list;
     JScrollPane m_scrollpane;
     Vector<String> m_commands;
    
     JButton m_run;
+    JComboBox m_color;
+    JComboBox m_type;
+
+    static final String m_colors[] = { "black", "white" };
+    static final String m_types[] = {"0", "1" };
 }
+
+//----------------------------------------------------------------------------
