@@ -724,17 +724,28 @@ public final class HexGui
             StringUtils.parseStringPairList(str);
 
         m_guiboard.clearMarks();
-        for (int i=0; i<pairs.size(); i++) {
-	    HexPoint p = HexPoint.get(pairs.get(i).first);
+        m_guiboard.aboutToDirtyStones();
+
+        HexPoint p = HexPoint.get(pairs.get(0).first);
+        HexColor color = HexColor.get(pairs.get(0).second);
+        m_guiboard.setColor(p, color);
+        m_guiboard.setAlphaColor(p, Color.blue);
+
+        for (int i=1; i<pairs.size(); i++) {
+	    HexPoint point = HexPoint.get(pairs.get(i).first);
             String value = pairs.get(i).second;
             if (value.equals("#"))
-                m_guiboard.setAlphaColor(p, Color.green);
+                m_guiboard.setAlphaColor(point, Color.green);
             else
-                m_guiboard.setAlphaColor(p, Color.red);
+                m_guiboard.setAlphaColor(point, Color.red);
 
-            m_guiboard.setText(p,Integer.toString(i));
+            m_guiboard.setText(point, Integer.toString(i));
+
+            color = color.otherColor();
+            m_guiboard.setColor(point, color);
 	}
 	m_guiboard.repaint();
+
     }
 
     private void htpMohexShowRollout(HexPoint point, HexColor color)
@@ -744,7 +755,8 @@ public final class HexGui
 		public void run() { cbMohexShowRollout(); } 
 	    };
 
-	sendCommand("mohex-show-rollout " + color + " " + point.toString() + "\n",
+	sendCommand("mohex-show-rollout " + point.toString() + " " 
+                    + color.toString() + "\n",
                     callback);
     }
     
@@ -756,6 +768,10 @@ public final class HexGui
     */
     public void fieldClicked(HexPoint point, boolean ctrl, boolean shift)
     {
+        if (m_guiboard.areStonesDirty()) {
+            m_guiboard.clearMarks();
+        }
+        
         if (ctrl) {
 
             if (!shift) {
@@ -862,6 +878,8 @@ public final class HexGui
 
     private void forward(int n)
     {
+        m_guiboard.clearMarks();
+
 	for (int i=0; i<n; i++) {
 	    Node child = m_current.getChild();
 	    if (child == null) break;
@@ -874,7 +892,6 @@ public final class HexGui
 	    m_current = child;
 	}
 
-        m_guiboard.clearMarks();
 	markLastPlayedStone();
 
 	m_guiboard.repaint();
@@ -889,6 +906,8 @@ public final class HexGui
 
     private void backward(int n)
     {
+        m_guiboard.clearMarks();
+
 	for (int i=0; i<n; i++) {
 	    if (m_current == m_root) break;
 
@@ -899,8 +918,6 @@ public final class HexGui
 
 	    m_current = m_current.getParent();
 	}
-
-        m_guiboard.clearMarks();
 	markLastPlayedStone();
 
 	m_guiboard.repaint();
@@ -918,6 +935,8 @@ public final class HexGui
     private void up()
     {
 	if (m_current.getNext() != null) {
+            m_guiboard.clearMarks();
+
 	    HexPoint point = m_current.getMove().getPoint();
 	    m_guiboard.setColor(point, HexColor.EMPTY);
             htpUndo();
@@ -947,6 +966,8 @@ public final class HexGui
     private void down()
     {
 	if (m_current.getPrev() != null) {
+            m_guiboard.clearMarks();
+
 	    HexPoint point = m_current.getMove().getPoint();
 	    m_guiboard.setColor(point, HexColor.EMPTY);
             htpUndo();

@@ -142,6 +142,19 @@ public class AnalyzeDialog
                 cmd.append(" " + c.toString());
                 cmd.append(" " + t);
 
+            } else if (name.equals("mohex-show-rollout")) {
+
+                if (selected.size() < 1) {
+                    m_statusbar.setMessage("Please select cell before running.");
+                    return;
+                }
+
+                HexPoint p = selected.get(0);
+                HexColor color = getSelectedColor();
+                
+                cmd.append(" " + p.toString());
+                cmd.append(" " + color.toString());
+                
             }
 
             cmd.append("\n");

@@ -22,6 +22,7 @@ public final class PreferencesDialog
 
         JPanel generalPanel = createGeneralPanel();
         JPanel boardPanel = createBoardPanel();
+        JPanel drawPanel = createDrawPanel();
         JPanel buttonPane = createButtonPanel();
 
         JTabbedPane tabbedPane = new JTabbedPane();
@@ -31,6 +32,9 @@ public final class PreferencesDialog
         tabbedPane.addTab("Board", null,
                           boardPanel,
                           "Board preferences");
+        tabbedPane.addTab("Draw", null,
+                          drawPanel, 
+                          "Drawing preferences");
 
         add(tabbedPane, BorderLayout.CENTER);
         add(buttonPane, BorderLayout.SOUTH);
@@ -90,6 +94,22 @@ public final class PreferencesDialog
         return panel;
     }
 
+    private JPanel createDrawPanel()
+    {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
+//         JLabel label;
+
+//         label = new JLabel("Field alpha percentage");
+//         SpinnerNumberModel model = 
+//             new SpinnerNumberModel(m_preferences.getDouble("");
+//         fieldAlpha = new JSpinner(new );
+
+        return panel;
+    }
+
+
     private JPanel createBoardPanel()
     {
         JPanel panel = new JPanel(new BorderLayout());
@@ -124,7 +144,9 @@ public final class PreferencesDialog
 
     JCheckBox showShellOnConnect, showAnalyzeOnConnect;
     JCheckBox autoRespond;
-    
+
+    JSpinner fieldAlpha;
+
     GuiPreferences m_preferences;
 }
 

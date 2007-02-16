@@ -22,6 +22,8 @@ public final class GuiPreferences
 	    {"gui-board-width",                   "11"},
 	    {"gui-board-height",                  "11"},
 
+            {"draw-field-alpha",                  "0.3"}, // FIXME: not used yet!
+
 	    {"gui-toolbar-visible",               "true"},
 
 	    {"shell-show-on-connect",             "true"},

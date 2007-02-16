@@ -160,9 +160,38 @@ public final class GuiBoard
 	getField(HexPoint.EAST).setColor(HexColor.WHITE);
     }
 
-    /** Clears dynamnic marks, leaving stones intact. */
+    /** Makes a copy of the current fields if the dirty flag is not already set,
+        and then sets the dirty flag to true. See clearMarks().
+    */
+    public void aboutToDirtyStones()
+    {
+        if (!m_dirty_stones) {
+            m_backup_field = new GuiField[m_field.length];
+            for (int i=0; i<m_field.length; i++) 
+                m_backup_field[i] = new GuiField(m_field[i]);
+        }
+        
+        m_dirty_stones = true;
+    }
+
+    public boolean areStonesDirty()
+    {
+        return m_dirty_stones;
+    }
+
+    /** Clears dynamnic marks, leaving stones intact. If the dirty flag is set,
+        revert the fields to the saved fields saved in markStonesDirty().
+        Dirty stones flag is set to false. See aboutToDirtyStones().
+     */
     public void clearMarks()
     {
+        if (m_dirty_stones) {
+            for (int i=0; i<m_field.length; i++) 
+                m_field[i] = new GuiField(m_backup_field[i]);
+        }
+
+        m_dirty_stones = false;
+
 	for (int x=0; x<m_field.length; x++) 
 	    m_field[x].clearAttributes(GuiField.LAST_PLAYED | 
                                        GuiField.SWAP_PLAYED | 
@@ -393,6 +422,9 @@ public final class GuiBoard
 
     private Image m_image;
     private GuiField m_field[];
+
+    private boolean m_dirty_stones;
+    private GuiField m_backup_field[];
 
     private GuiField m_last_played;
     private GuiField m_swap_played;

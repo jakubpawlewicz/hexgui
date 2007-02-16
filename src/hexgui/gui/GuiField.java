@@ -209,7 +209,12 @@ public class GuiField
 	FontMetrics fm = m_graphics.getFontMetrics();
 	int width = fm.stringWidth(m_text);
 	int height = fm.getAscent();
-        m_graphics.setColor(Color.white);
+
+        Color color = Color.white;
+        if (getColor() == HexColor.WHITE)
+            color = Color.black;
+
+        m_graphics.setColor(color);
         m_graphics.drawString(m_text, m_width/2-width/2, m_height/2+height/2);
     }
 
