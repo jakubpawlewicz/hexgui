@@ -97,6 +97,8 @@ public abstract class BoardDrawerBase
 	m_bwidth = bw;
 	m_bheight = bh;
 
+        m_alphaontop = alphaontop;
+
 	computeFieldPlacement();
 	m_outline = calcCellOutlines(field);
 
@@ -124,6 +126,17 @@ public abstract class BoardDrawerBase
     /** Returns the location of the field with HexPoint pos. */
     protected Point getLocation(HexPoint pos)
     {
+        if (m_alphaontop) {
+            if (pos == HexPoint.NORTH)
+                pos = HexPoint.SOUTH;
+            else if (pos == HexPoint.SOUTH)
+                pos = HexPoint.NORTH;
+            else if (pos == HexPoint.EAST)
+                pos = HexPoint.WEST;
+            else if (pos == HexPoint.WEST)
+                pos = HexPoint.EAST;
+        }
+
 	if (pos == HexPoint.NORTH) {
 	    return getLocation(m_bwidth+1, m_bheight/2-1);
 	} else if (pos == HexPoint.SOUTH) { 
@@ -305,6 +318,8 @@ public abstract class BoardDrawerBase
 				 RenderingHints.VALUE_ANTIALIAS_ON);
 	}
     }
+
+    protected boolean m_alphaontop;
 
     protected double m_aspect_ratio;
 
