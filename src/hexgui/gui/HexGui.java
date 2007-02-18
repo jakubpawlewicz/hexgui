@@ -516,6 +516,8 @@ public final class HexGui
             cb = new Runnable() { public void run() { cbGenMove(); } };
         else if (c.equals("all_legal_moves")) 
             cb = new Runnable() { public void run() { cbDisplayPointList(); } };
+        else if (c.equals("get_absorb_group"))
+            cb = new Runnable() { public void run() { cbGetAbsorbGroup(); } };
 
         else if (c.equals("vc-connected-to")) 
             cb = new Runnable() { public void run() { cbDisplayPointList(); } };
@@ -693,6 +695,24 @@ public final class HexGui
 		public void run() { cbDisplayPointList(); } 
 	    };
 	sendCommand("all_legal_moves\n", callback);
+    }
+
+    public void cbGetAbsorbGroup()
+    {
+        if (!m_white.wasSuccess())
+            return;
+
+	String str = m_white.getResponse();
+	Vector<HexPoint> points = StringUtils.parsePointList(str);
+        m_guiboard.clearMarks();
+
+        if (points.size() > 0) {
+            m_guiboard.setAlphaColor(points.get(0), Color.blue);
+            for (int i=1; i<points.size(); i++) {
+                m_guiboard.setAlphaColor(points.get(i), Color.green);
+            }
+        }
+	m_guiboard.repaint();
     }
 
     //==================================================

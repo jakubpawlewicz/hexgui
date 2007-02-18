@@ -110,7 +110,16 @@ public class AnalyzeDialog
             String name = m_commands.get(index);
 
             cmd.append(name);
-            if (name.equals("vc-connected-to")) {
+            if (name.equals("get_absorb_group")) {
+                if (selected.size() < 1) {
+                    m_statusbar.setMessage("Please select cell before running.");
+                    return;
+                }
+
+                HexPoint p = selected.get(0);
+                cmd.append(" " + p.toString());
+
+            } else if (name.equals("vc-connected-to")) {
                 if (selected.size() < 1) {
                     m_statusbar.setMessage("Please select cell before running.");
                     return;

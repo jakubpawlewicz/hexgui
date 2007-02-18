@@ -49,6 +49,9 @@ public final class StringUtils
     {
 	Vector<HexPoint> ret = new Vector<HexPoint>();
         String cleaned = cleanWhiteSpace(str.trim());
+        if (cleaned.length() == 0)
+            return ret;
+
 	String[] pts = cleaned.split(" ");
 	for (int i=0; i<pts.length; i++) {
 	    HexPoint p = HexPoint.get(pts[i].trim());
