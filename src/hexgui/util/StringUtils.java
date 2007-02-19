@@ -64,6 +64,9 @@ public final class StringUtils
     {
 	Vector<String> ret = new Vector<String>();
         String cleaned = cleanWhiteSpace(str.trim());
+        if (cleaned.length() == 0)
+            return ret;
+
 	String[] strs = cleaned.split(" ");
 	for (int i=0; i<strs.length; i++) {
 	    String cur = strs[i].trim();
@@ -76,6 +79,9 @@ public final class StringUtils
     {
 	Vector<Pair<String, String> > ret = new Vector<Pair<String, String> >();
         String cleaned = cleanWhiteSpace(str.trim());
+        if (cleaned.length() == 0)
+            return ret;
+
 	String[] strs = cleaned.split(" ");
 	for (int i=0; i<strs.length; i+=2) {
 	    String c1 = strs[i].trim();
@@ -89,6 +95,9 @@ public final class StringUtils
     {
         Vector<VC> ret = new Vector<VC>();
         String cleaned = cleanWhiteSpace(str.trim());
+        if (cleaned.length() == 0)
+            return ret;
+
 	String[] vcs = cleaned.split(" ");
 
         for (int i=0, j=0; i<vcs.length; i+=j) {

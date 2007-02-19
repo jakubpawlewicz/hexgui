@@ -76,18 +76,19 @@ public final class HexPoint
     */
     public static HexPoint get(String name) 
     {
-	if (name.equals("north")) return NORTH;
-	else if (name.equals("south")) return SOUTH;
-	else if (name.equals("west")) return WEST;
-	else if (name.equals("east")) return EAST;
-	else if (name.equals("swap-sides")) return SWAP_SIDES;
-	else if (name.equals("swap-pieces")) return SWAP_PIECES;
-	else if (name.equals("resign")) return RESIGN;
-	else if (name.equals("forfeit")) return FORFEIT;
+	if (name.equalsIgnoreCase("north")) return NORTH;
+	else if (name.equalsIgnoreCase("south")) return SOUTH;
+	else if (name.equalsIgnoreCase("west")) return WEST;
+	else if (name.equalsIgnoreCase("east")) return EAST;
+	else if (name.equalsIgnoreCase("swap-sides")) return SWAP_SIDES;
+        else if (name.equalsIgnoreCase("swap")) return SWAP_PIECES;
+	else if (name.equalsIgnoreCase("swap-pieces")) return SWAP_PIECES;
+	else if (name.equalsIgnoreCase("resign")) return RESIGN;
+	else if (name.equalsIgnoreCase("forfeit")) return FORFEIT;
 	
 	for (int x=0; x<MAXSIZE; x++) 
 	    for (int y=0; y<MAXSIZE; y++) 
-		if (name.equals(s_points[x][y].toString()))
+		if (name.equalsIgnoreCase(s_points[x][y].toString()))
 		    return s_points[x][y];
 
 	assert(false);

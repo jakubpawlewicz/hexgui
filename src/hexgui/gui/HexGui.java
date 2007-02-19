@@ -423,6 +423,7 @@ public final class HexGui
 	    m_current = m_root;
 
 	    m_guiboard.initSize(m_gameinfo.getBoardSize());
+            htpBoardsize(m_guiboard.getBoardSize());
 	    forward(1000);
 
 	    m_file = file;
@@ -518,6 +519,8 @@ public final class HexGui
             cb = new Runnable() { public void run() { cbDisplayPointList(); } };
         else if (c.equals("get_absorb_group"))
             cb = new Runnable() { public void run() { cbGetAbsorbGroup(); } };
+        else if (c.equals("compute_dead_cells"))
+            cb = new Runnable() { public void run() { cbComputeDeadCells(); } };
 
         else if (c.equals("vc-connected-to")) 
             cb = new Runnable() { public void run() { cbDisplayPointList(); } };
@@ -714,6 +717,27 @@ public final class HexGui
         }
 	m_guiboard.repaint();
     }
+
+    public void cbComputeDeadCells()
+    {
+	if (!m_white.wasSuccess()) 
+	    return;
+
+	String str = m_white.getResponse();
+        Vector<Pair<String, String> > pairs = 
+            StringUtils.parseStringPairList(str);
+
+        m_guiboard.clearMarks();
+
+        for (int i=0; i<pairs.size(); i++) {
+	    HexPoint point = HexPoint.get(pairs.get(i).first);
+            //String value = pairs.get(i).second;
+            m_guiboard.setAlphaColor(point, Color.green);
+	}
+	m_guiboard.repaint();
+
+    }
+
 
     //==================================================
     // vc commands
