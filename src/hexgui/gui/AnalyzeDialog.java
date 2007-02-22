@@ -151,6 +151,11 @@ public class AnalyzeDialog
                 cmd.append(" " + c.toString());
                 cmd.append(" " + t);
 
+            } else if (name.equals("vc-get-mustplay")) {
+
+                HexColor color = getSelectedColor();
+                cmd.append(" " + color.toString());
+                
             } else if (name.equals("mohex-show-rollout")) {
 
                 if (selected.size() < 1) {

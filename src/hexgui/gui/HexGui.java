@@ -525,7 +525,9 @@ public final class HexGui
         else if (c.equals("vc-connected-to")) 
             cb = new Runnable() { public void run() { cbDisplayPointList(); } };
         else if (c.equals("vc-between-cells"))
-            cb = new Runnable() { public void run() { cbBetweenCells(); } };       
+            cb = new Runnable() { public void run() { cbBetweenCells(); } };
+        else if (c.equals("vc-get-mustplay"))
+            cb = new Runnable() { public void run() { cbDisplayPointList(); } };
 
         else if (c.equals("mohex-show-rollout")) 
             cb = new Runnable() { public void run() { cbMohexShowRollout(); } };
