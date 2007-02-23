@@ -119,6 +119,11 @@ public class AnalyzeDialog
                 HexPoint p = selected.get(0);
                 cmd.append(" " + p.toString());
 
+            } else if (name.equals("compute_dead_cells")) {
+
+                HexColor color = getSelectedColor();
+                cmd.append(" " + color.toString());
+                
             } else if (name.equals("vc-connected-to")) {
                 if (selected.size() < 1) {
                     m_statusbar.setMessage("Please select cell before running.");
