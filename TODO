@@ -1,26 +1,19 @@
 HexGui TODO
 
-[07/01/18]
-
-* draw stones in rollout!
+[07/02/28]
 
 * keep S on swap move
 
 * implement more Preferences
+  * colors
   * gui placement
 
-* gui test tools 
-  * display sets of moves
-    eg: rollouts, virtual connections, simplicial, dead, etdc. 
-  
 * handle 'forfeit' and 'resign' moves
 
 * allow computer to play white or black
-  * auto-respond on/off
   * self play
 
 * analyze dialog
-  * come up with a way to pass parameters
 
 * program shell
   * close it properly when program is disconnected/dies/etc
