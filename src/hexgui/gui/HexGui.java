@@ -730,14 +730,24 @@ public final class HexGui
             StringUtils.parseStringPairList(str);
 
         m_guiboard.clearMarks();
-
+        m_guiboard.aboutToDirtyStones();
         for (int i=0; i<pairs.size(); i++) {
 	    HexPoint point = HexPoint.get(pairs.get(i).first);
-            //String value = pairs.get(i).second;
-            m_guiboard.setAlphaColor(point, Color.green);
+            String value = pairs.get(i).second;
+            if (value.charAt(0) == 'd')
+                m_guiboard.setAlphaColor(point, Color.green);
+            if (value.charAt(0) == 'b') {
+                m_guiboard.setColor(point, HexColor.BLACK);
+                m_guiboard.setAlphaColor(point, Color.red);
+            }
+            if (value.charAt(0) == 'w') {
+                m_guiboard.setColor(point, HexColor.WHITE);
+                m_guiboard.setAlphaColor(point, Color.red);
+            }                
+            if (value.charAt(0) == 'i')
+                m_guiboard.setAlphaColor(point, Color.orange);
 	}
 	m_guiboard.repaint();
-
     }
 
 
@@ -933,11 +943,9 @@ public final class HexGui
 	    Move move = child.getMove();
 	    m_guiboard.setColor(move.getPoint(), move.getColor());
 	    htpPlay(move);
-            htpShowboard();
 
 	    m_current = child;
 	}
-
 	markLastPlayedStone();
 
 	m_guiboard.repaint();
@@ -948,6 +956,8 @@ public final class HexGui
         if (m_current.getMove().getPoint() != HexPoint.SWAP_PIECES)
             m_tomove = m_tomove.otherColor();
         m_toolbar.setToMove(m_tomove.toString());
+
+        htpShowboard();
     }
 
     private void backward(int n)

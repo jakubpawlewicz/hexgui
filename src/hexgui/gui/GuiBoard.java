@@ -105,12 +105,15 @@ public final class GuiBoard
     }
 
     /** Creates a board of the given dimensions.
+        Dirty flag is set to false. 
 	@param w width of the board in cells
 	@param h height of the board in cells
     */
     public void initSize(int w, int h)
     {
 	System.out.println("GuiBoard.initSize: " + w + " " + h);
+
+        m_dirty_stones = false;
 
 	m_width = w; 
 	m_height = h;
