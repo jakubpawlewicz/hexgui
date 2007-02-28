@@ -215,6 +215,9 @@ public final class GuiMenuBar
 		"9 x 9",
 		"8 x 8",
 		"7 x 7",
+                "6 x 6", 
+                "5 x 5",
+                "4 x 4",
 		"3 x 3"
 	    };
 
