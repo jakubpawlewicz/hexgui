@@ -97,8 +97,10 @@ public final class HexGui
 	//
 	else if (cmd.equals("newgame")) 
 	    cmdNewGame();
-	else if (cmd.equals("savegame"))
-	    cmdSaveGame();
+	else if (cmd.equals("savegame")) {
+	    if (gameChanged()) 
+                cmdSaveGame();
+        }
 	else if (cmd.equals("savegameas"))
 	    cmdSaveGameAs();
 	else if (cmd.equals("loadgame"))
