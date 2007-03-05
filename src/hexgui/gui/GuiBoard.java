@@ -34,6 +34,7 @@ public final class GuiBoard
 	m_image = null;
 	m_listener = listener;
 	m_preferences = preferences;
+        m_arrows = new Vector<Pair<HexPoint, HexPoint>>();
 
 	initSize(m_preferences.getInt("gui-board-width"),
 		 m_preferences.getInt("gui-board-height"));
@@ -63,8 +64,6 @@ public final class GuiBoard
 	    }
 	};
 	m_boardPanel.addMouseListener(mouseAdapter);
-
-        m_arrows = new Vector<Pair<HexPoint, HexPoint>>();
 
 	setVisible(true);
     }
@@ -115,13 +114,14 @@ public final class GuiBoard
     {
 	System.out.println("GuiBoard.initSize: " + w + " " + h);
 
-        m_dirty_stones = false;
-
 	m_width = w; 
 	m_height = h;
 	m_size = new Dimension(m_width, m_height);
+        
+        m_dirty_stones = false;
+        clearArrows();
 
-	m_field = new GuiField[w*h+4];
+        m_field = new GuiField[w*h+4];
 	for (int x=0; x<w*h; x++) {
 	    m_field[x] = new GuiField(HexPoint.get(x % w, x / w));
 	    m_field[x].setAttributes(GuiField.DRAW_CELL_OUTLINE);
@@ -190,6 +190,11 @@ public final class GuiBoard
         m_arrows.add(new Pair<HexPoint, HexPoint>(from, to));
     }
 
+    public void clearArrows()
+    {
+        m_arrows.clear();
+    }
+
     /** Clears dynamnic marks, leaving stones intact. If the dirty flag is set,
         revert the fields to the saved fields saved in markStonesDirty().
         Dirty stones flag is set to false. See aboutToDirtyStones().
@@ -201,11 +206,10 @@ public final class GuiBoard
             for (int i=0; i<m_field.length; i++) 
                 m_field[i] = new GuiField(m_backup_field[i]);
         }
-
         m_dirty_stones = false;
-
-        m_arrows.clear();
-
+        
+        clearArrows();
+        
 	for (int x=0; x<m_field.length; x++) 
 	    m_field[x].clearAttributes(GuiField.LAST_PLAYED | 
                                        GuiField.SWAP_PLAYED | 
