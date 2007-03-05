@@ -740,8 +740,11 @@ public final class HexGui
                 m_guiboard.setAlphaColor(point, Color.green);
             else if (value.charAt(0) == 'v')
                 m_guiboard.setAlphaColor(point, Color.orange);
-            else if (value.charAt(0) == '!')
+            else if (value.charAt(0) == '!') {
+                HexPoint to = HexPoint.get(value.substring(1));
+                m_guiboard.addArrow(point, to);
                 m_guiboard.setAlphaColor(point, Color.yellow);
+            }
             else if (value.charAt(0) == 'b') {
                 m_guiboard.setColor(point, HexColor.BLACK);
                 m_guiboard.setAlphaColor(point, Color.red);

@@ -64,6 +64,8 @@ public final class GuiBoard
 	};
 	m_boardPanel.addMouseListener(mouseAdapter);
 
+        m_arrows = new Vector<Pair<HexPoint, HexPoint>>();
+
 	setVisible(true);
     }
 
@@ -182,9 +184,16 @@ public final class GuiBoard
         return m_dirty_stones;
     }
 
+    /** Adds an arrow. */
+    public void addArrow(HexPoint from, HexPoint to)
+    {
+        m_arrows.add(new Pair<HexPoint, HexPoint>(from, to));
+    }
+
     /** Clears dynamnic marks, leaving stones intact. If the dirty flag is set,
         revert the fields to the saved fields saved in markStonesDirty().
         Dirty stones flag is set to false. See aboutToDirtyStones().
+        Empties the list of arrows. 
      */
     public void clearMarks()
     {
@@ -194,6 +203,8 @@ public final class GuiBoard
         }
 
         m_dirty_stones = false;
+
+        m_arrows.clear();
 
 	for (int x=0; x<m_field.length; x++) 
 	    m_field[x].clearAttributes(GuiField.LAST_PLAYED | 
@@ -396,15 +407,27 @@ public final class GuiBoard
 	    int bh = m_height;
 	    GuiField ff[] = m_field;
 	    boolean alphaontop = false;
+            Vector<Pair<HexPoint, HexPoint>> arrows = m_arrows;
 
 	    if (m_preferences.get("gui-board-on-top").equals("black")) {
 		bw = m_height;
 		bh = m_width;
 		alphaontop = true;
 		ff = flipFields(m_field);
+
+                arrows = new Vector<Pair<HexPoint, HexPoint>>();
+                for (int i=0; i<m_arrows.size(); i++) {
+                    HexPoint p1 = m_arrows.get(i).first;
+                    HexPoint p2 = m_arrows.get(i).second;
+                    arrows.add(new Pair<HexPoint, HexPoint>
+                               (HexPoint.get(p1.y, p1.x),
+                                HexPoint.get(p2.y, p2.x)));
+                }
 	    }
 
-	    m_drawer.draw(m_image.getGraphics(), w, h, bw, bh, alphaontop, ff);
+	    m_drawer.draw(m_image.getGraphics(), 
+                          w, h, bw, bh, alphaontop, 
+                          ff, arrows);
 	    graphics.drawImage(m_image, 0, 0, null);
 	}
 
@@ -425,6 +448,7 @@ public final class GuiBoard
 
     private Image m_image;
     private GuiField m_field[];
+    private Vector<Pair<HexPoint, HexPoint>> m_arrows;
 
     private boolean m_dirty_stones;
     private GuiField m_backup_field[];

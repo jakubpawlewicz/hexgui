@@ -4,9 +4,11 @@
 
 package hexgui.gui;
 
+import hexgui.util.Pair;
 import hexgui.hex.HexColor;
 import hexgui.hex.HexPoint;
 
+import java.util.Vector;
 import javax.swing.*;          
 import java.awt.*;
 import java.awt.event.*;
@@ -78,18 +80,20 @@ public abstract class BoardDrawerBase
 	The size of the region to draw to, the size of the board, and the
 	field to draw must be given.  The position of each field is 
 	then calculated and the board drawn. 
-	FIXME: switch "flipped" parameter to a HexColor?
 	@param g graphics context to draw to
 	@param w the width of the region to draw in
 	@param h the height of the region to draw in
-	@param alphaontop true if letters are on top, otherwise numbers
 	@param bw the width of the board (in fields)
 	@param bh the height of the board (in fields)
+	@param alphaontop true if letters are on top, otherwise numbers
+        @param field the fields to draw
+        @param arrows the list of arrows to draw
     */
     public void draw(Graphics g, 
 		     int w, int h, int bw, int bh, 
 		     boolean alphaontop,
-		     GuiField field[])
+		     GuiField field[],
+                     Vector<Pair<HexPoint, HexPoint>> arrows)
     {
 	m_width = w;
 	m_height = h;
@@ -109,6 +113,8 @@ public abstract class BoardDrawerBase
 	drawShadows(g, field);
 	drawFields(g, field);
         drawAlpha(g, field);
+
+        drawArrows(g, arrows);
     }
 
     //------------------------------------------------------------
@@ -310,6 +316,20 @@ public abstract class BoardDrawerBase
 	}
     }
 
+    protected void drawArrows(Graphics g, 
+                              Vector<Pair<HexPoint,HexPoint>> arrows)
+    {
+        if (g instanceof Graphics2D) {
+            Graphics2D g2d = (Graphics2D)g;
+            g2d.setColor(Color.RED);
+            for (int i=0; i<arrows.size(); i++) {
+                Point fm = getLocation(arrows.get(i).first);
+                Point to = getLocation(arrows.get(i).second);
+                drawArrow(g2d, fm.x, fm.y, to.x, to.y, 1.5);
+            }
+        }
+    }
+
     protected void setAntiAliasing(Graphics g)
     {
 	if (g instanceof Graphics2D) {
@@ -318,6 +338,31 @@ public abstract class BoardDrawerBase
 				 RenderingHints.VALUE_ANTIALIAS_ON);
 	}
     }
+
+    public static void drawArrow(Graphics g2d, int x1, int y1, 
+                                 int x2, int y2, double stroke) 
+    {
+        double aDir=Math.atan2(x1-x2,y1-y2);
+        g2d.drawLine(x2,y2,x1,y1);
+	// make the arrow head solid even if dash pattern has been specified
+        //g2d.setStroke(new BasicStroke(1f));
+
+        Polygon tmpPoly=new Polygon();
+        int i1=12+(int)(stroke*2);
+        // make the arrow head the same size regardless of the length length
+        int i2=6+(int)stroke;		
+        tmpPoly.addPoint(x2,y2); // arrow tip
+        tmpPoly.addPoint(x2+xCor(i1,aDir+.5),y2+yCor(i1,aDir+.5));
+        tmpPoly.addPoint(x2+xCor(i2,aDir),y2+yCor(i2,aDir));
+        tmpPoly.addPoint(x2+xCor(i1,aDir-.5),y2+yCor(i1,aDir-.5));
+        tmpPoly.addPoint(x2,y2); // arrow tip
+        g2d.drawPolygon(tmpPoly);
+        g2d.fillPolygon(tmpPoly); 
+    }
+
+    private static int yCor(int len, double dir) {return (int)(len * Math.cos(dir));}
+    private static int xCor(int len, double dir) {return (int)(len * Math.sin(dir));}
+
 
     protected boolean m_alphaontop;
 
