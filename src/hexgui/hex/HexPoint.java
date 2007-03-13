@@ -118,6 +118,9 @@ public final class HexPoint
     */
     public static HexPoint get(String name) 
     {
+        if (name.equalsIgnoreCase("swap"))
+            return SWAP_PIECES;
+
         for (int x=0; x<MAX_POINTS; x++) 
             if (name.equalsIgnoreCase(s_points[x].toString()))
                 return s_points[x];
