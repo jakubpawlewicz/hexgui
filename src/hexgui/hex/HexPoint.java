@@ -31,10 +31,8 @@ public final class HexPoint
     public static final HexPoint SOUTH;
     public static final HexPoint WEST;
     public static final HexPoint EAST;
-    public static final HexPoint SWAP_SIDES;
     public static final HexPoint SWAP_PIECES;
     public static final HexPoint RESIGN;
-    public static final HexPoint FORFEIT;
     public static final HexPoint INVALID;
 
     public static final int MAX_WIDTH  = 16;
@@ -47,36 +45,35 @@ public final class HexPoint
     {
 	s_points = new HexPoint[MAX_POINTS];
 
-	for (int x=0; x<MAX_WIDTH; x++) {
-	    for (int y=0; y<MAX_HEIGHT; y++) {
-		String name = "" + (char)('a' + y) + (x+1);
-		s_points[y*MAX_WIDTH+ x] = new HexPoint(x, y, name);
-	    }
-	}
-        
         /** NOTE: This must be the same as in wolve, or
          *  the vc display methods in GuiBoard will break. 
          */
 
-	NORTH       = s_points[240] = new HexPoint(240, "north");
-	EAST        = s_points[241] = new HexPoint(241, "east");
-	SOUTH       = s_points[242] = new HexPoint(242, "south");
-	WEST        = s_points[243] = new HexPoint(243, "west");
+        INVALID     = s_points[0] = new HexPoint(0, "invalid");
+	RESIGN      = s_points[1] = new HexPoint(1, "resign");
+	SWAP_PIECES = s_points[2] = new HexPoint(2, "swap-pieces");
 
-	SWAP_PIECES = s_points[244] = new HexPoint(244, "swap-pieces");
-	SWAP_SIDES  = s_points[245] = new HexPoint(245, "swap-sides"); 
-	RESIGN      = s_points[246] = new HexPoint(246, "resign");
-	FORFEIT     = s_points[247] = new HexPoint(247, "forfeit");
+	NORTH       = s_points[3] = new HexPoint(3, "north");
+	EAST        = s_points[4] = new HexPoint(4, "east");
+	SOUTH       = s_points[5] = new HexPoint(5, "south");
+	WEST        = s_points[6] = new HexPoint(6, "west");
 
-                      s_points[248] = new HexPoint(248, "--");
-                      s_points[249] = new HexPoint(249, "--");
-                      s_points[250] = new HexPoint(250, "--");
-                      s_points[251] = new HexPoint(251, "--");
-                      s_points[252] = new HexPoint(252, "--");
-                      s_points[253] = new HexPoint(253, "--");
-                      s_points[254] = new HexPoint(254, "--");
+	for (int x=0; x<MAX_WIDTH; x++) {
+	    for (int y=0; y<MAX_HEIGHT; y++) {
+		String name = "" + (char)('a' + y) + (x+1);
+		s_points[7 + y*MAX_WIDTH+ x] = new HexPoint(x, y, name);
+	    }
+	}
+        
+        s_points[248] = new HexPoint(248, "--");
+        s_points[249] = new HexPoint(249, "--");
+        s_points[250] = new HexPoint(250, "--");
+        s_points[251] = new HexPoint(251, "--");
+        s_points[252] = new HexPoint(252, "--");
+        s_points[253] = new HexPoint(253, "--");
+        s_points[254] = new HexPoint(254, "--");
 
-        INVALID     = s_points[255] = new HexPoint(255, "invalid");
+
     }
 
     /** Returns the point with the given index.
@@ -107,7 +104,7 @@ public final class HexPoint
 	assert(y >= 0);
 	assert(x < MAX_WIDTH);
 	assert(y < MAX_HEIGHT);
-	return s_points[y*MAX_WIDTH + x];
+	return s_points[7 + y*MAX_WIDTH + x];
     }
     
     /** Returns the point with the given string represention.

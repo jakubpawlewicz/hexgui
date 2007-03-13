@@ -224,8 +224,7 @@ public final class GuiBoard
     */
     public void setColor(HexPoint point, HexColor color)
     {
-        if (HexPoint.SWAP_SIDES  == point || HexPoint.SWAP_PIECES == point || 
-            HexPoint.RESIGN == point || HexPoint.FORFEIT == point) {
+        if (HexPoint.SWAP_PIECES == point || HexPoint.RESIGN == point) {
             return;
         }
 
@@ -248,8 +247,7 @@ public final class GuiBoard
     */
     public GuiField getField(HexPoint point)
     {
-        if (HexPoint.SWAP_SIDES  == point || HexPoint.SWAP_PIECES == point || 
-            HexPoint.RESIGN == point || HexPoint.FORFEIT == point) {
+        if (HexPoint.SWAP_PIECES == point || HexPoint.RESIGN == point) {
             return null;
         }
         
