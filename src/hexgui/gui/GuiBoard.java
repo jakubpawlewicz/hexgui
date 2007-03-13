@@ -336,7 +336,8 @@ public final class GuiBoard
         getField(vc.getFrom()).setAlphaColor(Color.blue);
         getField(vc.getTo()).setAlphaColor(Color.blue);
         
-        Vector<HexPoint> carrier = convertHexString(vc.getCarrier());
+        //Vector<HexPoint> carrier = convertHexString(vc.getCarrier());
+        Vector<HexPoint> carrier = convertBase64String(vc.getCarrier());
         for (int i=0; i<carrier.size(); i++) 
             getField(carrier.get(i)).setAlphaColor(Color.green);
 
@@ -351,6 +352,9 @@ public final class GuiBoard
         HexPoints.  This relies on m_field being ordered in a particular
         fashion.
         
+        NOTE: THIS IS BROKEN SINCE HexPoint was changed in wolve, r182. 
+              USE BASE 64 INSTEAD!
+
         FIXME: switch carriers to be printed as a list of HexPoints instead of 
         as hex strings?
     */
@@ -366,6 +370,28 @@ public final class GuiBoard
             }
         }
 
+        return ret;
+    }
+
+
+    /** Converts a base 64 string representing a bitset into a vector of
+        HexPoints.  
+    */
+    private static final String m_base64 
+      = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz+/";
+
+    private Vector<HexPoint> convertBase64String(String str)
+    {
+
+        Vector<HexPoint> ret = new Vector<HexPoint>();
+        for (int i=0; i<str.length(); i++) {
+            int v = m_base64.indexOf(str.charAt(i));
+            assert(v != -1);
+            for (int j=0; j<6 && i*6 + j < HexPoint.MAX_POINTS; j++) {
+                if ((v & (1 << j)) != 0)
+                    ret.add(HexPoint.get(i*6 + j));
+            }
+        }
         return ret;
     }
 

@@ -35,26 +35,68 @@ public final class HexPoint
     public static final HexPoint SWAP_PIECES;
     public static final HexPoint RESIGN;
     public static final HexPoint FORFEIT;
+    public static final HexPoint INVALID;
 
-    public static final int MAXSIZE = 26;
+    public static final int MAX_WIDTH  = 16;
+    public static final int MAX_HEIGHT = 15;
+    public static final int MAX_POINTS = 256;
+
+    private static HexPoint s_points[];
 
     static 
     {
-	createPoints(MAXSIZE, MAXSIZE);
-	NORTH       = new HexPoint(   0, -100, "north");
-	SOUTH       = new HexPoint(   0,  100, "south");
-	WEST        = new HexPoint(-100,    0, "west");
-	EAST        = new HexPoint( 100,    0, "east");
-	SWAP_SIDES  = new HexPoint( 200,  200, "swap-sides"); 
-	SWAP_PIECES = new HexPoint( 300,  300, "swap-pieces");
-	RESIGN      = new HexPoint( 400,  400, "resign");
-	FORFEIT     = new HexPoint( 500,  500, "forfeit");
+	s_points = new HexPoint[MAX_POINTS];
+
+	for (int x=0; x<MAX_WIDTH; x++) {
+	    for (int y=0; y<MAX_HEIGHT; y++) {
+		String name = "" + (char)('a' + y) + (x+1);
+		s_points[y*MAX_WIDTH+ x] = new HexPoint(x, y, name);
+	    }
+	}
+        
+        /** NOTE: This must be the same as in wolve, or
+         *  the vc display methods in GuiBoard will break. 
+         */
+
+	NORTH       = s_points[240] = new HexPoint(240, "north");
+	EAST        = s_points[241] = new HexPoint(241, "east");
+	SOUTH       = s_points[242] = new HexPoint(242, "south");
+	WEST        = s_points[243] = new HexPoint(243, "west");
+
+	SWAP_PIECES = s_points[244] = new HexPoint(244, "swap-pieces");
+	SWAP_SIDES  = s_points[245] = new HexPoint(245, "swap-sides"); 
+	RESIGN      = s_points[246] = new HexPoint(246, "resign");
+	FORFEIT     = s_points[247] = new HexPoint(247, "forfeit");
+
+                      s_points[248] = new HexPoint(248, "--");
+                      s_points[249] = new HexPoint(249, "--");
+                      s_points[250] = new HexPoint(250, "--");
+                      s_points[251] = new HexPoint(251, "--");
+                      s_points[252] = new HexPoint(252, "--");
+                      s_points[253] = new HexPoint(253, "--");
+                      s_points[254] = new HexPoint(254, "--");
+
+        INVALID     = s_points[255] = new HexPoint(255, "invalid");
     }
 
-    /** Returns the point with the given coordinates.
-	Note that it is not possible to obtain points for board edges and
-	special moves with this method.  Use the <code>get(String)</code> method
-	for these types of points.
+    /** Returns the point with the given index.
+
+	@param i index of the point. 
+	@return point with index i.
+    */
+    public static HexPoint get(int i)
+    {
+	assert(i >= 0);
+	assert(i < MAX_POINTS);
+	return s_points[i];
+    }
+
+
+    /** Returns the point with the given coordinates.  Note that it is
+	not possible to obtain points for board edges and special
+	moves with this method.  Use the <code>get(String)</code>
+	method for these types of points.
+
 	@param x x-coordinate of point
 	@param y y-coordinate of point
 	@return point with coordinates (x,y). 
@@ -63,9 +105,9 @@ public final class HexPoint
     {
 	assert(x >= 0);
 	assert(y >= 0);
-	assert(x < MAXSIZE);
-	assert(y < MAXSIZE);
-	return s_points[x][y];
+	assert(x < MAX_WIDTH);
+	assert(y < MAX_HEIGHT);
+	return s_points[y*MAX_WIDTH + x];
     }
     
     /** Returns the point with the given string represention.
@@ -76,22 +118,10 @@ public final class HexPoint
     */
     public static HexPoint get(String name) 
     {
-	if (name.equalsIgnoreCase("north")) return NORTH;
-	else if (name.equalsIgnoreCase("south")) return SOUTH;
-	else if (name.equalsIgnoreCase("west")) return WEST;
-	else if (name.equalsIgnoreCase("east")) return EAST;
-	else if (name.equalsIgnoreCase("swap-sides")) return SWAP_SIDES;
-        else if (name.equalsIgnoreCase("swap")) return SWAP_PIECES;
-	else if (name.equalsIgnoreCase("swap-pieces")) return SWAP_PIECES;
-	else if (name.equalsIgnoreCase("resign")) return RESIGN;
-	else if (name.equalsIgnoreCase("forfeit")) return FORFEIT;
-	
-	for (int x=0; x<MAXSIZE; x++) 
-	    for (int y=0; y<MAXSIZE; y++) 
-		if (name.equalsIgnoreCase(s_points[x][y].toString()))
-		    return s_points[x][y];
-
-	assert(false);
+        for (int x=0; x<MAX_POINTS; x++) 
+            if (name.equalsIgnoreCase(s_points[x].toString()))
+                return s_points[x];
+        assert(false);
 	return null;
     }
 
@@ -101,18 +131,12 @@ public final class HexPoint
 	return m_string;
     }
 
-    private static void createPoints(int width, int height)
+    private HexPoint(int p, String name)
     {
-	s_points = new HexPoint[width][height];
-	for (int x=0; x<width; x++) {
-	    for (int y=0; y<height; y++) {
-		String name = "" + (char)('a' + y) + (x+1);
-		s_points[x][y] = new HexPoint(x, y, name);
-	    }
-	}
+        this.x = p & (MAX_WIDTH-1);
+        this.y = p / MAX_WIDTH;
+        m_string = name;
     }
- 
-    private static HexPoint s_points[][];
 
     private HexPoint(int x, int y, String name)
     {
