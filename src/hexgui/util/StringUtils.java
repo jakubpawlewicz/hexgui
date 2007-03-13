@@ -104,6 +104,7 @@ public final class StringUtils
             HexPoint from, to;
             HexColor color;
             int type;
+            int moves;
             String carrier;
             Vector<HexPoint> key = new Vector<HexPoint>();
             String source;
@@ -114,8 +115,9 @@ public final class StringUtils
                 color = HexColor.get(vcs[i+2]);
                 type = Integer.parseInt(vcs[i+3]);
                 source = vcs[i+4];
-                carrier = vcs[i+5];
-                for (j=6; j<6+type; j++) {
+                moves = Integer.parseInt(vcs[i+5]);
+                carrier = vcs[i+6];
+                for (j=7; j<7+type; j++) {
                     HexPoint p = HexPoint.get(vcs[i+j]);
                     key.add(p);
                 }
@@ -126,7 +128,7 @@ public final class StringUtils
                 return ret;                
             }
 
-            ret.add(new VC(from, to, color, type, carrier, key, source));
+            ret.add(new VC(from, to, color, type, source, moves, carrier, key));
         }
         return ret;
     }

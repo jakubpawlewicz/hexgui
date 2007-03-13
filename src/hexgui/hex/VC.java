@@ -16,19 +16,22 @@ public class VC
     /** Constructs a VC. */
     public VC(HexPoint from, HexPoint to, HexColor c, int type)
     {
-        this(from, to, c, type, "", new Vector<HexPoint>(), "unknown");
+        this(from, to, c, type, "unknown", 0, "", new Vector<HexPoint>());
     }
 
-    public VC(HexPoint from, HexPoint to, HexColor c, int type,
-              String carrier, Vector<HexPoint> key, String source)
+    public VC(HexPoint from, HexPoint to, 
+              HexColor c, int type,
+              String source, int moves, 
+              String carrier, Vector<HexPoint> key)
     {
         m_from = from;
         m_to = to;
         m_color = c;
         m_type = type;
+        m_source = source;
+        m_moves = moves;
         m_carrier = carrier;
         m_key = key;
-        m_source = source;
     }
 
     public String toString()
@@ -43,6 +46,8 @@ public class VC
         ret.append(Integer.toString(m_type));
         ret.append(" ");
         ret.append(m_source);
+        ret.append(" ");
+        ret.append(Integer.toString(m_moves));
         ret.append(" ");
         ret.append(m_carrier);
         for (int i=0; i<m_key.size(); i++) {
@@ -65,6 +70,7 @@ public class VC
     private HexPoint m_to;
     private HexColor m_color;
     private int m_type;
+    private int m_moves;
     private String m_carrier;
     private Vector<HexPoint> m_key;
     private String m_source;
