@@ -8,7 +8,8 @@ import java.util.Vector;
 
 //----------------------------------------------------------------------------
 
-/** VC.
+/** 
+    VC.
     A connection between two cells. 
 */
 public class VC
@@ -16,13 +17,15 @@ public class VC
     /** Constructs a VC. */
     public VC(HexPoint from, HexPoint to, HexColor c, int type)
     {
-        this(from, to, c, type, "unknown", 0, "", new Vector<HexPoint>());
+        this(from, to, c, type, "unknown", 0, 
+             new Vector<HexPoint>(), 
+             new Vector<HexPoint>());
     }
 
     public VC(HexPoint from, HexPoint to, 
               HexColor c, int type,
               String source, int moves, 
-              String carrier, Vector<HexPoint> key)
+              Vector<HexPoint> carrier, Vector<HexPoint> key)
     {
         m_from = from;
         m_to = to;
@@ -49,7 +52,14 @@ public class VC
         ret.append(" ");
         ret.append(Integer.toString(m_moves));
         ret.append(" ");
-        ret.append(m_carrier);
+
+        ret.append("[");
+        for (int i=0; i<m_carrier.size(); i++) {
+            ret.append(" ");
+            ret.append(m_carrier.get(i).toString());
+        }
+        ret.append(" ] ");
+
         for (int i=0; i<m_key.size(); i++) {
             ret.append(" ");
             ret.append(m_key.get(i).toString());
@@ -62,7 +72,7 @@ public class VC
     public HexPoint getTo()    { return m_to; }
     public HexColor getColor() { return m_color; }
     public int getType() { return m_type; }
-    public String getCarrier() { return m_carrier; }
+    public Vector<HexPoint> getCarrier() { return m_carrier; }
     public Vector<HexPoint> getKey() { return m_key; }
     public String getSource() { return m_source; }
 
@@ -71,7 +81,7 @@ public class VC
     private HexColor m_color;
     private int m_type;
     private int m_moves;
-    private String m_carrier;
+    private Vector<HexPoint> m_carrier;
     private Vector<HexPoint> m_key;
     private String m_source;
 }

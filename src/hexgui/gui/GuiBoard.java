@@ -335,7 +335,8 @@ public final class GuiBoard
         getField(vc.getTo()).setAlphaColor(Color.blue);
         
         //Vector<HexPoint> carrier = convertHexString(vc.getCarrier());
-        Vector<HexPoint> carrier = convertBase64String(vc.getCarrier());
+        //Vector<HexPoint> carrier = convertBase64String(vc.getCarrier());
+        Vector<HexPoint> carrier = vc.getCarrier();
         for (int i=0; i<carrier.size(); i++) 
             getField(carrier.get(i)).setAlphaColor(Color.green);
 
