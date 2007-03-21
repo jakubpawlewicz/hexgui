@@ -14,6 +14,7 @@ HexGui TODO
   * self play
 
 * analyze dialog
+  * clean it up
 
 * program shell
   * close it properly when program is disconnected/dies/etc

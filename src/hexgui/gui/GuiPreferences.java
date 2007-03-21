@@ -32,6 +32,8 @@ public final class GuiPreferences
 
             {"auto-respond",                      "true"},
 
+            {"first-move-color",                  "black"},
+
             {"remote-host-name",                  "localhost"},
 
 	    {"path-local-program",                "./htpwolve"},

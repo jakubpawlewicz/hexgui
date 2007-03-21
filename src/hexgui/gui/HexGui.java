@@ -149,8 +149,11 @@ public final class HexGui
 
         } else if (cmd.equals("toggle_tomove")) {
             cmdToggleToMove();
+        } else if (cmd.equals("set_to_move")) {
+            cmdSetToMove();
+        } else if (cmd.equals("toggle_click_context")) {
+            cmdToggleClickContext();
         }
-
 
 	//
 	// unknown command
@@ -488,7 +491,26 @@ public final class HexGui
     {
         m_tomove = m_tomove.otherColor();
         m_toolbar.setToMove(m_tomove.toString());
+        m_menubar.setToMove(m_tomove.toString());
     }
+
+    private void cmdSetToMove()
+    {
+        m_tomove = HexColor.get(m_menubar.getToMove());
+        m_toolbar.setToMove(m_tomove.toString());
+    }
+
+    private void cmdToggleClickContext()
+    {
+        String context = m_toolbar.getClickContext();
+        if (context.equals("play"))
+            m_toolbar.setClickContext("setup");
+        else if (context.equals("setup"))
+            m_toolbar.setClickContext("play");
+        else 
+            System.out.println("Unknown context!! '" + context + "'");
+    }
+
 
     //------------------------------------------------------------
 
@@ -867,10 +889,16 @@ public final class HexGui
             
         } else {
 
-            if (m_guiboard.getColor(point) == HexColor.EMPTY) {
-                humanMove(new Move(point, m_tomove));
-            }
+            String context = m_toolbar.getClickContext();
+            if (context.equals("play")) {
+                if (m_guiboard.getColor(point) == HexColor.EMPTY) {
+                    humanMove(new Move(point, m_tomove));
+                }
+            } else if (context.equals("setup")) {
 
+                m_statusbar.setMessage("Setup mode not supported yet!");
+                
+            }
         }
     }
 

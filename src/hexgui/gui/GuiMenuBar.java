@@ -136,13 +136,19 @@ public final class GuiMenuBar
 	item.setActionCommand("newgame");
  	menu.add(item);
 
-	menu.addSeparator();
-	
 	JMenu submenu;
+
+	menu.addSeparator();
+
 	submenu = createClockMenu();
 	menu.add(submenu);
 
-	menu.addSeparator();
+        menu.addSeparator();
+
+        submenu = createToMoveMenu();
+        menu.add(submenu);
+
+        menu.addSeparator();
 
         m_swap = new JMenuItem("Play Swap Move");
         m_swap.addActionListener(m_listener);
@@ -177,6 +183,57 @@ public final class GuiMenuBar
 	menu.add(item);
 
 	return menu;
+    }
+
+    private JMenu createToMoveMenu()
+    {
+	JMenu menu = new JMenu("Color To Move");
+
+	m_colorGroup = new ButtonGroup();
+	String pref = m_preferences.get("first-move-color");
+	
+	JRadioButtonMenuItem item;
+	item = new JRadioButtonMenuItem("black");
+	item.addActionListener(m_listener);
+	item.setActionCommand("set_to_move");
+	if (pref.equals("black")) item.setSelected(true);
+	m_colorGroup.add(item);
+	menu.add(item);
+
+	item = new JRadioButtonMenuItem("white");
+	item.addActionListener(m_listener);
+	item.setActionCommand("set_to_move");
+	if (pref.equals("white")) item.setSelected(true);
+	m_colorGroup.add(item);
+	menu.add(item);
+
+	return menu;        
+    }
+
+    public String getToMove()
+    {
+	Enumeration e = m_colorGroup.getElements();
+	AbstractButton b = (AbstractButton)e.nextElement();
+	while (!b.isSelected() && e.hasMoreElements()) { 
+	    b = (AbstractButton)e.nextElement();
+	}
+	return b.getText();
+    }	
+
+    public void setToMove(String color)
+    {
+	Enumeration e = m_colorGroup.getElements();
+	AbstractButton b = (AbstractButton)e.nextElement();
+	while (true) { 
+            if (color.equalsIgnoreCase(b.getText())) {
+                b.setSelected(true);
+            } else {
+                b.setSelected(false);
+            }
+            if (!e.hasMoreElements()) 
+                break;
+            b = (AbstractButton)e.nextElement();
+	}
     }
 
     //----------------------------------------------------------------------
@@ -442,7 +499,8 @@ public final class GuiMenuBar
 
     private JMenuItem m_resign, m_swap, m_genmove;
 
-    private ButtonGroup m_bsGroup;   // board sizes
-    private ButtonGroup m_btGroup;   // board view types (diamond, flat, etc)
-    private ButtonGroup m_orGroup;   // black on top, or white?
+    private ButtonGroup m_bsGroup;    // board sizes
+    private ButtonGroup m_btGroup;    // board view types (diamond, flat, etc)
+    private ButtonGroup m_orGroup;    // black on top, or white?
+    private ButtonGroup m_colorGroup; // whose turn to move?
 }

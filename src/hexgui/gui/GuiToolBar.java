@@ -58,6 +58,16 @@ public final class GuiToolBar
         m_tomove.setText(string);
     }
 
+    public String getClickContext()
+    {
+        return m_click_context.getText();
+    }
+
+    public void setClickContext(String string)
+    {
+        m_click_context.setText(string);
+    }
+
     public void setProgramConnected(boolean f)
     {
 	m_play.setEnabled(f);
@@ -176,11 +186,19 @@ public final class GuiToolBar
 	m_toolBar.add(m_stop);
 	disableStopButton();
 
+	String pref = m_preferences.get("first-move-color");
 	m_tomove = makeButton(null,
-			    "toggle_tomove",
-			    "Color of current player",
-			    "black");
+                              "toggle_tomove",
+                              "Color of player to move",
+                              pref);
+
 	m_toolBar.add(m_tomove);
+
+        m_click_context = makeButton(null,
+                                     "toggle_click_context", 
+                                     "Toggle click context",
+                                     "play");
+        m_toolBar.add(m_click_context);
 
     }
 
@@ -219,6 +237,7 @@ public final class GuiToolBar
     private JButton m_play, m_stop, m_swap;
 
     private JButton m_tomove;
+    private JButton m_click_context;
 }
 
 //----------------------------------------------------------------------------
