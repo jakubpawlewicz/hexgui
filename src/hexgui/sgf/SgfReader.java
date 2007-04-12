@@ -157,48 +157,60 @@ public final class SgfReader
     {
 	int x,y;
 	String name = m_tokenizer.sval;
-	String val = parseValue();
-	//System.out.println(name + "[" + val + "]");
+
+        boolean done = false;
+        while(!done) {
+
+	    int ttype = m_tokenizer.nextToken();
+            if (ttype != '[') 
+                done = true;
+            m_tokenizer.pushBack();
+            if (done) 
+                break;
+
+            String val = parseValue();
+            //System.out.println(name + "[" + val + "]");
 	
-	if (name.equals("W")) {
-	    HexPoint point = HexPoint.get(val);
-	    node.setMove(new Move(point, HexColor.WHITE));
-	} 
-	else if (name.equals("B")) {
-	    HexPoint point = HexPoint.get(val);
-	    node.setMove(new Move(point, HexColor.BLACK));
-	} 
-	else if (name.equals("FF")) {
-	    node.setSgfProperty(name, val);
-	    x = parseInt(val);
-	    if (x < 1 || x > 4)
-		throw sgfError("Invalid SGF Version! (" + x + ")");
-	}
-	else if (name.equals("GM")) {
-	    node.setSgfProperty(name, val);
-	    if (!isroot) sgfWarning("GM property in non-root node!");
-	    if (parseInt(val) != GM_HEXGAME) throw sgfError("Not a Hex game!");
-	}
-	else if (name.equals("SZ")) {
-	    node.setSgfProperty(name, val);
-	    if (!isroot) sgfWarning("GM property in non-root node!");
-	    Dimension dim = new Dimension();
-	    String sp[] = val.split(":");
-	    if (sp.length == 1) {
-		x = parseInt(sp[0]);
-		dim.setSize(x,x);
-	    } else if (sp.length == 2) {
-		x = parseInt(sp[0]);
-		y = parseInt(sp[1]);
-		dim.setSize(x,y);
-	    } else {
-		throw sgfError("Malformed boardsize!");
-	    }
-	    m_gameinfo.setBoardSize(dim);
-	} 
-	else {
-	    node.setSgfProperty(name, val);
-	}
+            if (name.equals("W")) {
+                HexPoint point = HexPoint.get(val);
+                node.setMove(new Move(point, HexColor.WHITE));
+            } 
+            else if (name.equals("B")) {
+                HexPoint point = HexPoint.get(val);
+                node.setMove(new Move(point, HexColor.BLACK));
+            } 
+            else if (name.equals("FF")) {
+                node.setSgfProperty(name, val);
+                x = parseInt(val);
+                if (x < 1 || x > 4)
+                    throw sgfError("Invalid SGF Version! (" + x + ")");
+            }
+            else if (name.equals("GM")) {
+                node.setSgfProperty(name, val);
+                if (!isroot) sgfWarning("GM property in non-root node!");
+                if (parseInt(val) != GM_HEXGAME) throw sgfError("Not a Hex game!");
+            }
+            else if (name.equals("SZ")) {
+                node.setSgfProperty(name, val);
+                if (!isroot) sgfWarning("GM property in non-root node!");
+                Dimension dim = new Dimension();
+                String sp[] = val.split(":");
+                if (sp.length == 1) {
+                    x = parseInt(sp[0]);
+                    dim.setSize(x,x);
+                } else if (sp.length == 2) {
+                    x = parseInt(sp[0]);
+                    y = parseInt(sp[1]);
+                    dim.setSize(x,y);
+                } else {
+                    throw sgfError("Malformed boardsize!");
+                }
+                m_gameinfo.setBoardSize(dim);
+            } 
+            else {
+                node.setSgfProperty(name, val);
+            }
+        }
     }
 
     private String parseValue() throws SgfError, IOException
