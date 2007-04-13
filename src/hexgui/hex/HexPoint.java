@@ -45,10 +45,6 @@ public final class HexPoint
     {
 	s_points = new HexPoint[MAX_POINTS];
 
-        /** NOTE: This must be the same as in wolve, or
-         *  the vc display methods in GuiBoard will break. 
-         */
-
         INVALID     = s_points[0] = new HexPoint(0, "invalid");
 	RESIGN      = s_points[1] = new HexPoint(1, "resign");
 	SWAP_PIECES = s_points[2] = new HexPoint(2, "swap-pieces");
@@ -58,9 +54,9 @@ public final class HexPoint
 	SOUTH       = s_points[5] = new HexPoint(5, "south");
 	WEST        = s_points[6] = new HexPoint(6, "west");
 
-	for (int x=0; x<MAX_WIDTH; x++) {
-	    for (int y=0; y<MAX_HEIGHT; y++) {
-		String name = "" + (char)('a' + y) + (x+1);
+	for (int y=0; y<MAX_HEIGHT; y++) {
+	    for (int x=0; x<MAX_WIDTH; x++) {
+		String name = "" + (char)('a' + x) + (y+1);
 		s_points[7 + y*MAX_WIDTH+ x] = new HexPoint(x, y, name);
 	    }
 	}

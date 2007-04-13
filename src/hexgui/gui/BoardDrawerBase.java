@@ -143,13 +143,13 @@ public abstract class BoardDrawerBase
                 pos = HexPoint.EAST;
         }
 
-	if (pos == HexPoint.NORTH) {
+	if (pos == HexPoint.EAST) {
 	    return getLocation(m_bwidth+1, m_bheight/2-1);
-	} else if (pos == HexPoint.SOUTH) { 
-	    return getLocation(-2, m_bheight/2+1);
-	} else if (pos == HexPoint.EAST) { 
-	    return getLocation(m_bwidth/2-1, m_bheight+1);
 	} else if (pos == HexPoint.WEST) { 
+	    return getLocation(-2, m_bheight/2+1);
+	} else if (pos == HexPoint.SOUTH) { 
+	    return getLocation(m_bwidth/2-1, m_bheight+1);
+	} else if (pos == HexPoint.NORTH) { 
 	    return getLocation(m_bwidth/2+1, -2);
 	}
 	return getLocation(pos.x, pos.y);

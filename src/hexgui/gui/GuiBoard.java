@@ -435,13 +435,13 @@ public final class GuiBoard
 	    int bw = m_width;
 	    int bh = m_height;
 	    GuiField ff[] = m_field;
-	    boolean alphaontop = false;
+	    boolean alphaontop = true;
             Vector<Pair<HexPoint, HexPoint>> arrows = m_arrows;
 
-	    if (m_preferences.get("gui-board-on-top").equals("black")) {
+	    if (m_preferences.get("gui-board-on-top").equals("white")) {
 		bw = m_height;
 		bh = m_width;
-		alphaontop = true;
+		alphaontop = false;
 		ff = flipFields(m_field);
 
                 arrows = new Vector<Pair<HexPoint, HexPoint>>();
