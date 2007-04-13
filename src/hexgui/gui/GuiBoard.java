@@ -454,6 +454,8 @@ public final class GuiBoard
                 }
 	    }
 
+            //System.out.println("alphaontop = " + alphaontop);
+
 	    m_drawer.draw(m_image.getGraphics(), 
                           w, h, bw, bh, alphaontop, 
                           ff, arrows);
