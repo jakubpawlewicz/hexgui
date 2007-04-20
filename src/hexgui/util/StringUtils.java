@@ -103,7 +103,7 @@ public final class StringUtils
         for (int i=0, j=0; i<vcs.length; i+=j) {
             HexPoint from, to;
             HexColor color;
-            int type;
+            String type;
             int moves;
             Vector<HexPoint> carrier = new Vector<HexPoint>();
             Vector<HexPoint> key = new Vector<HexPoint>();
@@ -113,7 +113,7 @@ public final class StringUtils
                 from = HexPoint.get(vcs[i+0]);
                 to = HexPoint.get(vcs[i+1]);
                 color = HexColor.get(vcs[i+2]);
-                type = Integer.parseInt(vcs[i+3]);
+                type = vcs[i+3];
                 source = vcs[i+4];
                 moves = Integer.parseInt(vcs[i+5]);
                 
@@ -128,7 +128,9 @@ public final class StringUtils
 
                 j++;  // skip closing ']'
                 
-                for (int k=0; k<type; k++, j++) {
+                int blah = 0;
+                if (type.equals("semi")) blah = 1;
+                for (int k=0; k<blah; k++, j++) {
                     HexPoint p = HexPoint.get(vcs[i+j]);
                     key.add(p);
                 }

@@ -209,7 +209,7 @@ public class AnalyzeDialog
     JComboBox m_type;
 
     static final String m_colors[] = { "black", "white" };
-    static final String m_types[] = {"0", "1" };
+    static final String m_types[] = {"full", "semi" };
 }
 
 //----------------------------------------------------------------------------

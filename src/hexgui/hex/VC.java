@@ -15,7 +15,7 @@ import java.util.Vector;
 public class VC
 {
     /** Constructs a VC. */
-    public VC(HexPoint from, HexPoint to, HexColor c, int type)
+    public VC(HexPoint from, HexPoint to, HexColor c, String type)
     {
         this(from, to, c, type, "unknown", 0, 
              new Vector<HexPoint>(), 
@@ -23,7 +23,7 @@ public class VC
     }
 
     public VC(HexPoint from, HexPoint to, 
-              HexColor c, int type,
+              HexColor c, String type,
               String source, int moves, 
               Vector<HexPoint> carrier, Vector<HexPoint> key)
     {
@@ -46,7 +46,7 @@ public class VC
         ret.append(" ");
         ret.append(m_color.toString());
         ret.append(" ");
-        ret.append(Integer.toString(m_type));
+        ret.append(m_type);
         ret.append(" ");
         ret.append(m_source);
         ret.append(" ");
@@ -71,7 +71,7 @@ public class VC
     public HexPoint getFrom()  { return m_from; }
     public HexPoint getTo()    { return m_to; }
     public HexColor getColor() { return m_color; }
-    public int getType() { return m_type; }
+    public String getType() { return m_type; }
     public Vector<HexPoint> getCarrier() { return m_carrier; }
     public Vector<HexPoint> getKey() { return m_key; }
     public String getSource() { return m_source; }
@@ -79,7 +79,7 @@ public class VC
     private HexPoint m_from;
     private HexPoint m_to;
     private HexColor m_color;
-    private int m_type;
+    private String m_type;
     private int m_moves;
     private Vector<HexPoint> m_carrier;
     private Vector<HexPoint> m_key;
