@@ -918,6 +918,9 @@ public final class HexGui
 
     private void play(Move move)
     {
+        if (move.getPoint() == HexPoint.RESIGN)
+            return;
+
         int variation = -1;
         for (int i=0; i<m_current.numChildren(); i++) {
             if (move.equals(m_current.getChild(i).getMove())) {
