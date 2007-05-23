@@ -553,6 +553,9 @@ public final class HexGui
         else if (c.equals("vc-get-mustplay"))
             cb = new Runnable() { public void run() { cbDisplayPointList(); } };
 
+        else if (c.equals("eval_twod")) 
+            cb = new Runnable() { public void run() { cbEvalTwoDistance(); } };
+
         else if (c.equals("mohex-show-rollout")) 
             cb = new Runnable() { public void run() { cbMohexShowRollout(); } };
         else if (c.equals("quit")) 
@@ -793,6 +796,29 @@ public final class HexGui
         Vector<VC> vcs = StringUtils.parseVCList(str);
         new VCDisplayDialog(this, m_guiboard, vcs);
         
+    }
+
+    //==================================================
+    // evaluation commands
+    //==================================================
+    
+    public void cbEvalTwoDistance()
+    {
+	if (!m_white.wasSuccess()) 
+	    return;
+
+	String str = m_white.getResponse();
+        Vector<Pair<String, String> > pairs = 
+            StringUtils.parseStringPairList(str);
+
+        m_guiboard.clearMarks();
+
+        for (int i=0; i<pairs.size(); i++) {
+	    HexPoint point = HexPoint.get(pairs.get(i).first);
+            String value = pairs.get(i).second;
+            m_guiboard.setText(point, value);
+	}
+	m_guiboard.repaint();
     }
 
     //==================================================

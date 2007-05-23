@@ -160,6 +160,11 @@ public class AnalyzeDialog
 
                 HexColor color = getSelectedColor();
                 cmd.append(" " + color.toString());
+
+            } else if (name.equals("eval_twod")) {
+                
+                HexColor color = getSelectedColor();
+                cmd.append(" " + color.toString());
                 
             } else if (name.equals("mohex-show-rollout")) {
 

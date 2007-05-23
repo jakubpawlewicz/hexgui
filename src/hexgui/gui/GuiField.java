@@ -210,9 +210,9 @@ public class GuiField
 	int width = fm.stringWidth(m_text);
 	int height = fm.getAscent();
 
-        Color color = Color.white;
-        if (getColor() == HexColor.WHITE)
-            color = Color.black;
+        Color color = Color.black;
+        if (getColor() == HexColor.BLACK)
+            color = Color.white;
 
         m_graphics.setColor(color);
         m_graphics.drawString(m_text, m_width/2-width/2, m_height/2+height/2);
