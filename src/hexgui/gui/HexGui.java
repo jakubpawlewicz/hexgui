@@ -1000,13 +1000,19 @@ public final class HexGui
     {
         m_guiboard.clearMarks();
 
-	for (int i=0; i<n; i++) {
+	for (int i=0; i<n; ) {
 	    Node child = m_current.getChild();
 	    if (child == null) break;
 
-	    Move move = child.getMove();
-	    m_guiboard.setColor(move.getPoint(), move.getColor());
-	    htpPlay(move);
+            if (child.hasMove()) {
+                Move move = child.getMove();
+                m_guiboard.setColor(move.getPoint(), move.getColor());
+                htpPlay(move);
+                i++;
+            } else if (child.hasSetup()) {
+                
+
+            }
 
 	    m_current = child;
 	}
@@ -1028,13 +1034,16 @@ public final class HexGui
     {
         m_guiboard.clearMarks();
 
-	for (int i=0; i<n; i++) {
+	for (int i=0; i<n; ) {
 	    if (m_current == m_root) break;
-
-	    Move move = m_current.getMove();
-	    m_guiboard.setColor(move.getPoint(), HexColor.EMPTY);
-            htpUndo();
-            htpShowboard();
+            
+            if (m_current.hasMove()) {
+                Move move = m_current.getMove();
+                m_guiboard.setColor(move.getPoint(), HexColor.EMPTY);
+                htpUndo();
+                htpShowboard();
+                i++;
+            }
 
 	    m_current = m_current.getParent();
 	}

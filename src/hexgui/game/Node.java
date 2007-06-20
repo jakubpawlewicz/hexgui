@@ -34,6 +34,7 @@ public class Node
 
     public void setMove(Move move) { m_move = move;  }
     public Move getMove() { return m_move; }
+    public boolean hasMove() { return m_move != null; }
 
     public void setParent(Node parent) { m_parent = parent; }
     public Node getParent() { return m_parent; }
