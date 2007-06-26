@@ -179,6 +179,18 @@ public final class SgfReader
                 HexPoint point = HexPoint.get(val);
                 node.setMove(new Move(point, HexColor.BLACK));
             } 
+            else if (name.equals("AB")) {
+                node.setSgfProperty(name, val);
+                node.addSetup(HexColor.BLACK, HexPoint.get(val));
+            }
+            else if (name.equals("AW")) {
+                node.setSgfProperty(name, val);
+                node.addSetup(HexColor.WHITE, HexPoint.get(val));
+            }
+            else if (name.equals("AE")) {
+                node.setSgfProperty(name, val);
+                // FIXME: store empty setup cells?
+            }
             else if (name.equals("FF")) {
                 node.setSgfProperty(name, val);
                 x = parseInt(val);

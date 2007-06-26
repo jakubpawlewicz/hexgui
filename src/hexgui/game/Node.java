@@ -5,10 +5,12 @@
 package hexgui.game;
 
 import hexgui.hex.HexColor;
+import hexgui.hex.HexPoint;
 import hexgui.hex.Move;
 
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.Vector;
 
 //----------------------------------------------------------------------------
 
@@ -29,6 +31,8 @@ public class Node
     public Node(Move move)
     {
 	m_property = new TreeMap<String, String>();
+        m_setup_black = new Vector<HexPoint>();
+        m_setup_white = new Vector<HexPoint>();
 	setMove(move);
     }
 
@@ -193,9 +197,39 @@ public class Node
     
     public String getComment() { return getSgfProperty("C"); }
 
+    /** Adds a stone of specified color to the setup list. */
+    public void addSetup(HexColor color, HexPoint point)
+    {
+        if (color == HexColor.BLACK) {
+            m_setup_black.add(point);
+        } 
+        else if (color == HexColor.WHITE) {
+            m_setup_white.add(point);
+        }
+    }
+    
+    /** Returns the set of setup stones of color. */
+    public Vector<HexPoint> getSetup(HexColor color) 
+    {
+        if (color == HexColor.BLACK)
+            return m_setup_black;
+        if (color == HexColor.WHITE)
+            return m_setup_white;
+        return null;
+    }
+
+    public boolean hasSetup()
+    {
+        return ((getSgfProperty("AB") != null)|| 
+                (getSgfProperty("AW") != null));
+    }
+
     //----------------------------------------------------------------------
 
     private TreeMap<String,String> m_property;
+
+    private Vector<HexPoint> m_setup_black;
+    private Vector<HexPoint> m_setup_white;
 
     private Move m_move;
     private Node m_parent, m_prev, m_next, m_child;

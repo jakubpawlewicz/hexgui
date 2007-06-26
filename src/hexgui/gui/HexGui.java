@@ -298,7 +298,10 @@ public final class HexGui
 	Node cur = m_root;
 	while (cur != m_current) {
 	    cur = cur.getChildContainingNode(m_current);
-	    htpPlay(cur.getMove());
+            if (cur.hasMove())
+                htpPlay(cur.getMove());
+            else if (cur.hasSetup()) 
+                playSetup(cur);
 	}
         htpShowboard();
     }
@@ -996,6 +999,22 @@ public final class HexGui
 	setFrameTitle();
     }
 
+    private void playSetup(Node node)
+    {
+        Vector<HexPoint> black = node.getSetup(HexColor.BLACK);
+        Vector<HexPoint> white = node.getSetup(HexColor.WHITE);
+        for (int j=0; j<black.size(); j++) {
+            HexPoint point = black.get(j);
+            m_guiboard.setColor(point, HexColor.BLACK);
+            htpPlay(new Move(point, HexColor.BLACK));
+        }
+        for (int j=0; j<white.size(); j++) {
+            HexPoint point = white.get(j);
+            m_guiboard.setColor(point, HexColor.WHITE);
+            htpPlay(new Move(point, HexColor.WHITE));
+        }
+    }
+
     private void forward(int n)
     {
         m_guiboard.clearMarks();
@@ -1010,8 +1029,7 @@ public final class HexGui
                 htpPlay(move);
                 i++;
             } else if (child.hasSetup()) {
-                
-
+                playSetup(child);
             }
 
 	    m_current = child;
@@ -1055,7 +1073,8 @@ public final class HexGui
 	    
 	if (m_current == m_root) 
 	    m_tomove = HexColor.BLACK;
-	else if (m_current.getMove().getPoint() != HexPoint.SWAP_PIECES) 
+	else if (m_current.hasMove() && 
+                 m_current.getMove().getPoint() != HexPoint.SWAP_PIECES) 
 	    m_tomove = m_current.getMove().getColor().otherColor();
         
         m_toolbar.setToMove(m_tomove.toString());
@@ -1128,9 +1147,9 @@ public final class HexGui
 
     private void markLastPlayedStone()
     {
-        if (m_current == m_root) {
+        if (m_current == m_root || m_current.hasSetup()) {
             m_guiboard.markSwapPlayed(null);
-	    m_guiboard.markLastPlayed(null);            
+	    m_guiboard.markLastPlayed(null);   
             return;
         }
         
