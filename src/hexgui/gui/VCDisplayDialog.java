@@ -70,6 +70,8 @@ public class VCDisplayDialog
     public void valueChanged(ListSelectionEvent e)
     {
         VC vc = m_vcs.get(m_list.getSelectedIndex());
+        if (vc.getType().equals("softlimit")) // do nothing on this
+            return;
         m_guiboard.clearMarks();
         m_guiboard.displayVC(vc);
         m_guiboard.repaint();

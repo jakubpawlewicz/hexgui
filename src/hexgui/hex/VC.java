@@ -40,6 +40,11 @@ public class VC
     public String toString()
     {
         StringBuilder ret = new StringBuilder();
+
+        if (m_type.equals("softlimit")) {
+            return "---------------- softlimit ----------------";
+        }
+
         ret.append(m_from.toString());
         ret.append(" ");
         ret.append(m_to.toString());

@@ -103,36 +103,40 @@ public final class StringUtils
         for (int i=0, j=0; i<vcs.length; i+=j) {
             HexPoint from, to;
             HexColor color;
-            String type;
-            int moves;
+            String type = "unknown";
+            int moves = 0;
             Vector<HexPoint> carrier = new Vector<HexPoint>();
             Vector<HexPoint> key = new Vector<HexPoint>();
-            String source;
+            String source = "unknown";
 
             try {
                 from = HexPoint.get(vcs[i+0]);
                 to = HexPoint.get(vcs[i+1]);
                 color = HexColor.get(vcs[i+2]);
                 type = vcs[i+3];
-                source = vcs[i+4];
-                moves = Integer.parseInt(vcs[i+5]);
-                
-                if (!vcs[i+6].equals("["))
-                    throw new Throwable("Bad");
 
-                for (j=7; j < vcs.length; j++) {
-                    if (vcs[i+j].equals("]")) break;
-                    HexPoint p = HexPoint.get(vcs[i+j]);
-                    carrier.add(p);
-                }
-
-                j++;  // skip closing ']'
+                j = 5;
+                if (!type.equals("softlimit")) {
+                    source = vcs[i+4];
+                    moves = Integer.parseInt(vcs[i+5]);
                 
-                int blah = 0;
-                if (type.equals("semi")) blah = 1;
-                for (int k=0; k<blah; k++, j++) {
-                    HexPoint p = HexPoint.get(vcs[i+j]);
-                    key.add(p);
+                    if (!vcs[i+6].equals("["))
+                        throw new Throwable("Bad");
+                    
+                    for (j=7; j < vcs.length; j++) {
+                        if (vcs[i+j].equals("]")) break;
+                        HexPoint p = HexPoint.get(vcs[i+j]);
+                        carrier.add(p);
+                    }
+                    
+                    j++;  // skip closing ']'
+                
+                    int blah = 0;
+                    if (type.equals("semi")) blah = 1;
+                    for (int k=0; k<blah; k++, j++) {
+                        HexPoint p = HexPoint.get(vcs[i+j]);
+                        key.add(p);
+                    }
                 }
 
             }
