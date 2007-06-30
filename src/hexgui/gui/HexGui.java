@@ -382,7 +382,7 @@ public final class HexGui
 
 	    m_toolbar.updateButtonStates(m_current);
             m_menubar.updateMenuStates(m_current);
-
+            
             htpBoardsize(m_guiboard.getBoardSize());
             htpShowboard();
 	}
@@ -665,8 +665,10 @@ public final class HexGui
 	sendCommand("play " + move.getColor().toString() + 
 		    " " + move.getPoint().toString() + "\n", 
 		    callback);
+        m_statusbar.setMessage(move.getColor().toString() + " " +  
+                               move.getPoint().toString());
     }
-
+ 
     private void htpUndo()
     {
 	Runnable callback = new Runnable()
@@ -675,6 +677,7 @@ public final class HexGui
 	    };
 
 	sendCommand("undo\n", callback);
+        m_statusbar.setMessage("Undo!");
     }
 
     private void htpBoardsize(Dimension size)
@@ -686,6 +689,7 @@ public final class HexGui
 
         sendCommand("boardsize " + size.width + " " + size.height + "\n",
                     callback);
+        m_statusbar.setMessage("New game");
     }
 
     public void cbGenMove()
@@ -1030,6 +1034,11 @@ public final class HexGui
                 Move move = child.getMove();
                 m_guiboard.setColor(move.getPoint(), move.getColor());
                 htpPlay(move);
+                if (move.getPoint() == HexPoint.RESIGN) {
+                    m_statusbar.setMessage(move.getColor().toString() + 
+                                           " resigned.");
+                }
+
                 i++;
             } else if (child.hasSetup()) {
                 playSetup(child);
@@ -1157,6 +1166,12 @@ public final class HexGui
         }
         
         Move move = m_current.getMove();
+
+        if (move.getPoint() == HexPoint.RESIGN) {
+            m_guiboard.markSwapPlayed(null);
+	    m_guiboard.markLastPlayed(null);   
+            return;
+        }
 
         if (move.getPoint() == HexPoint.SWAP_PIECES) {
             Node parent = m_current.getParent();
