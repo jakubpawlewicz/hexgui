@@ -124,6 +124,26 @@ public class AnalyzeDialog
                 HexColor color = getSelectedColor();
                 cmd.append(" " + color.toString());
                 
+            } else if (name.equals("find_sealed")) {
+
+                HexColor color = getSelectedColor();
+                cmd.append(" " + color.toString());
+
+            } else if (name.equals("strengthen_vcs")) {
+
+                HexColor color = getSelectedColor();
+                cmd.append(" " + color.toString());
+
+            } else if (name.equals("vc-build")) {
+
+                HexColor color = getSelectedColor();
+                cmd.append(" " + color.toString());
+
+            } else if (name.equals("vc-get-mustplay")) {
+
+                HexColor color = getSelectedColor();
+                cmd.append(" " + color.toString());
+
             } else if (name.equals("vc-connected-to")) {
                 if (selected.size() < 1) {
                     m_statusbar.setMessage("Please select cell before running.");
@@ -155,11 +175,6 @@ public class AnalyzeDialog
                 cmd.append(" " + p2.toString());
                 cmd.append(" " + c.toString());
                 cmd.append(" " + t);
-
-            } else if (name.equals("vc-get-mustplay")) {
-
-                HexColor color = getSelectedColor();
-                cmd.append(" " + color.toString());
 
             } else if (name.equals("eval_twod")) {
                 
