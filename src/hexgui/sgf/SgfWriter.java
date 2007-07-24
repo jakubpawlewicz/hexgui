@@ -68,7 +68,12 @@ public final class SgfWriter
 	Iterator<Map.Entry<String,String> >  it = map.entrySet().iterator();
 	while(it.hasNext()) {
 	    Map.Entry<String,String> e = it.next();
-	    print(e.getKey() + "[" + e.getValue() + "]");
+
+            // FIXME: stupid hack for setup positions
+            if (e.getKey().equals("AB") || e.getKey().equals("AW"))
+                print(e.getKey() + e.getValue());
+            else
+                print(e.getKey() + "[" + e.getValue() + "]");
 	}
 	
 	int num = node.numChildren();

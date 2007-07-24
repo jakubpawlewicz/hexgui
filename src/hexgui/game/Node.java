@@ -174,6 +174,13 @@ public class Node
 	m_property.put(key, value);
     }
 
+    public void appendSgfProperty(String key, String toadd)
+    {
+        String old = m_property.get(key);
+        if (old == null) old = "";
+        m_property.put(key, old+toadd);
+    }
+
     /** Returns the value of a property. 
 	@param key name of property
 	@return value of <code>key</code> or <code>null</code> if key is

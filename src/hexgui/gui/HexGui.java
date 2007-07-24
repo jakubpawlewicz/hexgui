@@ -105,6 +105,8 @@ public final class HexGui
 	    cmdSaveGameAs();
 	else if (cmd.equals("loadgame"))
 	    cmdLoadGame();
+        else if (cmd.equals("save-position-as"))
+            cmdSavePositionAs();
 	else if (cmd.equals("about"))
 	    cmdAbout();
 	//
@@ -413,6 +415,13 @@ public final class HexGui
 
 	m_file = file;
 	return cmdSaveGame();
+    }
+
+    private void cmdSavePositionAs()
+    {
+        File file = showSaveAsDialog();
+        if (file != null)
+            savePosition(file);
     }
 
     private void cmdLoadGame()
@@ -1054,10 +1063,12 @@ public final class HexGui
 	m_toolbar.updateButtonStates(m_current);
         m_menubar.updateMenuStates(m_current);
         
-        m_tomove = m_current.getMove().getColor();
-        if (m_current.getMove().getPoint() != HexPoint.SWAP_PIECES)
-            m_tomove = m_tomove.otherColor();
-        m_toolbar.setToMove(m_tomove.toString());
+        if (m_current.hasMove()) {
+            m_tomove = m_current.getMove().getColor();
+            if (m_current.getMove().getPoint() != HexPoint.SWAP_PIECES)
+                m_tomove = m_tomove.otherColor();
+            m_toolbar.setToMove(m_tomove.toString());
+        }
 
         htpShowboard();
     }
@@ -1231,10 +1242,30 @@ public final class HexGui
 	return false;
     }
 
+    /** Saves the current game state as a position in the specified
+     * sgf file. */
+    private boolean savePosition(File file)
+    {
+        Node root = new Node();
+        Node child = new Node();
+        root.addChild(child);
+
+        GameInfo info = new GameInfo();
+        info.setBoardSize(m_guiboard.getBoardSize());
+        m_guiboard.storePosition(child);
+        return save_tree(file, root, info);
+    }
+
     /** Save game to file.
-	@return true If successful. 
+	@return true If successful.
     */
     private boolean save(File file)
+    {
+        return save_tree(file, m_root, m_gameinfo);
+    }
+
+    
+    private boolean save_tree(File file, Node root, GameInfo gameinfo)
     {
 	FileOutputStream out;
 	try {
@@ -1245,9 +1276,10 @@ public final class HexGui
 	    return false;
 	}
 	
-	new SgfWriter(out, m_root, m_gameinfo);
+	new SgfWriter(out, root, gameinfo);
 	return true;
     }
+
 
     /* Load game from file. */
     private SgfReader load(File file)

@@ -6,6 +6,7 @@ package hexgui.gui;
 
 import hexgui.hex.*;
 import hexgui.util.*;
+import hexgui.game.Node;
 
 import java.util.Vector;
 import java.math.BigInteger;
@@ -321,6 +322,30 @@ public final class GuiBoard
                 return false;
         }
         return true;
+    }
+
+    /** Stores the current state as a setup position in the
+        given sgf node. */
+    public void storePosition(Node node)
+    {
+        for (int x=0; x<m_field.length; x++) {
+            HexPoint point = m_field[x].getPoint();
+            if (point == HexPoint.NORTH || point == HexPoint.EAST ||
+                point == HexPoint.SOUTH || point == HexPoint.WEST)
+                continue;
+                
+            HexColor color = m_field[x].getColor();
+            if (color == HexColor.EMPTY)
+                continue;
+
+            String cur = "[" + point.toString() + "]";
+            if (color == HexColor.BLACK) {
+                node.appendSgfProperty("AB", cur);
+            } else if (color == HexColor.WHITE) {
+                node.appendSgfProperty("AW", cur);
+            }
+            node.addSetup(color, point);
+        }
     }
 
     public void paintImmediately()

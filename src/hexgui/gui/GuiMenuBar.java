@@ -92,6 +92,14 @@ public final class GuiMenuBar
  	menu.add(item);
 
  	menu.addSeparator();
+
+        item = new JMenuItem("Save Position As...");
+        item.addActionListener(m_listener);
+        item.setActionCommand("save-position-as");
+        menu.add(item);
+
+ 	menu.addSeparator();
+
 	item = new JMenuItem("Connect Remote Program...");
 	item.addActionListener(m_listener);
 	item.setActionCommand("connect-program");
