@@ -441,6 +441,9 @@ public final class HexGui
 
 	    m_guiboard.initSize(m_gameinfo.getBoardSize());
             htpBoardsize(m_guiboard.getBoardSize());
+
+            if (m_root.hasSetup())
+                playSetup(m_root);
 	    forward(1000);
 
 	    m_file = file;
