@@ -575,6 +575,9 @@ public final class HexGui
 
         else if (c.equals("eval_twod")) 
             cb = new Runnable() { public void run() { cbEvalTwoDistance(); } };
+        else if (c.equals("eval_resist")) 
+            cb = new Runnable() { public void run() { cbEvalResist(); } };
+
 
         else if (c.equals("mohex-show-rollout")) 
             cb = new Runnable() { public void run() { cbMohexShowRollout(); } };
@@ -827,6 +830,25 @@ public final class HexGui
     //==================================================
     
     public void cbEvalTwoDistance()
+    {
+	if (!m_white.wasSuccess()) 
+	    return;
+
+	String str = m_white.getResponse();
+        Vector<Pair<String, String> > pairs = 
+            StringUtils.parseStringPairList(str);
+
+        m_guiboard.clearMarks();
+
+        for (int i=0; i<pairs.size(); i++) {
+	    HexPoint point = HexPoint.get(pairs.get(i).first);
+            String value = pairs.get(i).second;
+            m_guiboard.setText(point, value);
+	}
+	m_guiboard.repaint();
+    }
+
+    public void cbEvalResist()
     {
 	if (!m_white.wasSuccess()) 
 	    return;

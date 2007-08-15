@@ -181,6 +181,11 @@ public class AnalyzeDialog
                 HexColor color = getSelectedColor();
                 cmd.append(" " + color.toString());
                 
+            } else if (name.equals("eval_resist")) {
+                
+                HexColor color = getSelectedColor();
+                cmd.append(" " + color.toString());
+                
             } else if (name.equals("mohex-show-rollout")) {
 
                 if (selected.size() < 1) {
