@@ -299,6 +299,8 @@ public final class GuiBoard
     {
         if (point == HexPoint.get("swap-pieces"))
             return;
+        if (point == HexPoint.get("resign"))
+            return;
 
 	getField(point).setAlphaColor(color);
     }
