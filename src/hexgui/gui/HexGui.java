@@ -572,6 +572,10 @@ public final class HexGui
             cb = new Runnable() { public void run() { cbBetweenCells(); } };
         else if (c.equals("vc-get-mustplay"))
             cb = new Runnable() { public void run() { cbDisplayPointList(); } };
+        else if (c.equals("vc-intersection"))
+            cb = new Runnable() { public void run() { cbDisplayPointList(); } };
+        else if (c.equals("vc-union"))
+            cb = new Runnable() { public void run() { cbDisplayPointList(); } };
 
         else if (c.equals("eval_twod")) 
             cb = new Runnable() { public void run() { cbEvalTwoDistance(); } };

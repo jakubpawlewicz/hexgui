@@ -110,6 +110,8 @@ public class AnalyzeDialog
             String name = m_commands.get(index);
 
             cmd.append(name);
+            
+            // commands that need only a point
             if (name.equals("get_absorb_group")) {
                 if (selected.size() < 1) {
                     m_statusbar.setMessage("Please select cell before running.");
@@ -119,32 +121,23 @@ public class AnalyzeDialog
                 HexPoint p = selected.get(0);
                 cmd.append(" " + p.toString());
 
-            } else if (name.equals("compute_dead_cells")) {
+            } 
+            // commands that need only a color
+            else if (name.equals("compute_dead_cells") ||
+                     name.equals("find_sealed") ||
+                     name.equals("strengthen_vcs") ||
+                     name.equals("vc-build") ||
+                     name.equals("vc-get-mustplay") ||
+                     name.equals("eval_twod") ||
+                     name.equals("eval_resist")) {
 
                 HexColor color = getSelectedColor();
                 cmd.append(" " + color.toString());
                 
-            } else if (name.equals("find_sealed")) {
+            }  
+            // commands that need a point, a color, and a vctype
+            else if (name.equals("vc-connected-to")) {
 
-                HexColor color = getSelectedColor();
-                cmd.append(" " + color.toString());
-
-            } else if (name.equals("strengthen_vcs")) {
-
-                HexColor color = getSelectedColor();
-                cmd.append(" " + color.toString());
-
-            } else if (name.equals("vc-build")) {
-
-                HexColor color = getSelectedColor();
-                cmd.append(" " + color.toString());
-
-            } else if (name.equals("vc-get-mustplay")) {
-
-                HexColor color = getSelectedColor();
-                cmd.append(" " + color.toString());
-
-            } else if (name.equals("vc-connected-to")) {
                 if (selected.size() < 1) {
                     m_statusbar.setMessage("Please select cell before running.");
                     return;
@@ -158,8 +151,12 @@ public class AnalyzeDialog
                 cmd.append(" " + c.toString());
                 cmd.append(" " + t);
 
-            } else if (name.equals("vc-between-cells")) {
-
+            } 
+            // commands that need 2 points, a color, and a vc type
+            else if (name.equals("vc-between-cells") ||
+                     name.equals("vc-intersection") ||
+                     name.equals("vc-union")) {
+                
                 if (selected.size() < 2) {
                     m_statusbar.setMessage("Please select at least two cells " + 
                                            "before running.");
@@ -175,31 +172,7 @@ public class AnalyzeDialog
                 cmd.append(" " + p2.toString());
                 cmd.append(" " + c.toString());
                 cmd.append(" " + t);
-
-            } else if (name.equals("eval_twod")) {
-                
-                HexColor color = getSelectedColor();
-                cmd.append(" " + color.toString());
-                
-            } else if (name.equals("eval_resist")) {
-                
-                HexColor color = getSelectedColor();
-                cmd.append(" " + color.toString());
-                
-            } else if (name.equals("mohex-show-rollout")) {
-
-                if (selected.size() < 1) {
-                    m_statusbar.setMessage("Please select cell before running.");
-                    return;
-                }
-
-                HexPoint p = selected.get(0);
-                HexColor color = getSelectedColor();
-                
-                cmd.append(" " + p.toString());
-                cmd.append(" " + color.toString());
-                
-            }
+            } 
 
             cmd.append("\n");
             m_callback.analyzeCommand(cmd.toString());
