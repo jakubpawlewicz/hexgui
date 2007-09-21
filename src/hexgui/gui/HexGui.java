@@ -792,20 +792,23 @@ public final class HexGui
         for (int i=0; i<pairs.size(); i++) {
 	    HexPoint point = HexPoint.get(pairs.get(i).first);
             String value = pairs.get(i).second;
-            if (value.charAt(0) == 'd')
+            if (value.charAt(0) == 'd')         // dead
+                m_guiboard.setAlphaColor(point, Color.cyan);
+            else if (value.charAt(0) == '#') {  // vulnerable
+                HexPoint to = HexPoint.get(value.substring(1));
+                m_guiboard.addArrow(point, to);
                 m_guiboard.setAlphaColor(point, Color.green);
-            else if (value.charAt(0) == 'v')
-                m_guiboard.setAlphaColor(point, Color.orange);
-            else if (value.charAt(0) == '!') {
+            }
+            else if (value.charAt(0) == '!') {  // dominated
                 HexPoint to = HexPoint.get(value.substring(1));
                 m_guiboard.addArrow(point, to);
                 m_guiboard.setAlphaColor(point, Color.yellow);
             }
-            else if (value.charAt(0) == 'b') {
+            else if (value.charAt(0) == 'b') {  // black captured
                 m_guiboard.setColor(point, HexColor.BLACK);
                 m_guiboard.setAlphaColor(point, Color.red);
             }  
-            else if (value.charAt(0) == 'w') {
+            else if (value.charAt(0) == 'w') {  // white captured
                 m_guiboard.setColor(point, HexColor.WHITE);
                 m_guiboard.setAlphaColor(point, Color.red);
             }                

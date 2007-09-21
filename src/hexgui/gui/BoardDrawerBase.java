@@ -321,7 +321,7 @@ public abstract class BoardDrawerBase
     {
         if (g instanceof Graphics2D) {
             Graphics2D g2d = (Graphics2D)g;
-            g2d.setColor(Color.RED);
+            g2d.setColor(Color.BLUE);
             for (int i=0; i<arrows.size(); i++) {
                 Point fm = getLocation(arrows.get(i).first);
                 Point to = getLocation(arrows.get(i).second);
