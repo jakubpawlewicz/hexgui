@@ -792,8 +792,15 @@ public final class HexGui
         for (int i=0; i<pairs.size(); i++) {
 	    HexPoint point = HexPoint.get(pairs.get(i).first);
             String value = pairs.get(i).second;
-            if (value.charAt(0) == 'd')         // dead
+            if (value.charAt(0) == 'd') {        // dead
                 m_guiboard.setAlphaColor(point, Color.cyan);
+                if (value.length() >= 2) {
+                    if (value.charAt(1) == 'b')
+                        m_guiboard.setColor(point, HexColor.BLACK);
+                    else 
+                        m_guiboard.setColor(point, HexColor.WHITE);
+                }
+            }
             else if (value.charAt(0) == '#') {  // vulnerable
                 HexPoint to = HexPoint.get(value.substring(1));
                 m_guiboard.addArrow(point, to);
