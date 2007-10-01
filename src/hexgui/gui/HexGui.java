@@ -802,9 +802,15 @@ public final class HexGui
                 }
             }
             else if (value.charAt(0) == '#') {  // vulnerable
-                HexPoint to = HexPoint.get(value.substring(1));
-                m_guiboard.addArrow(point, to);
                 m_guiboard.setAlphaColor(point, Color.green);
+                if (value.charAt(1) == '[' && 
+                    value.charAt(value.length()-1) == ']') {
+                    String pts = value.substring(2, value.length()-1);
+                    Vector<HexPoint> pp = StringUtils.parsePointList(pts,"-");
+                    for (int j=0; j<pp.size(); ++j) {
+                        m_guiboard.addArrow(point, pp.get(j));
+                    }
+                }
             }
             else if (value.charAt(0) == '!') {  // dominated
                 HexPoint to = HexPoint.get(value.substring(1));

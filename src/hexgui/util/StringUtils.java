@@ -45,19 +45,24 @@ public final class StringUtils
         return ret.toString();
     }
 
-    public static Vector<HexPoint> parsePointList(String str)
+    public static Vector<HexPoint> parsePointList(String str, String sep)
     {
 	Vector<HexPoint> ret = new Vector<HexPoint>();
         String cleaned = cleanWhiteSpace(str.trim());
         if (cleaned.length() == 0)
             return ret;
 
-	String[] pts = cleaned.split(" ");
+	String[] pts = cleaned.split(sep);
 	for (int i=0; i<pts.length; i++) {
 	    HexPoint p = HexPoint.get(pts[i].trim());
 	    ret.add(p);
 	}
 	return ret;
+    }
+
+    public static Vector<HexPoint> parsePointList(String str)
+    {
+        return parsePointList(str, " ");
     }
 
     public static Vector<String> parseStringList(String str)
