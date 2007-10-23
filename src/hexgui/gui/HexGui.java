@@ -583,6 +583,8 @@ public final class HexGui
             cb = new Runnable() { public void run() { cbEvalTwoDistance(); } };
         else if (c.equals("eval_resist")) 
             cb = new Runnable() { public void run() { cbEvalResist(); } };
+        else if (c.equals("eval_resist_delta")) 
+            cb = new Runnable() { public void run() { cbEvalResistDelta(); } };
 
 
         else if (c.equals("mohex-show-rollout")) 
@@ -900,6 +902,25 @@ public final class HexGui
         m_statusbar.setMessage("Resistance: " + res + 
                                " (" + rew + " - " + reb + ")");
     }
+
+    public void cbEvalResistDelta()
+    {
+	if (!m_white.wasSuccess()) 
+	    return;
+
+	String str = m_white.getResponse();
+        Vector<Pair<String, String> > pairs = 
+            StringUtils.parseStringPairList(str);
+
+        m_guiboard.clearMarks();
+        for (int i=0; i<pairs.size(); i++) {
+            HexPoint point = HexPoint.get(pairs.get(i).first);
+            String value = pairs.get(i).second;
+            m_guiboard.setText(point, value);
+	}
+	m_guiboard.repaint();
+    }
+
 
     //==================================================
     // commands specific to mohex

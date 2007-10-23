@@ -129,7 +129,8 @@ public class AnalyzeDialog
                      name.equals("vc-build") ||
                      name.equals("vc-get-mustplay") ||
                      name.equals("eval_twod") ||
-                     name.equals("eval_resist")) {
+                     name.equals("eval_resist") ||
+                     name.equals("eval_resist_delta")) {
 
                 HexColor color = getSelectedColor();
                 cmd.append(" " + color.toString());
