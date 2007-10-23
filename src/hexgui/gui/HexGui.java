@@ -298,6 +298,8 @@ public final class HexGui
 
         // play up to current move
 	Node cur = m_root;
+        if (cur.hasSetup())
+            playSetup(cur);
 	while (cur != m_current) {
 	    cur = cur.getChildContainingNode(m_current);
             if (cur.hasMove())
