@@ -879,14 +879,26 @@ public final class HexGui
         Vector<Pair<String, String> > pairs = 
             StringUtils.parseStringPairList(str);
 
+        String res = "";
+        String rew = "";
+        String reb = "";
         m_guiboard.clearMarks();
-
         for (int i=0; i<pairs.size(); i++) {
-	    HexPoint point = HexPoint.get(pairs.get(i).first);
-            String value = pairs.get(i).second;
-            m_guiboard.setText(point, value);
+            if (pairs.get(i).first.equals("res")) {
+                res = pairs.get(i).second;
+            } else if (pairs.get(i).first.equals("rew")) {
+                rew = pairs.get(i).second;
+            } else if (pairs.get(i).first.equals("reb")) {
+                reb = pairs.get(i).second;
+            } else {
+                HexPoint point = HexPoint.get(pairs.get(i).first);
+                String value = pairs.get(i).second;
+                m_guiboard.setText(point, value);
+            }
 	}
 	m_guiboard.repaint();
+        m_statusbar.setMessage("Resistance: " + res + 
+                               " (" + rew + " - " + reb + ")");
     }
 
     //==================================================
