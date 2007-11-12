@@ -560,6 +560,12 @@ public final class HexGui
             cb = new Runnable() { public void run() { cbDisplayPointList(); } };
         else if (c.equals("get_absorb_group"))
             cb = new Runnable() { public void run() { cbGetAbsorbGroup(); } };
+
+	else if (c.equals("shortest_paths")) 
+            cb = new Runnable() { public void run() { cbDisplayPointList(); } };
+	else if (c.equals("shortest_vc_paths")) 
+            cb = new Runnable() { public void run() { cbDisplayPointList(); } };
+
         else if (c.equals("compute_dead_cells"))
             cb = new Runnable() { public void run() { cbComputeDeadCells(); } };
 
