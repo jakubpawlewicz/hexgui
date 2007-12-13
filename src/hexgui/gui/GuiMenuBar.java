@@ -362,6 +362,16 @@ public final class GuiMenuBar
         m_analyze_visible.setState(f);
     }
 
+    public boolean getEvalGraphVisible()
+    {
+        return m_evalgraph_visible.getState();
+    }
+
+    public void setEvalGraphVisible(boolean f)
+    {
+        m_evalgraph_visible.setState(f);
+    }
+
     private JMenu createViewMenu()
     {
 	JMenu menu = new JMenu("View");
@@ -386,6 +396,14 @@ public final class GuiMenuBar
 	m_analyze_visible.setEnabled(false);
 	menu.add(m_analyze_visible);
 
+	menu.addSeparator();
+
+        m_evalgraph_visible = new JCheckBoxMenuItem("Show Eval Graph");
+        m_evalgraph_visible.addActionListener(m_listener);
+        m_evalgraph_visible.setActionCommand("gui_evalgraph_visible");
+        m_evalgraph_visible.setEnabled(true);
+        menu.add(m_evalgraph_visible);
+        
 	menu.addSeparator();
 
 	JMenu view;
@@ -502,6 +520,7 @@ public final class GuiMenuBar
     private JCheckBoxMenuItem m_toolbar_visible;
     private JCheckBoxMenuItem m_shell_visible;
     private JCheckBoxMenuItem m_analyze_visible;
+    private JCheckBoxMenuItem m_evalgraph_visible;
 
     private JMenuItem m_connect_local, m_connect_remote, m_disconnect;
 

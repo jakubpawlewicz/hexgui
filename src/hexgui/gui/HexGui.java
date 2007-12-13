@@ -24,13 +24,6 @@ import java.awt.image.BufferedImage;
 import java.awt.event.*;
 import java.net.*;
 
-import org.jfree.chart.*;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.data.*;
-import org.jfree.data.xy.XYSeries;
-import org.jfree.data.xy.XYDataset;
-import org.jfree.data.xy.XYSeriesCollection;
-
 //----------------------------------------------------------------------------
 
 /** HexGui. */
@@ -78,31 +71,6 @@ public final class HexGui
         pack();
         setVisible(true);
 
-        //////////////////////////
-        
-        XYSeries series = new XYSeries("Average Size");
-        series.add(20.0, 10.0);
-        series.add(40.0, 20.0);
-        series.add(70.0, 50.0);
-        XYDataset xyDataset = new XYSeriesCollection(series);
-        
-        JFreeChart chart = ChartFactory.createXYLineChart
-            ("Sample XY Chart",  // Title
-             "Height",           // X-Axis label
-             "Weight",           // Y-Axis label
-             xyDataset,          // Dataset
-             PlotOrientation.HORIZONTAL,
-             true ,               // Show legend
-             true,                // show tooltips
-             true                 // show urls
-             );
-
-        BufferedImage image = chart.createBufferedImage(500,300);
-
-        JLabel lblChart = new JLabel();
-        lblChart.setIcon(new ImageIcon(image));
-
-        getContentPane().add(lblChart, BorderLayout.EAST);
     }
 
     //------------------------------------------------------------
@@ -152,6 +120,8 @@ public final class HexGui
 	    cmdGuiShellVisible();
 	else if (cmd.equals("gui_analyze_visible"))
             cmdGuiAnalyzeVisible();
+        else if (cmd.equals("gui_evalgraph_visible"))
+            cmdGuiEvalGraphVisible();
 	else if (cmd.equals("gui_board_draw_type"))
 	    cmdGuiBoardDrawType();
 	else if (cmd.equals("gui_board_orientation"))
@@ -515,6 +485,23 @@ public final class HexGui
 	if (m_analyze == null) return;
 	boolean visible = m_menubar.getAnalyzeVisible();
 	m_analyze.setVisible(visible);
+    }
+
+    private void cmdGuiEvalGraphVisible()
+    {
+	boolean visible = m_menubar.getEvalGraphVisible();
+        if (visible) {
+            m_evalgraph = new EvalGraphDialog(this);
+            m_evalgraph.addWindowListener(new WindowAdapter() 
+	    {
+		public void windowClosing(WindowEvent winEvt) {
+		    m_menubar.setEvalGraphVisible(false);
+		}
+	    });
+        } 
+        else {
+            m_evalgraph.setVisible(false);
+        }
     }
 
     private void cmdGuiBoardDrawType()
@@ -1473,6 +1460,7 @@ public final class HexGui
     private GuiMenuBar m_menubar;
     private HtpShell m_shell;
     private AnalyzeDialog m_analyze;
+    private EvalGraphDialog m_evalgraph;
 
     private Node m_root;
     private Node m_current;
