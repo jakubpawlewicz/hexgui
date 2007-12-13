@@ -20,8 +20,16 @@ import java.io.*;
 import java.util.*;
 import javax.swing.*;          
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.awt.event.*;
 import java.net.*;
+
+import org.jfree.chart.*;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.*;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYDataset;
+import org.jfree.data.xy.XYSeriesCollection;
 
 //----------------------------------------------------------------------------
 
@@ -69,6 +77,32 @@ public final class HexGui
 
         pack();
         setVisible(true);
+
+        //////////////////////////
+        
+        XYSeries series = new XYSeries("Average Size");
+        series.add(20.0, 10.0);
+        series.add(40.0, 20.0);
+        series.add(70.0, 50.0);
+        XYDataset xyDataset = new XYSeriesCollection(series);
+        
+        JFreeChart chart = ChartFactory.createXYLineChart
+            ("Sample XY Chart",  // Title
+             "Height",           // X-Axis label
+             "Weight",           // Y-Axis label
+             xyDataset,          // Dataset
+             PlotOrientation.HORIZONTAL,
+             true ,               // Show legend
+             true,                // show tooltips
+             true                 // show urls
+             );
+
+        BufferedImage image = chart.createBufferedImage(500,300);
+
+        JLabel lblChart = new JLabel();
+        lblChart.setIcon(new ImageIcon(image));
+
+        getContentPane().add(lblChart, BorderLayout.EAST);
     }
 
     //------------------------------------------------------------
@@ -569,7 +603,7 @@ public final class HexGui
         else if (c.equals("compute_dead_cells"))
             cb = new Runnable() { public void run() { cbComputeDeadCells(); } };
 
-        else if (c.equals("find_comb_decomp")) 
+        else if (c.equals("find_sealed")) 
             cb = new Runnable() { public void run() { cbDisplayPointList(); } };
         else if (c.equals("strengthen_vcs")) 
             cb = new Runnable() { public void run() { cbDisplayPointList(); } };
