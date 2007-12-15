@@ -491,7 +491,29 @@ public final class HexGui
     {
 	boolean visible = m_menubar.getEvalGraphVisible();
         if (visible) {
-            m_evalgraph = new EvalGraphDialog(this);
+            
+            Vector<Integer> movenum = new Vector<Integer>();
+            Vector<Double> score = new Vector<Double>();
+
+            movenum.add(1);
+            score.add( 0.453);
+            movenum.add(3);
+            score.add( 0.233);
+            movenum.add(5);
+            score.add( 0.113);
+            movenum.add(7);
+            score.add( 0.073);
+
+            movenum.add(2);
+            score.add( 0.623);
+            movenum.add(4);
+            score.add( 0.123);
+            movenum.add(6);
+            score.add(-0.287);
+            movenum.add(8);
+            score.add(-0.023);
+
+            m_evalgraph = new EvalGraphDialog(this, movenum, score);
             m_evalgraph.addWindowListener(new WindowAdapter() 
 	    {
 		public void windowClosing(WindowEvent winEvt) {

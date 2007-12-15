@@ -5,6 +5,7 @@
 package hexgui.gui;
 
 import hexgui.hex.*;
+import hexgui.util.*;
 
 import javax.swing.*;          
 import javax.swing.text.*;
@@ -30,7 +31,9 @@ import org.jfree.data.xy.XYSeriesCollection;
 public class EvalGraphDialog
     extends JDialog implements ActionListener
 {
-    public EvalGraphDialog(JFrame owner)
+    public EvalGraphDialog(JFrame owner, 
+                           Vector<Integer> movenum, 
+                           Vector<Double> scores)
     {
 	super(owner, "HexGui: Evalualtion Graph");
 
@@ -44,18 +47,26 @@ public class EvalGraphDialog
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-        XYSeries series = new XYSeries("Average Size");
-        series.add(20.0, 10.0);
-        series.add(40.0, 20.0);
-        series.add(70.0, 50.0);
-        XYDataset xyDataset = new XYSeriesCollection(series);
+        XYSeries series1 = new XYSeries("Black");
+        XYSeries series2 = new XYSeries("White");
+        for (int i=0; i<scores.size(); ++i) {
+            int move = movenum.get(i).intValue();
+            double score = scores.get(i).doubleValue();
+            if ((move % 2) == 0)
+                series1.add(move, score);
+            else
+                series2.add(move, score);
+        }
+        XYSeriesCollection col = new XYSeriesCollection();
+        col.addSeries(series1);
+        col.addSeries(series2);
         
         JFreeChart chart = ChartFactory.createXYLineChart
-            ("Sample XY Chart",  // Title
-             "Height",           // X-Axis label
-             "Weight",           // Y-Axis label
-             xyDataset,          // Dataset
-             PlotOrientation.HORIZONTAL,
+            ("Evaluation Graph",  // Title
+             "Move",              // Y-Axis label
+             "Score",             // X-Axis label
+             col,           // Dataset
+             PlotOrientation.VERTICAL,
              true ,               // Show legend
              true,                // show tooltips
              true                 // show urls
