@@ -131,7 +131,8 @@ public class AnalyzeDialog
                      name.equals("eval_twod") ||
                      name.equals("eval_resist") ||
                      name.equals("eval_resist_delta") ||
-                     name.equals("solve_state")) {
+                     name.equals("solve_state") ||
+                     name.equals("solver-find-winning")) {
 
                 HexColor color = getSelectedColor();
                 cmd.append(" " + color.toString());

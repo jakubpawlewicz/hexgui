@@ -6,7 +6,7 @@ JAVAC = javac
 JAVADOC = javadoc
 JFLAGS =
 JAR = jar
-CLASSPATH = ../lib/jfreechart/jcommon-1.0.12.jar:../lib/jfreechart/jfreechart-1.0.8a.jar:.
+CLASSPATH =  #'../lib/jfreechart/jcommon-1.0.12.jar;../lib/jfreechart/jfreechart-1.0.8a.jar;.'
 
 DOCDIR = ../doc/
 VERSIONDIR = hexgui/version/
@@ -45,7 +45,7 @@ compile:
 	$(JAVAC) hexgui/game/*.java
 	$(JAVAC) hexgui/sgf/*.java
 	$(JAVAC) hexgui/htp/*.java
-	$(JAVAC) -cp $(CLASSPATH) hexgui/gui/*.java
+	$(JAVAC) -cp "../lib/jfreechart/jcommon-1.0.12.jar;../lib/jfreechart/jfreechart-1.0.8a.jar;." hexgui/gui/*.java
 	$(JAVAC) hexgui/Main.java
 
 clean:
@@ -60,7 +60,7 @@ clean:
 	$(RM) hexgui/*.class
 
 run:
-	$(JAVA) -cp $(CLASSPATH) -ea hexgui/Main
+	$(JAVA) -cp "../lib/jfreechart/jcommon-1.0.12.jar;../lib/jfreechart/jfreechart-1.0.8a.jar;." -ea hexgui/Main
 
 docs:
 	$(JAVADOC) -d $(DOCDIR) -subpackages hexgui
