@@ -620,6 +620,12 @@ public final class HexGui
         else if (c.equals("strengthen_vcs")) 
             cb = new Runnable() { public void run() { cbDisplayPointList(); } };
 
+
+        else if (c.equals("book-depths")) 
+            cb = new Runnable() { public void run() { cbDisplayPointText(); } };
+        else if (c.equals("book-sizes")) 
+            cb = new Runnable() { public void run() { cbDisplayPointText(); } };
+
         else if (c.equals("vc-connected-to")) 
             cb = new Runnable() { public void run() { cbDisplayPointList(); } };
         else if (c.equals("vc-between-cells"))
@@ -632,7 +638,7 @@ public final class HexGui
             cb = new Runnable() { public void run() { cbDisplayPointList(); } };
 
         else if (c.equals("eval_twod")) 
-            cb = new Runnable() { public void run() { cbEvalTwoDistance(); } };
+            cb = new Runnable() { public void run() { cbDisplayPointText(); } };
         else if (c.equals("eval_resist")) 
             cb = new Runnable() { public void run() { cbEvalResist(); } };
         else if (c.equals("eval_resist_delta")) 
@@ -905,7 +911,7 @@ public final class HexGui
     // evaluation commands
     //==================================================
     
-    public void cbEvalTwoDistance()
+    public void cbDisplayPointText()
     {
 	if (!m_white.wasSuccess()) 
 	    return;
