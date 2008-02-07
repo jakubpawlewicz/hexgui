@@ -645,7 +645,8 @@ public final class HexGui
             cb = new Runnable() { public void run() { cbEvalResist(); } };
         else if (c.equals("eval_resist_delta")) 
             cb = new Runnable() { public void run() { cbEvalResistDelta(); } };
-
+	else if (c.equals("eval_influence"))
+            cb = new Runnable() { public void run() { cbDisplayPointText(); } };
 
         else if (c.equals("mohex-show-rollout")) 
             cb = new Runnable() { public void run() { cbMohexShowRollout(); } };
@@ -986,7 +987,6 @@ public final class HexGui
 	m_guiboard.repaint();
         m_statusbar.setMessage("Resistance: " + res);
     }
-
 
     //==================================================
     // commands specific to mohex
