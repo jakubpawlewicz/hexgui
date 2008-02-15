@@ -625,8 +625,11 @@ public final class HexGui
             cb = new Runnable() { public void run() { cbDisplayPointText(); } };
         else if (c.equals("book-sizes")) 
             cb = new Runnable() { public void run() { cbDisplayPointText(); } };
-        else if (c.equals("book-scores")) 
+        else if (c.equals("book-scores"))
             cb = new Runnable() { public void run() { cbDisplayPointText(); } };
+	else if (c.equals("book-priorities"))
+            cb = new Runnable() { public void run() { cbDisplayPointText(); } };
+
 
         else if (c.equals("vc-connected-to")) 
             cb = new Runnable() { public void run() { cbDisplayPointList(); } };
