@@ -611,6 +611,11 @@ public final class HexGui
 
         else if (c.equals("compute_dead_cells"))
             cb = new Runnable() { public void run() { cbComputeDeadCells(); } };
+        else if (c.equals("vc-build"))
+            cb = new Runnable() { public void run() { cbComputeDeadCells(); } };
+        else if (c.equals("vc-build-incremental"))
+            cb = new Runnable() { public void run() { cbComputeDeadCells(); } };
+
 
         else if (c.equals("solver-find-winning"))
             cb = new Runnable() { public void run() { cbDisplayPointList(); } };            
