@@ -495,23 +495,21 @@ public final class HexGui
             Vector<Integer> movenum = new Vector<Integer>();
             Vector<Double> score = new Vector<Double>();
 
-            movenum.add(1);
-            score.add( 0.453);
-            movenum.add(3);
-            score.add( 0.233);
-            movenum.add(5);
-            score.add( 0.113);
-            movenum.add(7);
-            score.add( 0.073);
+            int move = 1;
+            Node node = m_root;
+            while (node != null) {
+                String value = node.getSgfProperty("V");
+                if (value != null) {
+                    movenum.add(new Integer(move++));
+                    score.add(new Double(value));
+                }
 
-            movenum.add(2);
-            score.add( 0.623);
-            movenum.add(4);
-            score.add( 0.123);
-            movenum.add(6);
-            score.add(-0.287);
-            movenum.add(8);
-            score.add(-0.023);
+                Node child = node.getChildContainingNode(m_current);
+                if (child == null)
+                    child = node.getChild();
+                
+                node = child;
+            }
 
             m_evalgraph = new EvalGraphDialog(this, movenum, score);
             m_evalgraph.addWindowListener(new WindowAdapter() 

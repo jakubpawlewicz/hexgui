@@ -20,6 +20,10 @@ import java.util.*;
 
 import org.jfree.chart.*;
 import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.renderer.xy.XYSplineRenderer;
+
 import org.jfree.data.*;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYDataset;
@@ -35,7 +39,7 @@ public class EvalGraphDialog
                            Vector<Integer> movenum, 
                            Vector<Double> scores)
     {
-	super(owner, "HexGui: Evalualtion Graph");
+	super(owner, "HexGui: Evaluation Graph");
 
 	addWindowListener(new WindowAdapter() 
 	    {
@@ -52,6 +56,8 @@ public class EvalGraphDialog
         for (int i=0; i<scores.size(); ++i) {
             int move = movenum.get(i).intValue();
             double score = scores.get(i).doubleValue();
+            if (score > 1.5) score = 1.5;
+            if (score <-1.5) score = -1.5;
             if ((move % 2) == 0)
                 series1.add(move, score);
             else
@@ -61,18 +67,23 @@ public class EvalGraphDialog
         col.addSeries(series1);
         col.addSeries(series2);
         
-        JFreeChart chart = ChartFactory.createXYLineChart
-            ("Evaluation Graph",  // Title
-             "Move",              // Y-Axis label
-             "Score",             // X-Axis label
-             col,           // Dataset
-             PlotOrientation.VERTICAL,
-             true ,               // Show legend
-             true,                // show tooltips
-             true                 // show urls
-             );
+//         JFreeChart chart = ChartFactory.createXYLineChart
+//             ("Evaluation Graph",  // Title
+//              "Move",              // Y-Axis label
+//              "Score",             // X-Axis label
+//              col,           // Dataset
+//              PlotOrientation.VERTICAL,
+//              true ,               // Show legend
+//              true,                // show tooltips
+//              true                 // show urls
+//              );
 
-        BufferedImage image = chart.createBufferedImage(500,300);
+        JFreeChart chart = new JFreeChart(new XYPlot(col, 
+                                                     new NumberAxis("Move"),
+                                                     new NumberAxis("Score"),
+                                                     new XYSplineRenderer()));
+
+        BufferedImage image = chart.createBufferedImage(800,600);
 
         JLabel lblChart = new JLabel();
         lblChart.setIcon(new ImageIcon(image));
