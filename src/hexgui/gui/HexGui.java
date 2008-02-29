@@ -1122,7 +1122,8 @@ public final class HexGui
 
         int variation = -1;
         for (int i=0; i<m_current.numChildren(); i++) {
-            if (move.equals(m_current.getChild(i).getMove())) {
+            Node child = m_current.getChild(i);
+            if (child.hasMove() && move.equals(child.getMove())) {
                 variation = i;
                 break;
             }
