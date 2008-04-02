@@ -361,11 +361,13 @@ public final class GuiBoard
         getField(vc.getFrom()).setAlphaColor(Color.blue);
         getField(vc.getTo()).setAlphaColor(Color.blue);
         
-        //Vector<HexPoint> carrier = convertHexString(vc.getCarrier());
-        //Vector<HexPoint> carrier = convertBase64String(vc.getCarrier());
         Vector<HexPoint> carrier = vc.getCarrier();
         for (int i=0; i<carrier.size(); i++) 
             getField(carrier.get(i)).setAlphaColor(Color.green);
+
+        Vector<HexPoint> stones = vc.getStones();
+        for (int i=0; i<stones.size(); i++) 
+            getField(stones.get(i)).setAlphaColor(Color.red);
 
         Vector<HexPoint> key = vc.getKey();
         for (int i=0; i<key.size(); i++)

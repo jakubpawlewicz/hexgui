@@ -19,13 +19,16 @@ public class VC
     {
         this(from, to, c, type, "unknown", 0, 
              new Vector<HexPoint>(), 
+             new Vector<HexPoint>(), 
              new Vector<HexPoint>());
     }
 
     public VC(HexPoint from, HexPoint to, 
               HexColor c, String type,
               String source, int moves, 
-              Vector<HexPoint> carrier, Vector<HexPoint> key)
+              Vector<HexPoint> carrier, 
+              Vector<HexPoint> stones, 
+              Vector<HexPoint> key)
     {
         m_from = from;
         m_to = to;
@@ -34,6 +37,7 @@ public class VC
         m_source = source;
         m_moves = moves;
         m_carrier = carrier;
+        m_stones = stones;
         m_key = key;
     }
 
@@ -65,6 +69,13 @@ public class VC
         }
         ret.append(" ] ");
 
+        ret.append("[");
+        for (int i=0; i<m_stones.size(); i++) {
+            ret.append(" ");
+            ret.append(m_stones.get(i).toString());
+        }
+        ret.append(" ] ");
+
         for (int i=0; i<m_key.size(); i++) {
             ret.append(" ");
             ret.append(m_key.get(i).toString());
@@ -78,6 +89,7 @@ public class VC
     public HexColor getColor() { return m_color; }
     public String getType() { return m_type; }
     public Vector<HexPoint> getCarrier() { return m_carrier; }
+    public Vector<HexPoint> getStones() { return m_stones; }
     public Vector<HexPoint> getKey() { return m_key; }
     public String getSource() { return m_source; }
 
@@ -87,6 +99,7 @@ public class VC
     private String m_type;
     private int m_moves;
     private Vector<HexPoint> m_carrier;
+    private Vector<HexPoint> m_stones;
     private Vector<HexPoint> m_key;
     private String m_source;
 }

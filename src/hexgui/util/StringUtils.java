@@ -111,6 +111,7 @@ public final class StringUtils
             String type = "unknown";
             int moves = 0;
             Vector<HexPoint> carrier = new Vector<HexPoint>();
+            Vector<HexPoint> stones = new Vector<HexPoint>();
             Vector<HexPoint> key = new Vector<HexPoint>();
             String source = "unknown";
 
@@ -124,7 +125,8 @@ public final class StringUtils
                 if (!type.equals("softlimit")) {
                     source = vcs[i+4];
                     moves = Integer.parseInt(vcs[i+5]);
-                
+
+                    // read carrier set
                     if (!vcs[i+6].equals("["))
                         throw new Throwable("Bad");
                     
@@ -136,6 +138,18 @@ public final class StringUtils
                     
                     j++;  // skip closing ']'
                 
+                    // read stone set
+                    if (!vcs[j].equals("["))
+                        throw new Throwable("Bad");
+                    
+                    for (j++; j < vcs.length; j++) {
+                        if (vcs[i+j].equals("]")) break;
+                        HexPoint p = HexPoint.get(vcs[i+j]);
+                        stones.add(p);
+                    }
+                    
+                    j++;  // skip closing ']'
+
                     int blah = 0;
                     if (type.equals("semi")) blah = 1;
                     for (int k=0; k<blah; k++, j++) {
@@ -151,7 +165,7 @@ public final class StringUtils
             }
 
             ret.add(new VC(from, to, color, type, 
-                           source, moves, carrier, key));
+                           source, moves, carrier, stones, key));
         }
         return ret;
     }
