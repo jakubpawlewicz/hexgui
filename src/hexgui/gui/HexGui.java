@@ -872,6 +872,37 @@ public final class HexGui
                         m_guiboard.setColor(point, HexColor.WHITE);
                 }
             }
+            else if (value.charAt(0) == 'p' && // black perm.inf
+                     value.charAt(1) == 'b') 
+            {  
+                m_guiboard.setAlphaColor(point, Color.gray);
+                m_guiboard.setColor(point, HexColor.BLACK);
+
+                if (value.charAt(2) == '[' && 
+                    value.charAt(value.length()-1) == ']') {
+                    String pts = value.substring(3, value.length()-1);
+                    Vector<HexPoint> pp = StringUtils.parsePointList(pts,"-");
+                    for (int j=0; j<pp.size(); ++j) {
+                        m_guiboard.addArrow(point, pp.get(j));
+                    }
+                }
+            }
+            else if (value.charAt(0) == 'p' && // white perm.inf
+                     value.charAt(1) == 'w') 
+            {  
+                m_guiboard.setAlphaColor(point, Color.gray);
+                m_guiboard.setColor(point, HexColor.WHITE);
+
+                if (value.charAt(2) == '[' && 
+                    value.charAt(value.length()-1) == ']') {
+                    String pts = value.substring(3, value.length()-1);
+                    Vector<HexPoint> pp = StringUtils.parsePointList(pts,"-");
+                    for (int j=0; j<pp.size(); ++j) {
+                        m_guiboard.addArrow(point, pp.get(j));
+                    }
+                }
+            }
+
             else if (value.charAt(0) == '#') {  // vulnerable
                 m_guiboard.setAlphaColor(point, Color.green);
                 if (value.charAt(1) == '[' && 
