@@ -633,7 +633,9 @@ public final class HexGui
 	else if (c.equals("book-priorities"))
             cb = new Runnable() { public void run() { cbDisplayPointText(); } };
 
-
+        else if (c.equals("db-get")) 
+            cb = new Runnable() { public void run() { cbDBGet(); } };
+        
         else if (c.equals("vc-connected-to")) 
             cb = new Runnable() { public void run() { cbDisplayPointList(); } };
         else if (c.equals("vc-between-cells"))
@@ -1023,6 +1025,48 @@ public final class HexGui
 	}
 	m_guiboard.repaint();
         m_statusbar.setMessage("Resistance: " + res);
+    }
+
+    //==================================================
+    // db commands
+    //==================================================
+
+    public void cbDBGet()
+    {
+        if (!m_white.wasSuccess())
+            return;
+
+        String str = m_white.getResponse();        
+        String cleaned = StringUtils.cleanWhiteSpace(str.trim());
+
+	String[] pts = cleaned.split(" ");
+
+        HexColor winner = HexColor.get(pts[0].trim());
+        m_statusbar.setMessage(winner + " wins");
+
+        m_guiboard.clearMarks();
+
+        int state = 0; 
+	for (int i=1; i<pts.length; ++i) {
+            if (pts[i].equals("Winning")) {
+                state = 1;
+                continue;
+            } else if (pts[i].equals("Losing")) {
+                state = 2;
+                continue;
+            }
+	    HexPoint point = HexPoint.get(pts[i].trim());
+
+            if (state == 0) {  // part of the proof
+                m_guiboard.setAlphaColor(point, Color.green);
+            } else if (state == 1) { // winning move
+                m_guiboard.setText(point, "W");
+            } else if (state == 2) { // losing move
+                m_guiboard.setText(point, "L");
+            }
+	}
+
+	m_guiboard.repaint();
     }
 
     //==================================================
