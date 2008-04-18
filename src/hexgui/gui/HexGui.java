@@ -1042,12 +1042,12 @@ public final class HexGui
 	String[] pts = cleaned.split(" ");
 
         HexColor winner = HexColor.get(pts[0].trim());
-        m_statusbar.setMessage(winner + " wins");
+        m_statusbar.setMessage(winner + " wins in " + pts[1]);
 
         m_guiboard.clearMarks();
 
         int state = 0; 
-	for (int i=1; i<pts.length; ++i) {
+	for (int i=2; i<pts.length; ++i) {
             if (pts[i].equals("Winning")) {
                 state = 1;
                 continue;
@@ -1060,9 +1060,9 @@ public final class HexGui
             if (state == 0) {  // part of the proof
                 m_guiboard.setAlphaColor(point, Color.green);
             } else if (state == 1) { // winning move
-                m_guiboard.setText(point, "W");
+                m_guiboard.setText(point, "W (" + pts[++i] + ")");
             } else if (state == 2) { // losing move
-                m_guiboard.setText(point, "L");
+                m_guiboard.setText(point, "L (" + pts[++i] + ")");
             }
 	}
 
