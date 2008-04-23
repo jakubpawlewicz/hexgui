@@ -1046,6 +1046,8 @@ public final class HexGui
 
         m_guiboard.clearMarks();
 
+        Vector<HexPoint> proofset = new Vector<HexPoint>();
+
         int state = 0; 
 	for (int i=2; i<pts.length; ++i) {
             if (pts[i].equals("Winning")) {
@@ -1058,11 +1060,26 @@ public final class HexGui
 	    HexPoint point = HexPoint.get(pts[i].trim());
 
             if (state == 0) {  // part of the proof
-                m_guiboard.setAlphaColor(point, Color.green);
+                proofset.add(point);
+                if (m_guiboard.getColor(point) == HexColor.EMPTY)
+                    m_guiboard.setAlphaColor(point, Color.green);
+                else
+                    m_guiboard.setAlphaColor(point, Color.red);
             } else if (state == 1) { // winning move
-                m_guiboard.setText(point, "W (" + pts[++i] + ")");
+                m_guiboard.setText(point, pts[++i]);
+                Color old = m_guiboard.getAlphaColor(point);
+
+                // cyan if inside proof, magenta if outside; but that
+                // probably cannot happen.
+                if (proofset.contains(point))
+                    m_guiboard.setAlphaColor(point, Color.cyan);
+                else 
+                    m_guiboard.setAlphaColor(point, Color.magenta);                    
+                
             } else if (state == 2) { // losing move
-                m_guiboard.setText(point, "L (" + pts[++i] + ")");
+
+                // green if inside the proof, otherwise no color
+                m_guiboard.setText(point, pts[++i]);
             }
 	}
 

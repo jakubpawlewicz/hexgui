@@ -305,6 +305,18 @@ public final class GuiBoard
 	getField(point).setAlphaColor(color);
     }
 
+    /** Returns the points's alpha color; null if it is 'swap-pieces'
+        or resign. */
+    public Color getAlphaColor(HexPoint point)
+    {
+        if (point == HexPoint.get("swap-pieces"))
+            return null;
+        if (point == HexPoint.get("resign"))
+            return null;
+
+	return getField(point).getAlphaColor();
+    }
+    
     /** Sets the given points's text. */
     public void setText(HexPoint point, String str)
     {
