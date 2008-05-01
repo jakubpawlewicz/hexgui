@@ -128,7 +128,7 @@ public final class StringUtils
 
                     // read carrier set
                     if (!vcs[i+6].equals("["))
-                        throw new Throwable("Bad");
+                        throw new Throwable("No carrier!");
                     
                     for (j=7; j < vcs.length; j++) {
                         if (vcs[i+j].equals("]")) break;
@@ -139,8 +139,9 @@ public final class StringUtils
                     j++;  // skip closing ']'
                 
                     // read stone set
-                    if (!vcs[j].equals("["))
-                        throw new Throwable("Bad");
+                    if (!vcs[i+j].equals("["))
+                        throw new Throwable("No stones! Should be '[', got '" +
+                                            vcs[j] + "'");
                     
                     for (j++; j < vcs.length; j++) {
                         if (vcs[i+j].equals("]")) break;
@@ -160,7 +161,8 @@ public final class StringUtils
 
             }
             catch(Throwable t) {
-                System.out.println("Exception occured while parsing VC!");
+                System.out.println("Exception occured while parsing VC: '" +
+                                   t.getMessage() + "'");
                 return ret;                
             }
 
