@@ -155,6 +155,8 @@ public final class HexGui
             humanMove(new Move(HexPoint.get("swap-pieces"), m_tomove));
 	else if (cmd.equals("genmove")) 
 	    htpGenMove(m_tomove);
+        else if (cmd.equals("game_delete_branch"))
+            cmdDeleteBranch();
 	else if (cmd.equals("stop")) {
 
         } else if (cmd.equals("toggle_tomove")) {
@@ -1439,6 +1441,22 @@ public final class HexGui
 	}
     }
 
+    private void cmdDeleteBranch()
+    {
+        if (m_current == m_root) {
+            m_statusbar.setMessage("May not delete root node!");
+            System.out.println("May not delete root node!");
+            return;
+        }
+        
+        Node to_be_deleted = m_current;
+        backward(1);
+
+        to_be_deleted.removeSelf();
+	m_toolbar.updateButtonStates(m_current);
+        m_menubar.updateMenuStates(m_current);
+
+    }
 
     //------------------------------------------------------------
 

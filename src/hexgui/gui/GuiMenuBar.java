@@ -200,6 +200,13 @@ public final class GuiMenuBar
 	m_resign = new JMenuItem("Resign");
 	menu.add(m_resign);
 
+        menu.addSeparator();
+        
+        item = new JMenuItem("Delete Current Branch");
+        item.addActionListener(m_listener);
+        item.setActionCommand("game_delete_branch");
+        menu.add(item);
+
 	return menu;
     }
 

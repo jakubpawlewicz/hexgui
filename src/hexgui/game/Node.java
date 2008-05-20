@@ -61,15 +61,15 @@ public class Node
     {
 	Node prev = getPrev();
 	Node next = getNext();
-	if (prev != null && next != null) {
-	    prev.setNext(next);
-	    next.setPrev(prev);
-	} else if (prev == null && next != null) {
+
+        if (prev == null) { 
+            // need to fix parent since we're first child
 	    if (getParent() != null) getParent().setFirstChild(next);
-	    next.setPrev(null);
-	} else if (prev != null && next == null) {
+	} else {
 	    prev.setNext(next);
-	}
+        }
+
+        if (next != null) next.setPrev(prev);
     }
 
     /** Adds a child to the end of the list of children. 
