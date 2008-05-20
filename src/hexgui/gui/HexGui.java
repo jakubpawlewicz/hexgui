@@ -88,12 +88,16 @@ public final class HexGui
 	//
 	if (cmd.equals("shutdown"))
 	    cmdShutdown();
+        else if (cmd.equals("add-program"))
+            cmdAddProgram();
 	else if (cmd.equals("connect-program"))
 	    cmdConnectRemoteProgram();
 	else if (cmd.equals("connect-local-program"))
 	    cmdConnectLocalProgram();
 	else if (cmd.equals("disconnect-program"))
 	    cmdDisconnectProgram();
+        else if (cmd.equals("reconnect-program"))
+            cmdReconnectProgram();
 	//
 	// file/help commands
 	//
@@ -186,6 +190,11 @@ public final class HexGui
 	System.exit(0);
     }
 
+    private void cmdAddProgram()
+    {
+        System.out.println("add-program: implement me!");
+    }
+
     private void cmdConnectRemoteProgram()
     {
 	int port = 20000;
@@ -224,7 +233,7 @@ public final class HexGui
 	    out = m_white_socket.getOutputStream();
 	}
 	catch (IOException e) {
-	    showError("Error obtaing socket stream: " + e.getMessage());
+	    showError("Error obtaining socket stream: " + e.getMessage());
 	    m_white = null;
 	    return;
 	}
@@ -241,8 +250,13 @@ public final class HexGui
 	if (prog == null) // user aborted
 	    return;
 
+        cmdConnectLocalProgram(prog);
+    }
+
+    private void cmdConnectLocalProgram(String program)
+    {
 	Runtime runtime = Runtime.getRuntime();
-	String cmd = prog;
+	String cmd = program;
 	System.out.println("Executing '" + cmd + "'...");
 	try {
 	    m_white_process = runtime.exec(cmd);
@@ -252,7 +266,7 @@ public final class HexGui
 	    return;
 	}
 
-	m_preferences.put("path-local-program", prog);
+	m_preferences.put("path-local-program", program);
 
  	Process proc = m_white_process;
 
@@ -340,6 +354,13 @@ public final class HexGui
 	catch (Throwable e) {
 	    showError("Error: " + e.getMessage());
 	}
+    }
+
+    private void cmdReconnectProgram()
+    {
+        cmdDisconnectProgram();
+	String program = m_preferences.get("path-local-program");
+        cmdConnectLocalProgram(program);
     }
 
     //------------------------------------------------------------

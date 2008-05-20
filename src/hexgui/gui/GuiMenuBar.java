@@ -24,6 +24,7 @@ public final class GuiMenuBar
 
 	m_listener = listener;
 	m_menuBar.add(createFileMenu());
+        m_menuBar.add(createProgramMenu());
 	m_menuBar.add(createGameMenu());
         m_menuBar.add(createEditMenu());
 	m_menuBar.add(createViewMenu());
@@ -39,9 +40,10 @@ public final class GuiMenuBar
 
     public void setProgramConnected(boolean f)
     {
-	m_connect_remote.setEnabled(!f);
+	//m_connect_remote.setEnabled(!f);
 	m_connect_local.setEnabled(!f);
 	m_disconnect.setEnabled(f);
+        m_reconnect.setEnabled(f);
         m_genmove.setEnabled(f);
 
 	if (f == false) {
@@ -99,13 +101,39 @@ public final class GuiMenuBar
         menu.add(item);
 
  	menu.addSeparator();
+	
+	item = new JMenuItem("Exit");
+	item.setMnemonic(KeyEvent.VK_X);
+	item.addActionListener(m_listener);
+	item.setActionCommand("shutdown");
+	menu.add(item);
+
+	return menu;
+    }
+
+
+    //----------------------------------------------------------------------
+    private JMenu createProgramMenu()
+    {
+	JMenu menu = new JMenu("Program");
+	menu.setMnemonic(KeyEvent.VK_P);
+
+	JMenuItem item;
+
+	item = new JMenuItem("Add Program...");
+	item.addActionListener(m_listener);
+	item.setActionCommand("add-program");
+        item.setEnabled(false);
+ 	menu.add(item);
+
+ 	menu.addSeparator();
 
 	item = new JMenuItem("Connect Remote Program...");
 	item.addActionListener(m_listener);
 	item.setActionCommand("connect-program");
+        item.setEnabled(false);
 	m_connect_remote = item;
  	menu.add(item);
-
 
 	item = new JMenuItem("Connect Local Program...");
 	item.addActionListener(m_listener);
@@ -113,19 +141,19 @@ public final class GuiMenuBar
 	m_connect_local = item;
  	menu.add(item);
 
+ 	menu.addSeparator();
+
+	item = new JMenuItem("Reconnect Program");
+	item.addActionListener(m_listener);
+	item.setActionCommand("reconnect-program");
+	m_reconnect = item;
+ 	menu.add(item);
+
 	item = new JMenuItem("Disconnect Program");
 	item.addActionListener(m_listener);
 	item.setActionCommand("disconnect-program");
 	m_disconnect = item;
  	menu.add(item);
-
- 	menu.addSeparator();
-	
-	item = new JMenuItem("Exit");
-	item.setMnemonic(KeyEvent.VK_X);
-	item.addActionListener(m_listener);
-	item.setActionCommand("shutdown");
-	menu.add(item);
 
 	return menu;
     }
@@ -522,7 +550,8 @@ public final class GuiMenuBar
     private JCheckBoxMenuItem m_analyze_visible;
     private JCheckBoxMenuItem m_evalgraph_visible;
 
-    private JMenuItem m_connect_local, m_connect_remote, m_disconnect;
+    private JMenuItem m_connect_local, m_connect_remote, 
+        m_disconnect, m_reconnect;
 
     private JMenuItem m_resign, m_swap, m_genmove;
 
