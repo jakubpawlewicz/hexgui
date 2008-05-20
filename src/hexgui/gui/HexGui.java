@@ -318,8 +318,6 @@ public final class HexGui
 
         // play up to current move
 	Node cur = m_root;
-        if (cur.hasSetup())
-            playSetup(cur);
 	while (cur != m_current) {
 	    cur = cur.getChildContainingNode(m_current);
             if (cur.hasMove())
@@ -471,8 +469,6 @@ public final class HexGui
 	    m_guiboard.initSize(m_gameinfo.getBoardSize());
             htpBoardsize(m_guiboard.getBoardSize());
 
-            if (m_root.hasSetup())
-                playSetup(m_root);
 	    forward(1000);
 
 	    m_file = file;
@@ -1307,6 +1303,22 @@ public final class HexGui
         }
     }
 
+    private void undoSetup(Node node)
+    {
+        Vector<HexPoint> black = node.getSetup(HexColor.BLACK);
+        Vector<HexPoint> white = node.getSetup(HexColor.WHITE);
+        for (int j=0; j<black.size(); j++) {
+            HexPoint point = black.get(j);
+            m_guiboard.setColor(point, HexColor.EMPTY);
+            htpPlay(new Move(point, HexColor.EMPTY));
+        }
+        for (int j=0; j<white.size(); j++) {
+            HexPoint point = white.get(j);
+            m_guiboard.setColor(point, HexColor.EMPTY);
+            htpPlay(new Move(point, HexColor.EMPTY));
+        }
+    }
+
     private void forward(int n)
     {
         m_guiboard.clearMarks();
@@ -1341,8 +1353,17 @@ public final class HexGui
             m_tomove = m_current.getMove().getColor();
             if (m_current.getMove().getPoint() != HexPoint.SWAP_PIECES)
                 m_tomove = m_tomove.otherColor();
-            m_toolbar.setToMove(m_tomove.toString());
+
+        } else if (m_current.hasSetup()) {
+
+            // set the color stored in the node
+            String cstr = m_current.getSgfProperty("PL");
+            if (cstr != null) {
+                if (cstr.equals("B")) m_tomove = HexColor.BLACK;
+                else if (cstr.equals("W")) m_tomove = HexColor.WHITE; 
+            }
         }
+        m_toolbar.setToMove(m_tomove.toString());
 
         htpShowboard();
     }
@@ -1360,6 +1381,8 @@ public final class HexGui
                 htpUndo();
                 htpShowboard();
                 i++;
+            } else if (m_current.hasSetup()) {
+                undoSetup(m_current);
             }
 
 	    m_current = m_current.getParent();
@@ -1543,6 +1566,8 @@ public final class HexGui
         GameInfo info = new GameInfo();
         info.setBoardSize(m_guiboard.getBoardSize());
         m_guiboard.storePosition(child);
+        String cstr = (m_tomove == HexColor.BLACK) ? "B" : "W";
+        child.setSgfProperty("PL", cstr);
         return save_tree(file, root, info);
     }
 
