@@ -5,7 +5,12 @@
 package hexgui.gui;
 
 import javax.swing.*;          
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.AlphaComposite;
+import java.awt.FontMetrics;
+
 import java.awt.event.*;
 import java.awt.geom.*;
 

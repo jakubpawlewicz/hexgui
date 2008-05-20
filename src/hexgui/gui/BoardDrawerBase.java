@@ -5,12 +5,23 @@
 package hexgui.gui;
 
 import hexgui.util.Pair;
+import hexgui.util.RadialGradientPaint;
 import hexgui.hex.HexColor;
 import hexgui.hex.HexPoint;
 
 import java.util.Vector;
-import javax.swing.*;          
-import java.awt.*;
+import javax.swing.*;
+
+import java.awt.Point;
+import java.awt.Polygon;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.AlphaComposite;
+import java.awt.Image;
+import java.awt.FontMetrics;
+import java.awt.RenderingHints;
+import java.awt.Graphics;
+
 import java.awt.event.*;
 import java.net.URL;
 
