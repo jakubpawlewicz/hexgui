@@ -1306,8 +1306,10 @@ public final class HexGui
         
         m_guiboard.clearMarks();
 
-        // add the setup stone
+        // add the setup stone to set of setup stones
         m_current.addSetup(move.getColor(), move.getPoint());
+
+        htpPlay(move);
         m_guiboard.setColor(move.getPoint(), move.getColor());
         m_guiboard.paintImmediately();
 
