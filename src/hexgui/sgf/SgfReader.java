@@ -183,11 +183,9 @@ public final class SgfReader
                 node.setSgfProperty(name, val);
             }
             else if (name.equals("AB")) {
-                node.setSgfProperty(name, val);
                 node.addSetup(HexColor.BLACK, HexPoint.get(val));
             }
             else if (name.equals("AW")) {
-                node.setSgfProperty(name, val);
                 node.addSetup(HexColor.WHITE, HexPoint.get(val));
             }
             else if (name.equals("AE")) {

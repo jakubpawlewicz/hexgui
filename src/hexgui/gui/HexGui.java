@@ -1211,9 +1211,10 @@ public final class HexGui
                     humanMove(new Move(point, m_tomove));
                 }
             } else if (context.equals("setup")) {
-
-                m_statusbar.setMessage("Setup mode not supported yet!");
                 
+                if (m_guiboard.getColor(point) == HexColor.EMPTY) {
+                    addSetupMove(new Move(point, m_tomove));
+                }
             }
         }
     }
@@ -1287,6 +1288,33 @@ public final class HexGui
 
 	setGameChanged(true);
 	setFrameTitle();
+    }
+
+    private void addSetupMove(Move move)
+    {
+        // if current node doesn't have setup info, create a setup node
+        if (!m_current.hasSetup()) {
+            if (m_current.numChildren()>0) {
+                showError("Cannot add setup info to non-leaf node!");
+                return;
+            }
+
+            Node setup = new Node();
+            m_current.addChild(setup);
+            m_current = setup;
+        }
+        
+        m_guiboard.clearMarks();
+
+        // add the setup stone
+        m_current.addSetup(move.getColor(), move.getPoint());
+        m_guiboard.setColor(move.getPoint(), move.getColor());
+        m_guiboard.paintImmediately();
+
+        m_statusbar.setMessage("Added setup stone (" + move.getColor().toString() +
+                               ", " + move.getPoint().toString() + ")");
+        setGameChanged(true);
+        setFrameTitle();
     }
 
     //----------------------------------------------------------------------
@@ -1555,7 +1583,6 @@ public final class HexGui
     {
         return save_tree(file, m_root, m_gameinfo);
     }
-
     
     private boolean save_tree(File file, Node root, GameInfo gameinfo)
     {

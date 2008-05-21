@@ -204,15 +204,22 @@ public class Node
     
     public String getComment() { return getSgfProperty("C"); }
 
-    /** Adds a stone of specified color to the setup list. */
+    /** Adds a stone of specified color to the setup list and the sgf
+        property string. */
     public void addSetup(HexColor color, HexPoint point)
     {
         if (color == HexColor.BLACK) {
-            m_setup_black.add(point);
+            if (!m_setup_black.contains(point)) {
+                appendSgfProperty("AB", "[" + point.toString() + "]");
+                m_setup_black.add(point);
+            }
         } 
         else if (color == HexColor.WHITE) {
-            m_setup_white.add(point);
-        }
+            if (!m_setup_white.contains(point)) {
+                appendSgfProperty("AW", "[" + point.toString() + "]");
+                m_setup_white.add(point);
+            }
+        } 
     }
     
     /** Returns the set of setup stones of color. */

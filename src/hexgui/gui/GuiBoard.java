@@ -352,12 +352,6 @@ public final class GuiBoard
             if (color == HexColor.EMPTY)
                 continue;
 
-            String cur = "[" + point.toString() + "]";
-            if (color == HexColor.BLACK) {
-                node.appendSgfProperty("AB", cur);
-            } else if (color == HexColor.WHITE) {
-                node.appendSgfProperty("AW", cur);
-            }
             node.addSetup(color, point);
         }
     }
