@@ -1237,6 +1237,7 @@ public final class HexGui
         if (move.getPoint() == HexPoint.RESIGN)
             return;
 
+        // see if variation already exists; if so, do not add a duplicate
         int variation = -1;
         for (int i=0; i<m_current.numChildren(); i++) {
             Node child = m_current.getChild(i);
@@ -1248,6 +1249,7 @@ public final class HexGui
 
 	if (variation != -1) {
 
+            // variation already exists
 	    m_current = m_current.getChild(variation);
 
 	} else {
@@ -1265,6 +1267,7 @@ public final class HexGui
                 }
             }
 
+            // add new node
 	    Node node = new Node(move);
 	    m_current.addChild(node);
 	    m_current = node;
@@ -1278,7 +1281,6 @@ public final class HexGui
 
         m_guiboard.clearMarks();
 	markLastPlayedStone();
-
 	m_guiboard.paintImmediately();
 	m_toolbar.updateButtonStates(m_current);	
         m_menubar.updateMenuStates(m_current);
@@ -1286,6 +1288,8 @@ public final class HexGui
 	setGameChanged(true);
 	setFrameTitle();
     }
+
+    //----------------------------------------------------------------------
 
     private void playSetup(Node node)
     {
@@ -1319,87 +1323,71 @@ public final class HexGui
         }
     }
 
+    private void playNode(Node node)
+    {
+        if (node.hasMove()) {
+            Move move = node.getMove();
+            m_guiboard.setColor(move.getPoint(), move.getColor());
+            htpPlay(move);
+            if (move.getPoint() == HexPoint.RESIGN) {
+                m_statusbar.setMessage(move.getColor().toString() + 
+                                       " resigned.");
+            }
+        } else if (node.hasSetup()) {
+            playSetup(node);
+        }
+    }
+
+    private void undoNode(Node node)
+    {
+        if (node.hasMove()) {
+            Move move = node.getMove();
+            m_guiboard.setColor(move.getPoint(), HexColor.EMPTY);
+            htpUndo();
+        } else if (node.hasSetup()) {
+            undoSetup(node);
+        }
+    }
+
+    private void refreshGuiForBoardState()
+    {
+	markLastPlayedStone();
+	m_guiboard.repaint();
+	m_toolbar.updateButtonStates(m_current);
+        m_menubar.updateMenuStates(m_current);
+        determineColorToMove();
+        htpShowboard();
+    }
+
     private void forward(int n)
     {
         m_guiboard.clearMarks();
 
-	for (int i=0; i<n; ) {
+	for (int i=0; i<n; ++i) {
 	    Node child = m_current.getChild();
 	    if (child == null) break;
 
-            if (child.hasMove()) {
-                Move move = child.getMove();
-                m_guiboard.setColor(move.getPoint(), move.getColor());
-                htpPlay(move);
-                if (move.getPoint() == HexPoint.RESIGN) {
-                    m_statusbar.setMessage(move.getColor().toString() + 
-                                           " resigned.");
-                }
-
-                i++;
-            } else if (child.hasSetup()) {
-                playSetup(child);
-            }
+            playNode(child);
 
 	    m_current = child;
 	}
-	markLastPlayedStone();
 
-	m_guiboard.repaint();
-	m_toolbar.updateButtonStates(m_current);
-        m_menubar.updateMenuStates(m_current);
-        
-        if (m_current.hasMove()) {
-            m_tomove = m_current.getMove().getColor();
-            if (m_current.getMove().getPoint() != HexPoint.SWAP_PIECES)
-                m_tomove = m_tomove.otherColor();
-
-        } else if (m_current.hasSetup()) {
-
-            // set the color stored in the node
-            String cstr = m_current.getSgfProperty("PL");
-            if (cstr != null) {
-                if (cstr.equals("B")) m_tomove = HexColor.BLACK;
-                else if (cstr.equals("W")) m_tomove = HexColor.WHITE; 
-            }
-        }
-        m_toolbar.setToMove(m_tomove.toString());
-
-        htpShowboard();
+        refreshGuiForBoardState();
     }
 
     private void backward(int n)
     {
         m_guiboard.clearMarks();
 
-	for (int i=0; i<n; ) {
+	for (int i=0; i<n; ++i) {
 	    if (m_current == m_root) break;
             
-            if (m_current.hasMove()) {
-                Move move = m_current.getMove();
-                m_guiboard.setColor(move.getPoint(), HexColor.EMPTY);
-                htpUndo();
-                htpShowboard();
-                i++;
-            } else if (m_current.hasSetup()) {
-                undoSetup(m_current);
-            }
+            undoNode(m_current);
 
 	    m_current = m_current.getParent();
 	}
-	markLastPlayedStone();
 
-	m_guiboard.repaint();
-	m_toolbar.updateButtonStates(m_current);
-        m_menubar.updateMenuStates(m_current);
-	    
-	if (m_current == m_root) 
-	    m_tomove = HexColor.BLACK;
-	else if (m_current.hasMove() && 
-                 m_current.getMove().getPoint() != HexPoint.SWAP_PIECES) 
-	    m_tomove = m_current.getMove().getColor().otherColor();
-        
-        m_toolbar.setToMove(m_tomove.toString());
+        refreshGuiForBoardState();
     }
 
     private void up()
@@ -1407,29 +1395,11 @@ public final class HexGui
 	if (m_current.getNext() != null) {
             m_guiboard.clearMarks();
 
-	    HexPoint point = m_current.getMove().getPoint();
-	    m_guiboard.setColor(point, HexColor.EMPTY);
-            htpUndo();
-            htpShowboard();
-	    
-	    m_current = m_current.getNext();
-	    
-	    HexColor color = m_current.getMove().getColor();
-	    point = m_current.getMove().getPoint();
-	    m_guiboard.setColor(point, color);
-	    htpPlay(m_current.getMove());
-            htpShowboard();
-            if (point != HexPoint.SWAP_PIECES) {
-                m_tomove = color.otherColor();
-                m_toolbar.setToMove(m_tomove.toString());
-            }
+            undoNode(m_current);
+            m_current = m_current.getNext();
+            playNode(m_current);
 
-            m_guiboard.clearMarks();	    
-	    markLastPlayedStone();
-
-	    m_guiboard.repaint();
-	    m_toolbar.updateButtonStates(m_current);
-            m_menubar.updateMenuStates(m_current);
+            refreshGuiForBoardState();
 	}
     }
 
@@ -1438,29 +1408,11 @@ public final class HexGui
 	if (m_current.getPrev() != null) {
             m_guiboard.clearMarks();
 
-	    HexPoint point = m_current.getMove().getPoint();
-	    m_guiboard.setColor(point, HexColor.EMPTY);
-            htpUndo();
-            htpShowboard();
-	    
+            undoNode(m_current);
 	    m_current = m_current.getPrev();
-	    
-	    HexColor color = m_current.getMove().getColor();
-	    point = m_current.getMove().getPoint();
-	    m_guiboard.setColor(point, color);
-	    htpPlay(m_current.getMove());
-            htpShowboard();
-            if (point != HexPoint.SWAP_PIECES) {
-                m_tomove = color.otherColor();
-                m_toolbar.setToMove(m_tomove.toString());
-            }
-	    
-            m_guiboard.clearMarks();
-	    markLastPlayedStone();
+            playNode(m_current);
 
-	    m_guiboard.repaint();
-	    m_toolbar.updateButtonStates(m_current);
-            m_menubar.updateMenuStates(m_current);
+            refreshGuiForBoardState();
 	}
     }
 
@@ -1479,6 +1431,31 @@ public final class HexGui
 	m_toolbar.updateButtonStates(m_current);
         m_menubar.updateMenuStates(m_current);
 
+    }
+
+    private void determineColorToMove()
+    {
+	if (m_current == m_root) {
+
+            m_tomove = HexColor.BLACK;
+
+        } else if (m_current.hasMove()) {
+
+            // player to move is always opposite of last move
+            m_tomove = m_current.getMove().getColor();
+            if (m_current.getMove().getPoint() != HexPoint.SWAP_PIECES)
+                m_tomove = m_tomove.otherColor();
+
+        } else if (m_current.hasSetup()) {
+
+            // set the color stored in the node
+            String cstr = m_current.getSgfProperty("PL");
+            if (cstr != null) {
+                if (cstr.equals("B")) m_tomove = HexColor.BLACK;
+                else if (cstr.equals("W")) m_tomove = HexColor.WHITE; 
+            }
+        }
+        m_toolbar.setToMove(m_tomove.toString());
     }
 
     //------------------------------------------------------------
