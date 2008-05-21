@@ -81,19 +81,19 @@ public final class GuiMenuBar
 	item.setActionCommand("loadgame");
  	menu.add(item);
 
-	item = new JMenuItem("Save");
+        menu.addSeparator();
+
+	item = new JMenuItem("Save Game");
 	item.setMnemonic(KeyEvent.VK_S);
 	item.addActionListener(m_listener);
 	item.setActionCommand("savegame");
 	menu.add(item);
 
-	item = new JMenuItem("Save As...");
+	item = new JMenuItem("Save Game As...");
 	item.setMnemonic(KeyEvent.VK_A);
 	item.addActionListener(m_listener);
 	item.setActionCommand("savegameas");
  	menu.add(item);
-
- 	menu.addSeparator();
 
         item = new JMenuItem("Save Position As...");
         item.addActionListener(m_listener);
