@@ -1283,11 +1283,6 @@ public final class HexGui
     {
         // if current node doesn't have setup info, create a setup node
         if (!m_current.hasSetup()) {
-            if (m_current.numChildren()>0) {
-                showError("Cannot add setup info to non-leaf node!");
-                return;
-            }
-
             Node setup = new Node();
             m_current.addChild(setup);
             m_current = setup;
