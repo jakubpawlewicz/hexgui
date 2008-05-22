@@ -237,6 +237,23 @@ public class Node
         return ((getSgfProperty("AB") != null)|| 
                 (getSgfProperty("AW") != null));
     }
+    
+    /** Sets the PL proprety to the given color. */
+    public void setPlayerToMove(HexColor color)
+    {
+        setSgfProperty("PL", (color == HexColor.BLACK) ? "B" : "W");
+    }
+
+    /** Returns the color in the "PL" property, null otherwise. */
+    public HexColor getPlayerToMove()
+    {
+        String cstr = getSgfProperty("PL");
+        if (cstr != null) {
+            if (cstr.equals("B")) return HexColor.BLACK;
+            if (cstr.equals("W")) return HexColor.WHITE; 
+        }
+        return null;
+    }
 
     //----------------------------------------------------------------------
 

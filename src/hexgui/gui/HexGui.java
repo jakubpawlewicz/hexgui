@@ -163,9 +163,7 @@ public final class HexGui
             cmdToggleToMove();
         } else if (cmd.equals("set_to_move")) {
             cmdSetToMove();
-        } else if (cmd.equals("toggle_click_context")) {
-            cmdToggleClickContext();
-        }
+        } 
 
 	//
 	// unknown command
@@ -576,18 +574,6 @@ public final class HexGui
         m_tomove = HexColor.get(m_menubar.getToMove());
         m_toolbar.setToMove(m_tomove.toString());
     }
-
-    private void cmdToggleClickContext()
-    {
-        String context = m_toolbar.getClickContext();
-        if (context.equals("play"))
-            m_toolbar.setClickContext("setup");
-        else if (context.equals("setup"))
-            m_toolbar.setClickContext("play");
-        else 
-            System.out.println("Unknown context!! '" + context + "'");
-    }
-
 
     //------------------------------------------------------------
 
@@ -1210,10 +1196,13 @@ public final class HexGui
                 if (m_guiboard.getColor(point) == HexColor.EMPTY) {
                     humanMove(new Move(point, m_tomove));
                 }
-            } else if (context.equals("setup")) {
-                
+            } else if (context.equals("black")) {
                 if (m_guiboard.getColor(point) == HexColor.EMPTY) {
-                    addSetupMove(new Move(point, m_tomove));
+                    addSetupMove(new Move(point, HexColor.BLACK));
+                }
+            } else if (context.equals("white")) {
+                if (m_guiboard.getColor(point) == HexColor.EMPTY) {
+                    addSetupMove(new Move(point, HexColor.WHITE));
                 }
             }
         }
@@ -1306,15 +1295,22 @@ public final class HexGui
         
         m_guiboard.clearMarks();
 
-        // add the setup stone to set of setup stones
+        // add the setup stone to the set of setup stones
         m_current.addSetup(move.getColor(), move.getPoint());
+        m_current.setPlayerToMove(move.getColor());
 
-        htpPlay(move);
+        // and set the color to play next        
+        m_tomove = move.getColor();
+        m_toolbar.setToMove(m_tomove.toString());
+
         m_guiboard.setColor(move.getPoint(), move.getColor());
         m_guiboard.paintImmediately();
 
+        htpPlay(move);
+
         m_statusbar.setMessage("Added setup stone (" + move.getColor().toString() +
                                ", " + move.getPoint().toString() + ")");
+
         setGameChanged(true);
         setFrameTitle();
     }
@@ -1477,13 +1473,9 @@ public final class HexGui
                 m_tomove = m_tomove.otherColor();
 
         } else if (m_current.hasSetup()) {
-
-            // set the color stored in the node
-            String cstr = m_current.getSgfProperty("PL");
-            if (cstr != null) {
-                if (cstr.equals("B")) m_tomove = HexColor.BLACK;
-                else if (cstr.equals("W")) m_tomove = HexColor.WHITE; 
-            }
+            HexColor color = m_current.getPlayerToMove();
+            if (color != null)
+                m_tomove = color;
         }
         m_toolbar.setToMove(m_tomove.toString());
     }

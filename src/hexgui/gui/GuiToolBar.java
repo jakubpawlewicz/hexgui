@@ -14,7 +14,8 @@ import java.net.URL;
 
 //----------------------------------------------------------------------------
 
-public final class GuiToolBar
+public final class GuiToolBar 
+    implements ActionListener
 {
     public GuiToolBar(ActionListener listener, GuiPreferences preferences)
     {
@@ -58,14 +59,19 @@ public final class GuiToolBar
         m_tomove.setText(string);
     }
 
+    /** Returns the click context--what type of move does the user
+     *  wish to make?  
+     *  @return "black" if black setup icon is selected.
+     *          "white" if white setup icon is selected.
+     *          "play"  otherwise. 
+     */
     public String getClickContext()
     {
-        return m_click_context.getText();
-    }
-
-    public void setClickContext(String string)
-    {
-        m_click_context.setText(string);
+        if (m_setup_black.isSelected())
+            return "black";
+        else if (m_setup_white.isSelected())
+            return "white";
+        return "play";
     }
 
     public void setProgramConnected(boolean f)
@@ -110,6 +116,19 @@ public final class GuiToolBar
 
 	m_toolBar.addSeparator();
 
+        m_setup_black = makeToggleButton("hexgui/images/setup-black.png",
+                                         "setup-black", 
+                                         "Setup Black Stones",
+                                         "Setup Black");
+        m_toolBar.add(m_setup_black);
+
+        m_setup_white = makeToggleButton("hexgui/images/setup-white.png",
+                                         "setup-white", 
+                                         "Setup White Stones",
+                                         "Setup White");
+        m_toolBar.add(m_setup_white);
+
+	m_toolBar.addSeparator();
 	
 	m_beginning = makeButton("hexgui/images/beginning.png", 
 				 "game_beginning",
@@ -209,7 +228,25 @@ public final class GuiToolBar
 	button.addActionListener(m_listener);
 	button.setActionCommand(actionCommand);
 	button.setToolTipText(tooltip);
+        addIconToButton(button, imageFile, altText); 
+	return button;
+    }
 
+    private JToggleButton makeToggleButton(String imageFile, String actionCommand,
+                                           String tooltip, String altText)
+    {
+	JToggleButton button = new JToggleButton();
+	button.addActionListener(this);
+	button.setActionCommand(actionCommand);
+	button.setToolTipText(tooltip);
+        addIconToButton(button, imageFile, altText); 
+	return button;
+    }
+    
+    private void addIconToButton(AbstractButton button, 
+                                 String imageFile, 
+                                 String altText)
+    {
         URL imageURL = null;
         if (imageFile != null) {
             ClassLoader classLoader = getClass().getClassLoader();
@@ -222,7 +259,22 @@ public final class GuiToolBar
 	    button.setText(altText);
 	    System.out.println("*** Resource not found: " + imageFile);
 	}
-	return button;
+    }
+
+    //----------------------------------------------------------------------
+
+    public void actionPerformed(ActionEvent e) 
+    {
+        String cmd = e.getActionCommand();
+        if (cmd.equals("setup-black")) {
+            if (m_setup_white.isSelected())
+                m_setup_white.setSelected(false);
+        } else if (cmd.equals("setup-white")) {
+            if (m_setup_black.isSelected())
+                m_setup_black.setSelected(false);
+        } else {
+            System.out.println("GuiToolBar: Unknown action command '" + cmd + "'");
+        }
     }
 
     //----------------------------------------------------------------------
@@ -230,6 +282,8 @@ public final class GuiToolBar
     private GuiPreferences m_preferences;
     private JToolBar m_toolBar;
     private ActionListener m_listener;
+
+    private JToggleButton m_setup_black, m_setup_white;
 
     private JButton m_beginning, m_back10, m_back;
     private JButton m_forward, m_forward10, m_end;

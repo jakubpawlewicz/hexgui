@@ -179,9 +179,6 @@ public final class SgfReader
                 HexPoint point = HexPoint.get(val);
                 node.setMove(new Move(point, HexColor.BLACK));
             } 
-            else if (name.equals("PL")) {
-                node.setSgfProperty(name, val);
-            }
             else if (name.equals("AB")) {
                 node.addSetup(HexColor.BLACK, HexPoint.get(val));
             }
