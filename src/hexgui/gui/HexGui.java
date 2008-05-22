@@ -1560,8 +1560,7 @@ public final class HexGui
         GameInfo info = new GameInfo();
         info.setBoardSize(m_guiboard.getBoardSize());
         m_guiboard.storePosition(child);
-        String cstr = (m_tomove == HexColor.BLACK) ? "B" : "W";
-        child.setSgfProperty("PL", cstr);
+        child.setPlayerToMove(m_tomove);
         return save_tree(file, root, info);
     }
 
