@@ -4,6 +4,7 @@
 
 package hexgui.gui;
 
+import hexgui.hex.HexColor;
 import hexgui.game.Node;
 
 import java.util.*;
@@ -48,15 +49,23 @@ public final class GuiToolBar
     {
 	m_stop.setEnabled(false);
     }
-
-    public String getToMove()
-    {
-        return m_tomove.getText();
-    }
-    
+   
     public void setToMove(String string)
     {
-        m_tomove.setText(string);
+        if (string.equals("black")) {
+            if (m_black_to_play != null)
+                m_tomove.setIcon(m_black_to_play);
+            else 
+                m_tomove.setText("black");
+        }
+        else if (string.equals("white")) {
+            if (m_white_to_play != null)
+                m_tomove.setIcon(m_white_to_play);
+            else 
+                m_tomove.setText("white");
+        }
+        else
+            System.out.println("Unknown value: '" + string + "'");
     }
 
     /** Returns the click context--what type of move does the user
@@ -205,20 +214,19 @@ public final class GuiToolBar
 	m_toolBar.add(m_stop);
 	disableStopButton();
 
+        m_toolBar.addSeparator();
+
 	String pref = m_preferences.get("first-move-color");
 	m_tomove = makeButton(null,
                               "toggle_tomove",
                               "Color of player to move",
                               pref);
+        m_tomove.setText("");
+        m_black_to_play = new ImageIcon("hexgui/images/black-24x24.png", "black");
+        m_white_to_play = new ImageIcon("hexgui/images/white-24x24.png", "white");
+        setToMove(pref);
 
 	m_toolBar.add(m_tomove);
-
-        m_click_context = makeButton(null,
-                                     "toggle_click_context", 
-                                     "Toggle click context",
-                                     "play");
-        m_toolBar.add(m_click_context);
-
     }
 
     private JButton makeButton(String imageFile, String actionCommand,
@@ -247,18 +255,23 @@ public final class GuiToolBar
                                  String imageFile, 
                                  String altText)
     {
-        URL imageURL = null;
-        if (imageFile != null) {
-            ClassLoader classLoader = getClass().getClassLoader();
-            imageURL = classLoader.getResource(imageFile);
-        }
-
+        URL imageURL = getURL(imageFile);
         if (imageURL != null) {
 	    button.setIcon(new ImageIcon(imageURL, altText));
 	} else {
 	    button.setText(altText);
 	    System.out.println("*** Resource not found: " + imageFile);
 	}
+    }
+
+    private URL getURL(String filename)
+    {
+        URL url = null;
+        if (filename != null) {
+            ClassLoader classLoader = getClass().getClassLoader();
+            url = classLoader.getResource(filename);
+        }
+        return url;
     }
 
     //----------------------------------------------------------------------
@@ -291,7 +304,8 @@ public final class GuiToolBar
     private JButton m_play, m_stop, m_swap;
 
     private JButton m_tomove;
-    private JButton m_click_context;
+    private ImageIcon m_black_to_play, m_white_to_play;
+    
 }
 
 //----------------------------------------------------------------------------
