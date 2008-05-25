@@ -12,6 +12,9 @@ import java.util.Vector;
 import java.math.BigInteger;
 import javax.swing.*;          
 import javax.swing.border.EtchedBorder;
+import java.awt.print.Printable;
+import java.awt.print.PageFormat;
+import java.awt.print.PrinterException;
 import java.awt.*;
 import java.awt.event.*;
 
@@ -19,7 +22,7 @@ import java.awt.event.*;
 
 /** Gui Board. */
 public final class GuiBoard
-    extends JPanel
+    extends JPanel implements Printable
 {
     /** Callback for clicks on a field. */
     public interface Listener
@@ -378,6 +381,32 @@ public final class GuiBoard
         Vector<HexPoint> key = vc.getKey();
         for (int i=0; i<key.size(); i++)
             getField(key.get(i)).setAlphaColor(Color.yellow);
+    }
+
+    //------------------------------------------------------------
+
+    public int print(Graphics g, PageFormat format, int page)
+        throws PrinterException
+    {
+        if (page >= 1)
+        {
+            return Printable.NO_SUCH_PAGE;
+        }
+        double width = getWidth();
+        double height = getHeight();
+        double pageWidth = format.getImageableWidth();
+        double pageHeight = format.getImageableHeight();
+        double scale = 1;
+        if (width >= pageWidth)
+            scale = pageWidth / width;
+        double xSpace = (pageWidth - width * scale) / 2;
+        double ySpace = (pageHeight - height * scale) / 2;
+        Graphics2D g2d = (Graphics2D)g;
+        g2d.translate(format.getImageableX() + xSpace,
+                      format.getImageableY() + ySpace);
+        g2d.scale(scale, scale);
+        print(g2d);
+        return Printable.PAGE_EXISTS;
     }
 
     //------------------------------------------------------------

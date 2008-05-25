@@ -101,6 +101,18 @@ public final class GuiMenuBar
         menu.add(item);
 
  	menu.addSeparator();
+
+        item = new JMenuItem("Print Preview");
+        item.addActionListener(m_listener);
+        item.setActionCommand("print-preview");
+        menu.add(item);
+
+        item = new JMenuItem("Print...");
+        item.addActionListener(m_listener);
+        item.setActionCommand("print");
+        menu.add(item);
+
+ 	menu.addSeparator();
 	
 	item = new JMenuItem("Exit");
 	item.setMnemonic(KeyEvent.VK_X);
@@ -110,7 +122,6 @@ public final class GuiMenuBar
 
 	return menu;
     }
-
 
     //----------------------------------------------------------------------
     private JMenu createProgramMenu()

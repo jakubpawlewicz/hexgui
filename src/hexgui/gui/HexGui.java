@@ -113,6 +113,10 @@ public final class HexGui
 	    cmdLoadGame();
         else if (cmd.equals("save-position-as"))
             cmdSavePositionAs();
+        else if (cmd.equals("print-preview"))
+            cmdPrintPreview();
+        else if (cmd.equals("print"))
+            cmdPrint();
 	else if (cmd.equals("about"))
 	    cmdAbout();
 	//
@@ -475,6 +479,25 @@ public final class HexGui
 
 	    m_preferences.put("path-load-game", file.getPath());
 	}
+    }
+
+    private void cmdPrintPreview()
+    {
+        JFrame frame = new JFrame();
+        //frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        Container con = frame.getContentPane();
+ 
+        PrintPreview pp = new PrintPreview(m_guiboard);
+        con.add(pp, BorderLayout.CENTER);
+
+        frame.pack();
+        frame.setVisible(true);
+        frame.toFront();
+    }
+
+    private void cmdPrint()
+    {
+        Print.run(this, m_guiboard);
     }
 
     private void cmdAbout()
