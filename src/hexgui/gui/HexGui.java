@@ -1358,12 +1358,12 @@ public final class HexGui
         for (int j=0; j<black.size(); j++) {
             HexPoint point = black.get(j);
             m_guiboard.setColor(point, HexColor.EMPTY);
-            htpPlay(new Move(point, HexColor.EMPTY));
+            htpUndo();
         }
         for (int j=0; j<white.size(); j++) {
             HexPoint point = white.get(j);
             m_guiboard.setColor(point, HexColor.EMPTY);
-            htpPlay(new Move(point, HexColor.EMPTY));
+            htpUndo();
         }
     }
 

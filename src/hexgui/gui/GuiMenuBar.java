@@ -131,7 +131,7 @@ public final class GuiMenuBar
 
 	JMenuItem item;
 
-	item = new JMenuItem("Add Program...");
+	item = new JMenuItem("New Program...");
 	item.addActionListener(m_listener);
 	item.setActionCommand("add-program");
         item.setEnabled(false);
@@ -139,17 +139,17 @@ public final class GuiMenuBar
 
  	menu.addSeparator();
 
+	item = new JMenuItem("Connect Local Program...");
+	item.addActionListener(m_listener);
+	item.setActionCommand("connect-local-program");
+	m_connect_local = item;
+ 	menu.add(item);
+
 	item = new JMenuItem("Connect Remote Program...");
 	item.addActionListener(m_listener);
 	item.setActionCommand("connect-program");
         item.setEnabled(false);
 	m_connect_remote = item;
- 	menu.add(item);
-
-	item = new JMenuItem("Connect Local Program...");
-	item.addActionListener(m_listener);
-	item.setActionCommand("connect-local-program");
-	m_connect_local = item;
  	menu.add(item);
 
  	menu.addSeparator();
