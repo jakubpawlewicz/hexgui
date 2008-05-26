@@ -133,8 +133,12 @@ public final class GuiMenuBar
 
 	item = new JMenuItem("New Program...");
 	item.addActionListener(m_listener);
-	item.setActionCommand("add-program");
-        item.setEnabled(false);
+	item.setActionCommand("new-program");
+ 	menu.add(item);
+
+	item = new JMenuItem("Edit Program...");
+	item.addActionListener(m_listener);
+	item.setActionCommand("edit-program");
  	menu.add(item);
 
  	menu.addSeparator();

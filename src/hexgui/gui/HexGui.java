@@ -88,8 +88,10 @@ public final class HexGui
 	//
 	if (cmd.equals("shutdown"))
 	    cmdShutdown();
-        else if (cmd.equals("add-program"))
-            cmdAddProgram();
+        else if (cmd.equals("new-program"))
+            cmdNewProgram();
+        else if (cmd.equals("edit-program"))
+            cmdEditProgram();
 	else if (cmd.equals("connect-program"))
 	    cmdConnectRemoteProgram();
 	else if (cmd.equals("connect-local-program"))
@@ -194,9 +196,25 @@ public final class HexGui
 	System.exit(0);
     }
 
-    private void cmdAddProgram()
+    private void cmdNewProgram()
     {
-        System.out.println("add-program: implement me!");
+        new NewProgramDialog(this);
+    }
+
+    private void cmdEditProgram()
+    {
+        ChooseProgramDialog dialog 
+            =  new ChooseProgramDialog(this, "Choose program to edit");
+        dialog.setVisible(true);
+        Program program = dialog.getProgram();
+        dialog.dispose();
+
+        System.out.println(program.m_name);
+        if (program == null)
+            return;
+        
+        System.out.println(program.m_name);
+        new NewProgramDialog(this, program);
     }
 
     private void cmdConnectRemoteProgram()
@@ -218,12 +236,12 @@ public final class HexGui
 	    m_white_socket = new Socket(hostname, port);
 	}
 	catch (UnknownHostException e) {
-	    showError("Unknown host: '" + e.getMessage() + "'");
+	    ShowError.msg(this, "Unknown host: '" + e.getMessage() + "'");
             System.out.println("\nconnection attempt aborted.");
 	    return;
 	}
 	catch (IOException e) {
-	    showError("Error creating socket: '" + e.getMessage() + "'");
+	    ShowError.msg(this, "Error creating socket: '" + e.getMessage() + "'");
             System.out.println("\nconnection attempt aborted.");
 	    return;
 	}
@@ -237,7 +255,7 @@ public final class HexGui
 	    out = m_white_socket.getOutputStream();
 	}
 	catch (IOException e) {
-	    showError("Error obtaining socket stream: " + e.getMessage());
+	    ShowError.msg(this, "Error obtaining socket stream: " + e.getMessage());
 	    m_white = null;
 	    return;
 	}
@@ -249,28 +267,29 @@ public final class HexGui
 
     private void cmdConnectLocalProgram()
     {
-	String defaultCommand = m_preferences.get("path-local-program");
-        String prog = LocalProgramDialog.show(this, defaultCommand);
+        Program prog = LocalProgramDialog.show(this);
 	if (prog == null) // user aborted
 	    return;
-
+        
         cmdConnectLocalProgram(prog);
     }
 
-    private void cmdConnectLocalProgram(String program)
+    private void cmdConnectLocalProgram(Program program)
     {
 	Runtime runtime = Runtime.getRuntime();
-	String cmd = program;
-	System.out.println("Executing '" + cmd + "'...");
+	String cmd = program.m_command;
+	System.out.println("Executing " + program.m_name + ": '" + cmd + "'...");
 	try {
 	    m_white_process = runtime.exec(cmd);
 	}
 	catch (Throwable e) {
-	    showError("Error starting program: '" + e.getMessage() + "'");
+	    ShowError.msg(this, "Error starting " + program.m_name + ": '" 
+                          + e.getMessage() + "'");
 	    return;
 	}
 
-	m_preferences.put("path-local-program", program);
+        m_program = program;
+	m_preferences.put("attached-local-program", program.m_name);
 
  	Process proc = m_white_process;
 
@@ -350,19 +369,20 @@ public final class HexGui
 	    m_shell = null;
             m_analyze.dispose();
             m_analyze = null;
+            m_program = null;
 	    m_menubar.setProgramConnected(false);
 	    m_toolbar.setProgramConnected(false);
 	}
 	catch (Throwable e) {
-	    showError("Error: " + e.getMessage());
+	    ShowError.msg(this, "Error: " + e.getMessage());
 	}
     }
 
     private void cmdReconnectProgram()
     {
+        Program prog = m_program;
         cmdDisconnectProgram();
-	String program = m_preferences.get("path-local-program");
-        cmdConnectLocalProgram(program);
+        cmdConnectLocalProgram(prog);
     }
 
     //------------------------------------------------------------
@@ -387,12 +407,12 @@ public final class HexGui
 	    dim.setSize(w,h);
 	}
 	catch (Throwable t) {
-	    showError("Size should be in format 'w x h'.");
+	    ShowError.msg(this, "Size should be in format 'w x h'.");
 	    return;
 	}
 
 	if (dim.width < 1 || dim.height < 1) {
-	    showError("Invalid board size.");
+	    ShowError.msg(this, "Invalid board size.");
 	} else {
 	    m_tomove = HexColor.BLACK;
             m_toolbar.setToMove(m_tomove.toString());
@@ -701,7 +721,7 @@ public final class HexGui
 	    m_white.sendCommand(cmd, callback);
 	}
 	catch (HtpError e) {
-            showError(e.getMessage());
+            ShowError.msg(this, e.getMessage());
 	}
     }
 
@@ -1269,12 +1289,12 @@ public final class HexGui
 
             if (move.getPoint() == HexPoint.SWAP_PIECES) {
                 if (!m_current.isSwapAllowed()) {
-                    showError("Swap move not allowed!");
+                    ShowError.msg(this, "Swap move not allowed!");
                     return;
                 }
             } else {
                 if (m_guiboard.getColor(move.getPoint()) !=  HexColor.EMPTY) {
-                    showError("Cell '" + move.getPoint().toString() + 
+                    ShowError.msg(this, "Cell '" + move.getPoint().toString() + 
                               "' already occupied.");
                     return;
                 }
@@ -1602,7 +1622,7 @@ public final class HexGui
 	    out = new FileOutputStream(file);
 	}
 	catch (FileNotFoundException e) {
-	    showError("File not found!");
+	    ShowError.msg(this, "File not found!");
 	    return false;
 	}
 	
@@ -1619,7 +1639,7 @@ public final class HexGui
 	    in = new FileInputStream(file);
 	}
 	catch(FileNotFoundException e) {
-	    showError("File not found!");
+	    ShowError.msg(this, "File not found!");
 	    return null;
 	}
 
@@ -1628,7 +1648,8 @@ public final class HexGui
 	    sgf = new SgfReader(in);
 	}
 	catch (SgfReader.SgfError e) {
-	    showError("Error reading SGF file:\n \"" + e.getMessage() + "\"");
+	    ShowError.msg(this, "Error reading SGF file:\n \"" + 
+                          e.getMessage() + "\"");
 	    return null;
 	}
 	
@@ -1636,14 +1657,7 @@ public final class HexGui
     }
 
     //------------------------------------------------------------
-
-    /** Show a simple error message dialog. */
-    private void showError(String msg)
-    {
-	JOptionPane.showMessageDialog(this, msg, "Error",
-				      JOptionPane.ERROR_MESSAGE);
-    }
-    
+  
     /** Show save dialog, return File of selected filename.  
 	@return null If aborted.
     */
@@ -1686,6 +1700,8 @@ public final class HexGui
     private boolean m_gameChanged;
 
     private Vector<HexPoint> m_selected_cells;
+
+    private Program m_program;
 
     private HtpController m_white;
     private String m_white_name;
