@@ -33,6 +33,7 @@ public class Node
 	m_property = new TreeMap<String, String>();
         m_setup_black = new Vector<HexPoint>();
         m_setup_white = new Vector<HexPoint>();
+        m_setup_empty = new Vector<HexPoint>();
 	setMove(move);
     }
 
@@ -210,16 +211,28 @@ public class Node
     {
         if (color == HexColor.BLACK) {
             if (!m_setup_black.contains(point)) {
-                appendSgfProperty("AB", "[" + point.toString() + "]");
                 m_setup_black.add(point);
             }
-        } 
-        else if (color == HexColor.WHITE) {
+        } else if (color == HexColor.WHITE) {
             if (!m_setup_white.contains(point)) {
-                appendSgfProperty("AW", "[" + point.toString() + "]");
                 m_setup_white.add(point);
             }
+        } else if (color == HexColor.EMPTY) {
+            if (!m_setup_empty.contains(point)) {
+                m_setup_empty.add(point);
+            }
         } 
+    }
+
+    public void removeSetup(HexColor color, HexPoint point)
+    {
+        if (color == HexColor.BLACK) {
+            m_setup_black.remove(point);
+        } else if (color == HexColor.WHITE) {
+            m_setup_white.remove(point);
+        } else if (color == HexColor.EMPTY) {
+            m_setup_empty.remove(point);
+        }
     }
     
     /** Returns the set of setup stones of color. */
@@ -229,13 +242,16 @@ public class Node
             return m_setup_black;
         if (color == HexColor.WHITE)
             return m_setup_white;
+        if (color == HexColor.EMPTY)
+            return m_setup_empty;
         return null;
     }
 
     public boolean hasSetup()
     {
-        return ((getSgfProperty("AB") != null)|| 
-                (getSgfProperty("AW") != null));
+        return (!m_setup_black.isEmpty() ||
+                !m_setup_white.isEmpty() || 
+                !m_setup_empty.isEmpty());
     }
     
     /** Sets the PL proprety to the given color. */
@@ -261,6 +277,7 @@ public class Node
 
     private Vector<HexPoint> m_setup_black;
     private Vector<HexPoint> m_setup_white;
+    private Vector<HexPoint> m_setup_empty;
 
     private Move m_move;
     private Node m_parent, m_prev, m_next, m_child;

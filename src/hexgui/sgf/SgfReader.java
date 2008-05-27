@@ -186,8 +186,7 @@ public final class SgfReader
                 node.addSetup(HexColor.WHITE, HexPoint.get(val));
             }
             else if (name.equals("AE")) {
-                node.setSgfProperty(name, val);
-                // FIXME: store empty setup cells?
+                node.addSetup(HexColor.EMPTY, HexPoint.get(val));
             }
             else if (name.equals("FF")) {
                 node.setSgfProperty(name, val);

@@ -15,6 +15,7 @@ import java.io.*;
 import java.awt.Dimension;
 import java.util.Map;
 import java.util.Iterator;
+import java.util.Vector;
 
 //----------------------------------------------------------------------------
 
@@ -65,16 +66,30 @@ public final class SgfWriter
 	if (node.getMove() != null)
 	    printMove(node.getMove());
 
+        if (node.hasSetup()) {
+            Vector<HexPoint> list;
+            list = node.getSetup(HexColor.BLACK);
+            if (!list.isEmpty()) {
+                print("AB");
+                printPointList(list);
+            }
+            list = node.getSetup(HexColor.WHITE);
+            if (!list.isEmpty()) {
+                print("AW");
+                printPointList(list);
+            }
+            list = node.getSetup(HexColor.EMPTY);
+            if (!list.isEmpty()) {
+                print("AE");
+                printPointList(list);
+            }
+        }
+
 	Map<String,String> map = node.getProperties();
 	Iterator<Map.Entry<String,String> >  it = map.entrySet().iterator();
 	while(it.hasNext()) {
 	    Map.Entry<String,String> e = it.next();
-
-            // FIXME: stupid hack for setup positions
-            if (e.getKey().equals("AB") || e.getKey().equals("AW"))
-                print(e.getKey() + e.getValue());
-            else
-                print(e.getKey() + "[" + e.getValue() + "]");
+            print(e.getKey() + "[" + e.getValue() + "]");
 	}
 	
 	int num = node.numChildren();
@@ -87,7 +102,6 @@ public final class SgfWriter
 	
 	for (int i=0; i<num; i++) 
 	    writeTree(node.getChild(i), false);
-	
     }
 
     private void printMove(Move move)
@@ -96,6 +110,13 @@ public final class SgfWriter
 	if (move.getColor() == HexColor.WHITE)
 	    color = "W";
 	print(color + "[" + move.getPoint().toString() + "]");
+    }
+
+    private void printPointList(Vector<HexPoint> list)
+    {
+        for (int i=0; i<list.size(); ++i) {
+            print("[" + list.get(i).toString() + "]");
+        }
     }
 
     private void print(String str)
