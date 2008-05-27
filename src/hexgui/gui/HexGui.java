@@ -204,7 +204,7 @@ public final class HexGui
     private void cmdNewProgram()
     {
         Program program = new Program();
-        new NewProgramDialog(this, program, "Add New Program", true);
+        new EditProgramDialog(this, program, "Add New Program", true);
 
         if (program.m_name == null)  // user canceled
             return;
@@ -230,7 +230,7 @@ public final class HexGui
         if (program == null)
             return;
 
-        new NewProgramDialog(this, program, "Edit Program", false);
+        new EditProgramDialog(this, program, "Edit Program", false);
 
         Program.save(m_programs);
     }

@@ -14,12 +14,12 @@ import javax.swing.text.html.HTMLEditorKit;
 import java.awt.*;
 import java.awt.event.*;
 
-/** Dialog for adding a new program. */
-public final class NewProgramDialog
+/** Dialog for adding/editing new programs. */
+public final class EditProgramDialog
     extends JDialog implements ActionListener
 {
 
-    public NewProgramDialog(Frame owner, Program program, 
+    public EditProgramDialog(Frame owner, Program program, 
                             String title, boolean is_new)
     {
         super(owner, true);
