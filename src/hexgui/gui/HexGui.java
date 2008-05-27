@@ -97,6 +97,8 @@ public final class HexGui
             cmdNewProgram();
         else if (cmd.equals("edit-program"))
             cmdEditProgram();
+        else if (cmd.equals("delete-program"))
+            cmdDeleteProgram();
 	else if (cmd.equals("connect-program"))
 	    cmdConnectRemoteProgram();
 	else if (cmd.equals("connect-local-program"))
@@ -231,6 +233,29 @@ public final class HexGui
             return;
 
         new EditProgramDialog(this, program, "Edit Program", false);
+
+        Program.save(m_programs);
+    }
+
+    private void cmdDeleteProgram()
+    {
+        if (m_programs.isEmpty()) {
+            ShowError.msg(this, "No programs, add a program first.");
+            return;
+        }
+
+        ChooseProgramDialog dialog 
+            =  new ChooseProgramDialog(this, "Choose program to delete", 
+                                       m_programs);
+        dialog.setVisible(true);
+        Program program = dialog.getProgram();
+        dialog.dispose();
+
+        if (program == null)
+            return;
+
+        if (!m_programs.remove(program)) 
+            System.out.println("cmdDeleteProgram: program was not in list!");
 
         Program.save(m_programs);
     }

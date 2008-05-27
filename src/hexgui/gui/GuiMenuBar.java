@@ -140,6 +140,11 @@ public final class GuiMenuBar
 	item.addActionListener(m_listener);
 	item.setActionCommand("edit-program");
  	menu.add(item);
+        
+	item = new JMenuItem("Delete Program...");
+	item.addActionListener(m_listener);
+	item.setActionCommand("delete-program");
+ 	menu.add(item);
 
  	menu.addSeparator();
 
