@@ -209,11 +209,9 @@ public final class HexGui
         Program program = dialog.getProgram();
         dialog.dispose();
 
-        System.out.println(program.m_name);
         if (program == null)
             return;
-        
-        System.out.println(program.m_name);
+
         new NewProgramDialog(this, program);
     }
 

@@ -58,7 +58,7 @@ public final class NewProgramDialog
         if (program != null) {
             setPreferredSize(new Dimension(500, 180));
         } else {
-            setPreferredSize(new Dimension(500, 270));
+            setPreferredSize(new Dimension(500, 280));
         }
         pack();
 
