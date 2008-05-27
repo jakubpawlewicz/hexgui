@@ -4,6 +4,7 @@
 
 package hexgui.sgf;
 
+import hexgui.version.Version;
 import hexgui.hex.HexColor;
 import hexgui.hex.HexPoint;
 import hexgui.hex.Move;
@@ -50,7 +51,7 @@ public final class SgfWriter
 	    String value;
 
 	    node.setSgfProperty("FF", "4");
-	    node.setSgfProperty("AP", "HexGui:0.2");
+	    node.setSgfProperty("AP", "HexGui:"+Version.id+"."+Version.build);
 	    node.setSgfProperty("GM", "11");
 	    
 	    Dimension dim = m_gameinfo.getBoardSize();

@@ -17,7 +17,7 @@ public final class Version
     {
     }
 
-    public static String id = "0.0.0";
+    public static String id = "1.0";
     public static String build = "@BUILD@";
     public static String date = "@DATE@";
 }
