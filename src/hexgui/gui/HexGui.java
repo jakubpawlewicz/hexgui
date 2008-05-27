@@ -145,6 +145,8 @@ public final class HexGui
 	    cmdGuiBoardOrientation();
         else if (cmd.equals("show-preferences"))
             cmdShowPreferences();
+        else if (cmd.equals("gui-clear-marks"))
+            cmdClearMarks();
 	//
         // game navigation commands  
 	//
@@ -652,6 +654,12 @@ public final class HexGui
 	System.out.println(type);
 	m_guiboard.setOrientation(type);
 	m_guiboard.repaint();
+    }
+
+    private void cmdClearMarks()
+    {
+        m_guiboard.clearMarks();
+        m_guiboard.repaint();
     }
 
     private void cmdShowPreferences()

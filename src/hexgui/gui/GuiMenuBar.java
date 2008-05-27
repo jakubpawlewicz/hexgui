@@ -461,6 +461,13 @@ public final class GuiMenuBar
         
 	menu.addSeparator();
 
+        JMenuItem item = new JMenuItem("Clear Marks");
+        item.addActionListener(m_listener);
+        item.setActionCommand("gui-clear-marks");
+        menu.add(item);
+
+	menu.addSeparator();
+
 	JMenu view;
 	view = createBoardViewMenu();
 	menu.add(view);
