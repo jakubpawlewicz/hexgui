@@ -15,8 +15,8 @@ public final class GuiPreferences
 {
     private static String[][] s_preflist = new String[][]
 	{ 
-	    {"gui-board-type",                    "Diamond"},
-	    {"gui-board-on-top",                  "white"},
+	    {"gui-board-type",                    "Flat"},
+	    {"gui-board-on-top",                  "black"},
 	    {"gui-board-pixel-width",             "750"},
 	    {"gui-board-pixel-height",            "500"},
 	    {"gui-board-width",                   "11"},
@@ -30,15 +30,17 @@ public final class GuiPreferences
 
             {"analyze-show-on-connect",           "true"},
 
-            {"auto-respond",                      "true"},
+            {"auto-respond",                      "false"},
 
             {"first-move-color",                  "black"},
 
             {"remote-host-name",                  "localhost"},
 
-	    {"path-local-program",                "./htpwolve"},
-	    {"path-load-game",                    "../games/"},
-	    {"path-save-game",                    "../games/"},
+            {"is-program-attached",               "false"},
+	    {"attached-program",                  "dummy-program-name"},
+
+	    {"path-load-game",                    "."},
+	    {"path-save-game",                    "."},
 
 	    {"dummy-preference",                  ""}
 	};

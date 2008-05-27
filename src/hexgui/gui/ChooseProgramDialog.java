@@ -15,14 +15,13 @@ import java.awt.event.*;
 /** The actual dialog. */
 class ChooseProgramDialog extends JDialog implements ActionListener
 {
-    public ChooseProgramDialog(Frame owner, String title)
+    public ChooseProgramDialog(Frame owner, String title, Vector<Program> programs)
     {
         super(owner, true);
         setTitle(title);
-        
-        // load programs
-        m_programs = Program.load();
-        
+
+        m_programs = programs;
+
         // create gui
         JEditorPane info = new JEditorPane();
         info.setEditable(false);

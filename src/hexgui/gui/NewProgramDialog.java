@@ -19,29 +19,24 @@ public final class NewProgramDialog
     extends JDialog implements ActionListener
 {
 
-    public NewProgramDialog(Frame owner)
+    public NewProgramDialog(Frame owner, Program program, 
+                            String title, boolean is_new)
     {
         super(owner, true);
-        setTitle("Add New Program");
-        init(null);
+        m_program = program;
+
+        setTitle(title);
+        init(is_new);
     }
 
-    public NewProgramDialog(Frame owner, Program program)
-    {
-        super(owner, true);
-        setTitle("Edit Program");
-        init(program);
-    }
-
-    private void init(Program program)
+    private void init(boolean is_new)
     {
         JEditorPane info = new JEditorPane();
         info.setEditable(false);
         info.setEditorKit(new HTMLEditorKit());
         
-        if (program != null) {
-            info.setText("Edit the program's fields. Changing the program's " +
-                         "will actully add a new program by that name.");
+        if (!is_new) {
+            info.setText("Edit the program's fields.");
         } else {
             info.setText("<h3>Enter command for new Hex program</h3>"+
                          "<p>The command can be simply the name of the " +
@@ -52,10 +47,10 @@ public final class NewProgramDialog
                          "to refer to this program.");
         }
         add(info, BorderLayout.NORTH);
-        add(createProgramPanel(program), BorderLayout.CENTER);
+        add(createProgramPanel(m_program), BorderLayout.CENTER);
         add(createButtonPanel(), BorderLayout.SOUTH);
 
-        if (program != null) {
+        if (!is_new) {
             setPreferredSize(new Dimension(500, 180));
         } else {
             setPreferredSize(new Dimension(500, 280));
@@ -72,32 +67,10 @@ public final class NewProgramDialog
         String cmd = e.getActionCommand();
         if (cmd.equals("OK")) {
 
-            String name = m_name.getText();
-            String command = m_command.getText();
-            Program newprog = new Program(name, command, m_working.getText());
-
-            // add the program to the list of programs
-            Vector<Program> programs = Program.load();
-
-            boolean found = false;
-            for (int i=0; i<programs.size(); ++i) {
-                Program prog = programs.get(i);
-
-                // this is the one we were editing
-                // FIXME: editing a program and giving it a new name will 
-                // cause a new program to be added. 
-                if (prog.m_name.equals(newprog.m_name)) {
-                    found = true;
-                    prog.m_command = newprog.m_command;
-                    prog.m_working = newprog.m_working;
-                    break;
-                }
-            }
-            if (!found)
-                programs.add(newprog);
-
-            Program.save(programs);
-            
+            m_program.m_name = m_name.getText();
+            m_program.m_command = m_command.getText();
+            m_program.m_working = m_working.getText();
+           
             dispose();
 
         } else if (cmd.equals("Cancel")) {

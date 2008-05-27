@@ -71,16 +71,21 @@ public final class HexGui
         pack();
         setVisible(true);
 
+        // attach program from the last run of HexGui
+        m_program = null;
+        m_programs = Program.load();
+        if (m_preferences.getBoolean("is-program-attached")) {
+            String name = m_preferences.get("attached-program");
+            Program prog = Program.findWithName(name, m_programs);
+            if (prog != null)
+                cmdConnectLocalProgram(prog);
+        }
     }
 
-    //------------------------------------------------------------
+    //-------------------------------------------------------------------
+
     public void actionPerformed(ActionEvent e) 
     {
-// 	System.out.println("-----------------");
-// 	System.out.println("Received Action Event: ");
-// 	System.out.println(e.getActionCommand());
-// 	System.out.println(e.paramString());
-
 	String cmd = e.getActionCommand();
 
 	//
@@ -198,13 +203,26 @@ public final class HexGui
 
     private void cmdNewProgram()
     {
-        new NewProgramDialog(this);
+        Program program = new Program();
+        new NewProgramDialog(this, program, "Add New Program", true);
+
+        if (program.m_name == null)  // user canceled
+            return;
+
+        // add the program to the list of programs
+        m_programs.add(program);
+        Program.save(m_programs);
     }
 
     private void cmdEditProgram()
     {
+        if (m_programs.isEmpty()) {
+            ShowError.msg(this, "No programs, add a program first.");
+            return;
+        }
+
         ChooseProgramDialog dialog 
-            =  new ChooseProgramDialog(this, "Choose program to edit");
+            =  new ChooseProgramDialog(this, "Choose program to edit", m_programs);
         dialog.setVisible(true);
         Program program = dialog.getProgram();
         dialog.dispose();
@@ -212,9 +230,28 @@ public final class HexGui
         if (program == null)
             return;
 
-        new NewProgramDialog(this, program);
+        new NewProgramDialog(this, program, "Edit Program", false);
+
+        Program.save(m_programs);
     }
 
+    private void cmdConnectLocalProgram()
+    {
+        ChooseProgramDialog dialog 
+            =  new ChooseProgramDialog(this, "Choose program to connect", 
+                                       m_programs);
+        dialog.setVisible(true);
+        Program program = dialog.getProgram();
+        dialog.dispose();
+
+	if (program == null) // user aborted
+	    return;
+        
+        cmdConnectLocalProgram(program);
+    }
+
+
+    /** @note NOT CURRENTLY USED! */
     private void cmdConnectRemoteProgram()
     {
 	int port = 20000;
@@ -245,7 +282,6 @@ public final class HexGui
 	}
 	System.out.println("connected.");
 
-
 	InputStream in;
 	OutputStream out;
 	try {
@@ -263,14 +299,7 @@ public final class HexGui
 	connectProgram(in, out);
     }
 
-    private void cmdConnectLocalProgram()
-    {
-        Program prog = LocalProgramDialog.show(this);
-	if (prog == null) // user aborted
-	    return;
-        
-        cmdConnectLocalProgram(prog);
-    }
+    //------------------------------------------------------------
 
     private void cmdConnectLocalProgram(Program program)
     {
@@ -287,7 +316,8 @@ public final class HexGui
 	}
 
         m_program = program;
-	m_preferences.put("attached-local-program", program.m_name);
+        m_preferences.put("is-program-attached", true);
+	m_preferences.put("attached-program", program.m_name);
 
  	Process proc = m_white_process;
 
@@ -370,6 +400,7 @@ public final class HexGui
             m_program = null;
 	    m_menubar.setProgramConnected(false);
 	    m_toolbar.setProgramConnected(false);
+            m_preferences.put("is-program-attached", false);
 	}
 	catch (Throwable e) {
 	    ShowError.msg(this, "Error: " + e.getMessage());
@@ -1700,6 +1731,7 @@ public final class HexGui
     private Vector<HexPoint> m_selected_cells;
 
     private Program m_program;
+    private Vector<Program> m_programs;
 
     private HtpController m_white;
     private String m_white_name;

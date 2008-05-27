@@ -16,6 +16,10 @@ public class Program
     public String m_command;
     public String m_working;
 
+    public Program()
+    {
+    }
+
     public Program(String name, String command, String working)
     {
         m_name = name;
@@ -69,6 +73,15 @@ public class Program
         }
     }
 
+    public static Program findWithName(String name, Vector<Program> programs)
+    {
+        for (int i=0; i<programs.size(); ++i) {
+            Program p = programs.get(i);
+            if (p.m_name.equals(name))
+                return p;
+        }
+        return null;
+    }
 }
 
 //----------------------------------------------------------------------------
