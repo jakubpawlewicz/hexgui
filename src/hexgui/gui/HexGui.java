@@ -331,10 +331,28 @@ public final class HexGui
     private void cmdConnectLocalProgram(Program program)
     {
 	Runtime runtime = Runtime.getRuntime();
+
 	String cmd = program.m_command;
-	System.out.println("Executing " + program.m_name + ": '" + cmd + "'...");
+	System.out.println("Executing '" + program.m_name + "':");
+        System.out.println("Command = '" + cmd + "'");
+        System.out.println("Working directory = '" + program.m_working + "'");
+        
+        File working = null;
+        if (!program.m_working.trim().equals("")) {
+            ShowError.msg(this, 
+                          "Working directory not implemented! " + 
+                          "Running with no working directory.");
+
+//             working = new File(program.m_working);
+//             if (!working.isDirectory()) {
+//                 ShowError.msg(this, "Invalid working directory: '" 
+//                               + working.getName() + "'");
+//             }
+        }
+        
 	try {
-	    m_white_process = runtime.exec(cmd);
+            //m_white_process = runtime.exec(cmd, null, working);
+            m_white_process = runtime.exec(cmd);
 	}
 	catch (Throwable e) {
 	    ShowError.msg(this, "Error starting " + program.m_name + ": '" 
