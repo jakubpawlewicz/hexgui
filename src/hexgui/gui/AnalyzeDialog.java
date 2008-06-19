@@ -123,7 +123,10 @@ public class AnalyzeDialog
 
             } 
             // commands that need only a color
-            else if (name.equals("compute_dead_cells") ||
+            else if (name.equals("compute-inferior") ||
+		     name.equals("compute-fillin") ||
+		     name.equals("compute-vulnerable") ||
+		     name.equals("compute-dominated") ||
                      name.equals("find_sealed") ||
                      name.equals("strengthen_vcs") ||
                      name.equals("vc-build") ||

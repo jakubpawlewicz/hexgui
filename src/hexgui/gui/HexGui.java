@@ -735,8 +735,15 @@ public final class HexGui
 	else if (c.equals("shortest_vc_paths")) 
             cb = new Runnable() { public void run() { cbDisplayPointList(); } };
 
-        else if (c.equals("compute_dead_cells"))
+        else if (c.equals("compute-inferior"))
             cb = new Runnable() { public void run() { cbComputeDeadCells(); } };
+        else if (c.equals("compute-fillin"))
+            cb = new Runnable() { public void run() { cbComputeDeadCells(); } };
+        else if (c.equals("compute-vulnerable"))
+            cb = new Runnable() { public void run() { cbComputeDeadCells(); } };
+        else if (c.equals("compute-dominated"))
+            cb = new Runnable() { public void run() { cbComputeDeadCells(); } };
+
         else if (c.equals("vc-build"))
             cb = new Runnable() { public void run() { cbComputeDeadCells(); } };
         else if (c.equals("vc-build-incremental"))
