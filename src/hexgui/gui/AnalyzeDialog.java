@@ -127,14 +127,16 @@ public class AnalyzeDialog
 		     name.equals("compute-fillin") ||
 		     name.equals("compute-vulnerable") ||
 		     name.equals("compute-dominated") ||
-                     name.equals("find_sealed") ||
-                     name.equals("strengthen_vcs") ||
                      name.equals("vc-build") ||
                      name.equals("vc-get-mustplay") ||
-                     name.equals("eval_twod") ||
-                     name.equals("eval_resist") ||
-                     name.equals("eval_resist_delta") ||
-                     name.equals("solve_state") ||
+		     name.equals("vc-maintain") ||
+                     name.equals("eval-influence") ||
+                     name.equals("eval-resist") ||
+                     name.equals("eval-resist-delta") ||
+                     name.equals("eval-twod") ||
+                     name.equals("shortest-paths") ||
+                     name.equals("shortest-vc-paths") ||
+                     name.equals("solve-state") ||
                      name.equals("solver-find-winning")) {
 
                 HexColor color = getSelectedColor();

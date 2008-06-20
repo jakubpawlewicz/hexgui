@@ -730,9 +730,9 @@ public final class HexGui
         else if (c.equals("get_absorb_group"))
             cb = new Runnable() { public void run() { cbGetAbsorbGroup(); } };
 
-	else if (c.equals("shortest_paths")) 
+	else if (c.equals("shortest-paths")) 
             cb = new Runnable() { public void run() { cbDisplayPointList(); } };
-	else if (c.equals("shortest_vc_paths")) 
+	else if (c.equals("shortest-vc-paths")) 
             cb = new Runnable() { public void run() { cbDisplayPointList(); } };
 
         else if (c.equals("compute-inferior"))
@@ -749,16 +749,8 @@ public final class HexGui
         else if (c.equals("vc-build-incremental"))
             cb = new Runnable() { public void run() { cbComputeDeadCells(); } };
 
-
         else if (c.equals("solver-find-winning"))
             cb = new Runnable() { public void run() { cbDisplayPointList(); } };            
-
-        else if (c.equals("find_sealed")) 
-            cb = new Runnable() { public void run() { cbDisplayPointList(); } };
-        else if (c.equals("strengthen_vcs")) 
-            cb = new Runnable() { public void run() { cbDisplayPointList(); } };
-
-
         else if (c.equals("book-depths")) 
             cb = new Runnable() { public void run() { cbDisplayPointText(); } };
         else if (c.equals("book-sizes")) 
@@ -775,6 +767,10 @@ public final class HexGui
             cb = new Runnable() { public void run() { cbDisplayPointList(); } };
         else if (c.equals("vc-between-cells"))
             cb = new Runnable() { public void run() { cbBetweenCells(); } };
+
+	else if (c.equals("vc-maintain"))
+            cb = new Runnable() { public void run() { cbBetweenCells(); } };
+	
         else if (c.equals("vc-get-mustplay"))
             cb = new Runnable() { public void run() { cbDisplayPointList(); } };
         else if (c.equals("vc-intersection"))
@@ -782,13 +778,13 @@ public final class HexGui
         else if (c.equals("vc-union"))
             cb = new Runnable() { public void run() { cbDisplayPointList(); } };
 
-        else if (c.equals("eval_twod")) 
+        else if (c.equals("eval-twod")) 
             cb = new Runnable() { public void run() { cbDisplayPointText(); } };
-        else if (c.equals("eval_resist")) 
+        else if (c.equals("eval-resist")) 
             cb = new Runnable() { public void run() { cbEvalResist(); } };
-        else if (c.equals("eval_resist_delta")) 
+        else if (c.equals("eval-resist-delta")) 
             cb = new Runnable() { public void run() { cbEvalResistDelta(); } };
-	else if (c.equals("eval_influence"))
+	else if (c.equals("eval-influence"))
             cb = new Runnable() { public void run() { cbDisplayPointText(); } };
 
         else if (c.equals("mohex-show-rollout")) 
