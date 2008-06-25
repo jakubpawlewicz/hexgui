@@ -7,7 +7,7 @@ package hexgui.gui;
 import hexgui.hex.*;
 import hexgui.htp.HtpController;
 
-import javax.swing.*;          
+import javax.swing.*;
 import javax.swing.text.*;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.ListSelectionEvent;
@@ -21,11 +21,11 @@ import java.util.*;
 
 /** Non-modal dialog displaying list of htp commands of the connected
     HTP compatible program. */
-public class AnalyzeDialog 
+public class AnalyzeDialog
     extends JDialog implements ActionListener, ListSelectionListener
 {
 
-    public interface Callback 
+    public interface Callback
     {
 	void analyzeCommand(String str);
     }
@@ -36,8 +36,8 @@ public class AnalyzeDialog
     }
 
 
-    public AnalyzeDialog(JFrame owner, 
-                         Callback callback, 
+    public AnalyzeDialog(JFrame owner,
+                         Callback callback,
                          SelectionCallback selection,
                          StatusBar statusbar)
     {
@@ -63,7 +63,7 @@ public class AnalyzeDialog
         m_run = new JButton("Run");
         m_run.addActionListener(this);
         m_run.setActionCommand("run");
-        
+
         m_color = new JComboBox(m_colors);
         m_color.setEditable(false);
         m_type = new JComboBox(m_types);
@@ -79,10 +79,9 @@ public class AnalyzeDialog
 
         pack();
 
-
 	Dimension size = owner.getSize();
 	setLocation(size.width, size.height);
-        
+
         setVisible(true);
     }
 
@@ -100,7 +99,8 @@ public class AnalyzeDialog
     public void actionPerformed(ActionEvent e)
     {
         String what = e.getActionCommand();
-        if (what.equals("run")) {
+        if (what.equals("run"))
+        {
             int index = m_list.getSelectedIndex();
             if (index == -1) return;
 
@@ -110,18 +110,38 @@ public class AnalyzeDialog
             String name = m_commands.get(index);
 
             cmd.append(name);
-            
+
             // commands that need only a point
-            if (name.equals("get_absorb_group")) {
-                if (selected.size() < 1) {
-                    m_statusbar.setMessage("Please select cell before running.");
+            if (name.equals("get_absorb_group"))
+            {
+                if (selected.size() < 1)
+                {
+                    m_statusbar.setMessage("Please select a cell before " +
+                                           "running.");
                     return;
                 }
 
                 HexPoint p = selected.get(0);
                 cmd.append(" " + p.toString());
 
-            } 
+            }
+            // commands that need AT LEAST one point
+            else if (name.equals("encode-pattern"))
+            {
+                if (selected.size() < 1)
+                {
+                    m_statusbar.setMessage("Please select at least one cell " +
+                                           "before running.");
+                    return;
+                }
+
+                int i = 0;
+                while (i < selected.size())
+                {
+                    HexPoint p = selected.get(i++);
+                    cmd.append(" " + p.toString());
+                }
+            }
             // commands that need only a color
             else if (name.equals("compute-inferior") ||
 		     name.equals("compute-fillin") ||
@@ -137,20 +157,21 @@ public class AnalyzeDialog
                      name.equals("shortest-paths") ||
                      name.equals("shortest-vc-paths") ||
                      name.equals("solve-state") ||
-                     name.equals("solver-find-winning")) {
-
+                     name.equals("solver-find-winning"))
+            {
                 HexColor color = getSelectedColor();
                 cmd.append(" " + color.toString());
-                
-            }  
+            }
             // commands that need a point, a color, and a vctype
-            else if (name.equals("vc-connected-to")) {
+            else if (name.equals("vc-connected-to"))
+            {
 
-                if (selected.size() < 1) {
-                    m_statusbar.setMessage("Please select cell before running.");
+                if (selected.size() < 1)
+                {
+                    m_statusbar.setMessage("Please select a cell before " +
+                                           "running.");
                     return;
                 }
-                
                 HexPoint p = selected.get(0);
                 HexColor c = getSelectedColor();
                 int t = getSelectedType();
@@ -158,19 +179,18 @@ public class AnalyzeDialog
                 cmd.append(" " + p.toString());
                 cmd.append(" " + c.toString());
                 cmd.append(" " + t);
-
-            } 
+            }
             // commands that need 2 points, a color, and a vc type
             else if (name.equals("vc-between-cells") ||
                      name.equals("vc-intersection") ||
-                     name.equals("vc-union")) {
-                
-                if (selected.size() < 2) {
-                    m_statusbar.setMessage("Please select at least two cells " + 
-                                           "before running.");
+                     name.equals("vc-union"))
+            {
+                if (selected.size() < 2)
+                {
+                    m_statusbar.setMessage("Please select at least two " +
+                                           "cells before running.");
                     return;
                 }
-                
                 HexPoint p1 = selected.get(0);
                 HexPoint p2 = selected.get(1);
                 HexColor c = getSelectedColor();
@@ -180,7 +200,7 @@ public class AnalyzeDialog
                 cmd.append(" " + p2.toString());
                 cmd.append(" " + c.toString());
                 cmd.append(" " + t);
-            } 
+            }
 
             cmd.append("\n");
             m_callback.analyzeCommand(cmd.toString());
@@ -201,7 +221,6 @@ public class AnalyzeDialog
         return m_type.getSelectedIndex();
     }
 
-
     Callback m_callback;
     SelectionCallback m_selection;
     StatusBar m_statusbar;
@@ -209,7 +228,7 @@ public class AnalyzeDialog
     JList m_list;
     JScrollPane m_scrollpane;
     Vector<String> m_commands;
-   
+
     JButton m_run;
     JComboBox m_color;
     JComboBox m_type;
