@@ -116,21 +116,20 @@ public final class StringUtils
             String source = "unknown";
 
             try {
-                from = HexPoint.get(vcs[i+0]);
-                to = HexPoint.get(vcs[i+1]);
-                color = HexColor.get(vcs[i+2]);
+                color = HexColor.get(vcs[i+0]);
+                from = HexPoint.get(vcs[i+1]);
+                to = HexPoint.get(vcs[i+2]);
                 type = vcs[i+3];
 
                 j = 5;
                 if (!type.equals("softlimit")) {
                     source = vcs[i+4];
-                    moves = Integer.parseInt(vcs[i+5]);
-
+  
                     // read carrier set
-                    if (!vcs[i+6].equals("["))
+                    if (!vcs[i+5].equals("["))
                         throw new Throwable("No carrier!");
                     
-                    for (j=7; j < vcs.length; j++) {
+                    for (j=6; j < vcs.length; j++) {
                         if (vcs[i+j].equals("]")) break;
                         HexPoint p = HexPoint.get(vcs[i+j]);
                         carrier.add(p);
