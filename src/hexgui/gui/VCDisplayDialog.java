@@ -84,12 +84,10 @@ public class VCDisplayDialog
     
     public void focusGained(FocusEvent e)
     {
-        System.out.println("focusGained");
     }
 
     public void focusLost(FocusEvent e)
     {
-        System.out.println("focusLost");
         m_list.clearSelection();
     }
 
