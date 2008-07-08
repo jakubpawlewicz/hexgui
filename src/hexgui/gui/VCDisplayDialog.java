@@ -22,7 +22,8 @@ import java.util.*;
 /** Non-modal dialog displaying list of VCs.  Clicking on a vc displays
     it to the given GuiBoard. */
 public class VCDisplayDialog 
-    extends JDialog implements ListSelectionListener
+    extends JDialog implements ListSelectionListener,
+                               FocusListener
 {
     public VCDisplayDialog(JFrame owner, GuiBoard board, Vector<VC> vcs)
     {
@@ -41,6 +42,7 @@ public class VCDisplayDialog
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
         m_list = new JList();
+        m_list.addFocusListener(this);
         m_list.addListSelectionListener(this);
         m_list.setDragEnabled(false);
         m_list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -69,12 +71,26 @@ public class VCDisplayDialog
 
     public void valueChanged(ListSelectionEvent e)
     {
+        if (m_list.isSelectionEmpty())
+            return;
+
         VC vc = m_vcs.get(m_list.getSelectedIndex());
         if (vc.getType().equals("softlimit")) // do nothing on this
             return;
         m_guiboard.clearMarks();
         m_guiboard.displayVC(vc);
         m_guiboard.repaint();
+    }
+    
+    public void focusGained(FocusEvent e)
+    {
+        System.out.println("focusGained");
+    }
+
+    public void focusLost(FocusEvent e)
+    {
+        System.out.println("focusLost");
+        m_list.clearSelection();
     }
 
     private JList m_list;
