@@ -37,6 +37,7 @@ public class HtpController
 	m_out = new PrintStream(out);
 	m_io = io;
 	m_connected = true;
+        m_waiting = false;
     }
     
     public void sendCommand(String cmd) throws HtpError
@@ -44,7 +45,12 @@ public class HtpController
 	sendCommand(cmd, null);
     }
 
-    public void sendCommand(String cmd, Runnable callback) throws HtpError
+    /** Sends command over the htp channel. 
+
+        Note this method is synchronized, and so HtpController will process only
+        a single command at a time.
+    */
+    public synchronized void sendCommand(String cmd, Runnable callback) throws HtpError
     {
 	if (!m_connected) 
 	    throw new HtpError("Hex Program Disconnected.");
@@ -54,53 +60,69 @@ public class HtpController
 	m_out.flush();
 	m_io.sentCommand(cmd);
         handleResponse(callback);
-
-	if (callback != null) {
-	    //System.out.println("controller: running callback.");
-	    callback.run();
-	}
     }
 
+    public boolean cmdInProgress() { return m_waiting; }
+
     public boolean wasSuccess() { return m_success; }
+
     public String getResponse() { return m_response; }
 
     private void handleResponse(Runnable callback) throws HtpError
     {
-	String response;
-	try {
-	    response = waitResponse();
-	}
-	catch (IOException e) {
-	    throw new HtpError("IOException waiting for response!");
-	}
+        m_waiting = true;
 
-	//System.out.println("got: '" + response + "'");
+        while (m_waiting) {
 
-	if (response == null) {
-	    m_success = false;
-	    m_response = "";
-	    throw new HtpError("Null response received!");
-	} else if (response.length() < 2) {
-	    m_success = false;
-	    m_response = response;
-	    throw new HtpError("Response length too short! '"+response+"'");
-	} else if (response.substring(0,2).equals("= ")) {
-	    m_success = true;
-	    m_response = response.substring(2);
-	    System.out.print("controller: success: ");
-	    m_io.receivedResponse(response);
-	} else if (response.substring(0,2).equals("? ")) {
-	    m_success = false;
-	    m_response = response.substring(2);
-	    System.out.print("controller: error: "); 
-	    m_io.receivedError(response);
-	} else {
-	    m_response = response;
-	    m_success = false;
-	    System.out.print("controller: invalid: "); 
-	    throw new HtpError("Invalid HTP response:'" + response + "'.");
-	}
-	System.out.println("'" + m_response.trim() + "'");
+            String response;
+            try {
+                response = waitResponse();
+            }
+            catch (IOException e) {
+                m_waiting = false;
+                throw new HtpError("IOException waiting for response!");
+            }
+            
+            //System.out.println("got: '" + response + "'");
+            
+            if (response == null) {
+                m_success = false;
+                m_response = "";
+                m_waiting = false;
+                throw new HtpError("Null response received!");
+            } else if (response.length() < 2) {
+                m_success = false;
+                m_response = response;
+                m_waiting = false;
+                throw new HtpError("Response length too short! '"+response+"'");
+            } else if (response.length() > 9 && 
+                       response.substring(0, 9).equals("goguifx: ")) 
+            {
+                String fx = response.substring(9).trim();
+                System.out.println("##### goguifx: '" + fx + "'");
+
+            } else if (response.substring(0,2).equals("= ")) {
+                m_success = true;
+                m_response = response.substring(2);
+                System.out.print("controller: success: ");
+                m_io.receivedResponse(response);
+                m_waiting = false;
+            } else if (response.substring(0,2).equals("? ")) {
+                m_success = false;
+                m_response = response.substring(2);
+                System.out.print("controller: error: "); 
+                m_io.receivedError(response);
+                m_waiting = false;
+            } else {
+                m_response = response;
+                m_success = false;
+                System.out.print("controller: invalid: "); 
+                m_waiting = false;
+                throw new HtpError("Invalid HTP response:'" + response + "'.");
+            }
+        }
+
+        System.out.println("'" + m_response.trim() + "'");
     }
 
     private String waitResponse() throws IOException
@@ -146,6 +168,8 @@ public class HtpController
     private BufferedReader m_in;
     private PrintStream m_out;   
     private IOInterface m_io;
+
+    private boolean m_waiting;
 
     private String m_response;
     private boolean m_success;

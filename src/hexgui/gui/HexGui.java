@@ -70,6 +70,8 @@ public final class HexGui
 
         pack();
         setVisible(true);
+        
+        m_locked = false;
 
         // attach program from the last run of HexGui
         m_program = null;
@@ -829,19 +831,64 @@ public final class HexGui
         sendCommand(cmd, cb);
     }
 
+    //----------------------------------------------------------------------
+
+    private void lockGUI()
+    {
+        m_locked = true;
+        m_toolbar.lockToolbar();
+    }
+
+    private void unlockGUI()
+    {
+        m_toolbar.unlockToolbar(m_current);
+        m_locked = false;
+    }
+
+    private class CommandHandler
+        implements Runnable
+    {
+
+        public CommandHandler(Component parent, String cmd, Runnable callback)
+        {
+            m_parent = parent;
+            m_cmd = cmd;
+            m_callback = callback;
+        }
+
+        public void run()
+        {
+            lockGUI();
+
+            try  {
+                m_white.sendCommand(m_cmd, m_callback);
+
+                if (m_callback != null) {
+                    m_callback.run();
+                }
+            }
+            
+            catch (HtpError e) {
+                ShowError.msg(m_parent, e.getMessage());
+            }
+
+            unlockGUI();
+        }
+
+        Component m_parent;
+        String m_cmd;
+        Runnable m_callback;
+    }
+
     private void sendCommand(String cmd, Runnable callback)
     {
 	if (m_white == null)
 	    return;
 
-	try
-        {
-	    m_white.sendCommand(cmd, callback);
-	}
-	catch (HtpError e)
-        {
-            ShowError.msg(this, e.getMessage());
-	}
+        CommandHandler handler = new CommandHandler(this, cmd, callback);
+        Thread handler_thread = new Thread(handler);
+        handler_thread.start();
+
     }
 
     // FIXME: add callback?
@@ -1349,6 +1396,12 @@ public final class HexGui
     */
     public void fieldClicked(HexPoint point, boolean ctrl, boolean shift)
     {
+        // do not modify the board in any way if an htp command is in progress!
+        if (m_locked) {
+            m_statusbar.setMessage("Board is locked until HTP command is completed.");
+            return;
+        }
+
         if (m_guiboard.areStonesDirty())
         {
             m_guiboard.clearMarks();
@@ -1888,6 +1941,8 @@ public final class HexGui
     private AnalyzeDialog m_analyze;
     private EvalGraphDialog m_evalgraph;
 
+    private boolean m_locked;
+    
     private Node m_root;
     private Node m_current;
     private GameInfo m_gameinfo;

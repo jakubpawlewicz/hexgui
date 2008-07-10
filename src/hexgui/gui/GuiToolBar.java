@@ -40,7 +40,7 @@ public final class GuiToolBar
 	m_preferences.put("gui-toolbar-visible", visible);
     }
 
-    public void enableStopButton(String actionCommand)
+    public void enableStopButton()
     {
 	m_stop.setEnabled(true);
     }
@@ -104,25 +104,71 @@ public final class GuiToolBar
         m_swap.setEnabled(node.isSwapAllowed());
     }
 
+    public void lockToolbar()
+    {
+        m_new.setEnabled(false);
+        m_load.setEnabled(false);
+        m_save.setEnabled(false);
+
+        m_setup_black.setEnabled(false);
+        m_setup_white.setEnabled(false);
+
+	m_beginning.setEnabled(false);
+	m_back10.setEnabled(false);
+	m_back.setEnabled(false);
+
+	m_forward.setEnabled(false);
+	m_forward10.setEnabled(false);
+	m_end.setEnabled(false);
+
+	m_up.setEnabled(false);
+	m_down.setEnabled(false);
+
+        m_swap.setEnabled(false);
+
+        m_tomove.setEnabled(false);
+
+        enableStopButton();
+    }
+
+    public void unlockToolbar(Node node)
+    {
+        disableStopButton();
+
+        m_tomove.setEnabled(true);
+
+        m_setup_black.setEnabled(true);
+        m_setup_white.setEnabled(true);
+
+        m_new.setEnabled(true);
+        m_load.setEnabled(true);
+        m_save.setEnabled(true);
+
+        updateButtonStates(node);
+    }
+
     //----------------------------------------------------------------------
 
     private void createToolBar()
     {
-	m_toolBar.add(makeButton("hexgui/images/filenew.png", 
-				 "newgame",
-				 "New Game",
-				 "New"));
+	m_new = makeButton("hexgui/images/filenew.png", 
+                           "newgame",
+                           "New Game",
+                           "New");
+        m_toolBar.add(m_new);
 
-	m_toolBar.add(makeButton("hexgui/images/fileopen.png", 
-				 "loadgame",
-				 "Load Game",
-				 "Load"));
-
-	m_toolBar.add(makeButton("hexgui/images/filesave2.png", 
-				 "savegame",
-				 "Save Game",
-				 "Save"));
-
+        m_load = makeButton("hexgui/images/fileopen.png", 
+                            "loadgame",
+                            "Load Game",
+                            "Load");
+	m_toolBar.add(m_load);
+        
+        m_save = makeButton("hexgui/images/filesave2.png", 
+                            "savegame",
+                            "Save Game",
+                            "Save");
+        m_toolBar.add(m_save);
+        
 	m_toolBar.addSeparator();
 
         m_setup_black = makeToggleButton("hexgui/images/setup-black.png",
@@ -295,6 +341,8 @@ public final class GuiToolBar
     private GuiPreferences m_preferences;
     private JToolBar m_toolBar;
     private ActionListener m_listener;
+
+    private JButton m_new, m_load, m_save;
 
     private JToggleButton m_setup_black, m_setup_white;
 
