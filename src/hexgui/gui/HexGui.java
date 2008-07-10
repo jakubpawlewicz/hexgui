@@ -834,6 +834,15 @@ public final class HexGui
 
     //----------------------------------------------------------------------
 
+    private boolean commandNeedsToLockGUI(String cmd)
+    {
+        if ((cmd.length() > 7 && cmd.substring(0, 7).equals("genmove")) ||
+            (cmd.length() > 11 && cmd.substring(0, 11).equals("solve-state")) ||
+            (cmd.length() > 19 && cmd.substring(0, 19).equals("solver-find-winning")))
+            return true;
+        return false;
+    }
+
     private void lockGUI()
     {
         m_locked = true;
@@ -859,7 +868,8 @@ public final class HexGui
 
         public void run()
         {
-            lockGUI();
+            if (commandNeedsToLockGUI(m_cmd))
+                lockGUI();
 
             try  {
                 m_white.sendCommand(m_cmd, m_callback);
@@ -873,7 +883,8 @@ public final class HexGui
                 ShowError.msg(m_parent, e.getMessage());
             }
 
-            unlockGUI();
+            if (commandNeedsToLockGUI(m_cmd))
+                unlockGUI();
         }
 
         Component m_parent;
