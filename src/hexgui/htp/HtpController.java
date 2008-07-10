@@ -6,6 +6,7 @@ package hexgui.htp;
 
 import hexgui.hex.HexPoint;
 import hexgui.util.Pair;
+import hexgui.util.StringUtils;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -29,13 +30,22 @@ public class HtpController
 
     //------------------------------------------------------------
 
+    public interface GuiFxCallback
+    {
+        void guifx(String cmd);
+    }
+
+    //------------------------------------------------------------
+
     /** Constructor */
-    public HtpController(InputStream in, OutputStream out, IOInterface io)
+    public HtpController(InputStream in, OutputStream out, 
+                         IOInterface io, GuiFxCallback guifx)
     {
 	System.out.println("controller: in constructor.");
 	m_in = new BufferedReader(new InputStreamReader(in));
 	m_out = new PrintStream(out);
 	m_io = io;
+        m_guifx = guifx;
 	m_connected = true;
         m_waiting = false;
     }
@@ -95,12 +105,15 @@ public class HtpController
                 m_response = response;
                 m_waiting = false;
                 throw new HtpError("Response length too short! '"+response+"'");
-            } else if (response.length() > 9 && 
-                       response.substring(0, 9).equals("goguifx: ")) 
+            } else if (response.length() > 11 && 
+                       response.substring(0, 11).equals("gogui-gfx:\n")) 
             {
-                String fx = response.substring(9).trim();
-                System.out.println("##### goguifx: '" + fx + "'");
 
+                String fx 
+                    = StringUtils.cleanWhiteSpace(response.substring(11).trim());
+                
+                m_guifx.guifx(fx);
+                
             } else if (response.substring(0,2).equals("= ")) {
                 m_success = true;
                 m_response = response.substring(2);
@@ -168,6 +181,7 @@ public class HtpController
     private BufferedReader m_in;
     private PrintStream m_out;   
     private IOInterface m_io;
+    private GuiFxCallback m_guifx;
 
     private boolean m_waiting;
 

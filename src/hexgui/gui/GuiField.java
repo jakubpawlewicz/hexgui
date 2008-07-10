@@ -212,15 +212,24 @@ public class GuiField
     private void drawText()
     {
 	FontMetrics fm = m_graphics.getFontMetrics();
-	int width = fm.stringWidth(m_text);
-	int height = fm.getAscent();
+        int height = fm.getAscent();
+        
+        String[] lines = m_text.split("@");
+        int y = m_height/2 + (lines.length*height)/2;
 
-        Color color = Color.black;
-        if (getColor() == HexColor.BLACK)
-            color = Color.white;
+        for (int i=lines.length-1; i>=0; --i) {
+            String str = lines[i].trim();
+            int width = fm.stringWidth(str);
 
-        m_graphics.setColor(color);
-        m_graphics.drawString(m_text, m_width/2-width/2, m_height/2+height/2);
+            Color color = Color.black;
+            if (getColor() == HexColor.BLACK)
+                color = Color.white;
+
+            m_graphics.setColor(color);
+            m_graphics.drawString(str, m_width/2-width/2, y);
+
+            y -= height;
+        }
     }
 
     private HexPoint m_point;

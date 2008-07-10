@@ -15,7 +15,7 @@ import java.awt.Dimension;
     the board and for some special cases like swap moves, resignations, and
     forfeitures. 
 */
-public final class HexPoint
+public final class HexPoint implements Comparable
 {
     /**  Exception. */
     public static class InvalidHexPointException
@@ -125,6 +125,17 @@ public final class HexPoint
     public String toString()
     {
 	return m_string;
+    }
+
+    public int compareTo(Object other)
+    {
+        if (other instanceof HexPoint) {
+            HexPoint o = (HexPoint)other;
+            if (this.x == o.x && this.y == o.y) return 0;
+            if (this.x != o.x) return this.x - o.x;
+            return this.y - o.y;
+        }
+        return -1;
     }
 
     private HexPoint(int p, String name)

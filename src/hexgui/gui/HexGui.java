@@ -29,7 +29,8 @@ import java.net.*;
 /** HexGui. */
 public final class HexGui
     extends JFrame
-    implements ActionListener, GuiBoard.Listener, HtpShell.Callback,
+    implements ActionListener, GuiBoard.Listener, 
+               HtpShell.Callback, HtpController.GuiFxCallback, 
                AnalyzeDialog.Callback, AnalyzeDialog.SelectionCallback
 {
     public HexGui()
@@ -413,7 +414,7 @@ public final class HexGui
 		    m_menubar.setShellVisible(false);
 		}
 	    });
-	m_white = new HtpController(in, out, m_shell);
+	m_white = new HtpController(in, out, m_shell, this);
 
 	htpName();
 	htpVersion();
@@ -1389,6 +1390,75 @@ public final class HexGui
                     callback);
     }
 
+    public void guifx(String fx)
+    {
+        System.out.println("gogui-gfx:\n'" + fx + "'");
+        String[] tk = fx.split(" ");
+        int i=0;
+
+        m_guiboard.clearMarks();
+
+        //////////////////////////////////////
+        // display variation
+        for (; i<tk.length; ++i) {
+            String s = tk[i].trim();
+            if (s.equals("VAR"))
+                break;
+        }
+        if (i == tk.length) return;
+        ++i; // skip "VAR";
+
+        Vector<HexPoint> var = new Vector<HexPoint>();
+        for (; i<tk.length; ) {
+            String s = tk[i].trim();
+            if (s.equals("INFLUENCE"))
+                break;
+
+            i++; // skip 'B' and 'W'
+            HexPoint point = HexPoint.get(tk[i++].trim());
+            var.add(point);
+        }
+        
+        m_guiboard.setAlphaColor(var.get(0), Color.green);
+        m_guiboard.setAlphaColor(var.get(1), Color.red);
+
+        /////////////////////////////////////////
+        // display score/search counts
+        
+        TreeMap<HexPoint, String> map = new TreeMap<HexPoint, String>();
+
+        ++i; // skip 'INFLUENCE'
+        for (; i<tk.length; ) {
+            String s = tk[i].trim();
+            if (s.equals("LABEL"))
+                break;
+
+            HexPoint point = HexPoint.get(tk[i++].trim());
+            map.put(point, tk[i++].trim());
+        }
+
+        ++i; // skip "LABEL";
+        for (; i<tk.length; ) {
+            String s = tk[i].trim();
+            if (s.equals("TEXT"))
+                break;
+
+            HexPoint point = HexPoint.get(tk[i++].trim());
+            
+            String old = map.get(point);
+            if (old == null) old = "";
+            map.put(point, old+"@"+tk[i++].trim());
+        }
+        
+	Iterator<Map.Entry<HexPoint,String> > it = map.entrySet().iterator();
+	while(it.hasNext()) {
+	    Map.Entry<HexPoint,String> e = it.next();
+            m_guiboard.setText(e.getKey(), e.getValue());
+	}
+
+        m_guiboard.repaint();
+    }
+    
     //------------------------------------------------------------
 
     /** Callback from GuiBoard.
