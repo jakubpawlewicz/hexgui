@@ -1359,7 +1359,15 @@ public final class HexGui
     public void guifx(String fx)
     {
         System.out.println("gogui-gfx:\n'" + fx + "'");
-        String[] tk = fx.split(" ");
+        
+        if (fx.length() > 3 && fx.substring(0, 3).equals("uct"))
+            guifx_uct(fx.substring(3));
+
+    }
+
+    private void guifx_uct(String fx)
+    {
+        String[] tk = fx.trim().split(" ");
         int i=0;
 
         m_guiboard.clearMarks();
