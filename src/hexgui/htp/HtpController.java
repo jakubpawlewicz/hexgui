@@ -105,12 +105,12 @@ public class HtpController
                 m_response = response;
                 m_waiting = false;
                 throw new HtpError("Response length too short! '"+response+"'");
-            } else if (response.length() > 11 && 
-                       response.substring(0, 11).equals("gogui-gfx:\n")) 
+            } else if (response.length() > 10 && 
+                       response.substring(0, 10).equals("gogui-gfx:")) 
             {
 
                 String fx 
-                    = StringUtils.cleanWhiteSpace(response.substring(11).trim());
+                    = StringUtils.cleanWhiteSpace(response.substring(10).trim());
                 
                 m_guifx.guifx(fx);
                 

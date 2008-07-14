@@ -824,8 +824,6 @@ public final class HexGui
 	else if (c.equals("eval-influence"))
             cb = new Runnable() { public void run() { cbDisplayPointText(); } };
 
-        else if (c.equals("mohex-show-rollout"))
-            cb = new Runnable() { public void run() { cbMohexShowRollout(); } };
         else if (c.equals("quit"))
             cb = new Runnable() { public void run() { cbEmptyResponse(); } };
 
@@ -1017,6 +1015,8 @@ public final class HexGui
     {
         if (!m_white.wasSuccess())
             return;
+
+        m_guiboard.clearMarks();
 
 	String str = m_white.getResponse();
 	HexPoint point = HexPoint.get(str.trim());
@@ -1353,53 +1353,8 @@ public final class HexGui
     }
 
     //==================================================
-    // commands specific to mohex
+    // gfx commands
     //==================================================
-
-    public void cbMohexShowRollout()
-    {
-	if (!m_white.wasSuccess())
-	    return;
-
-	String str = m_white.getResponse();
-        Vector<Pair<String, String> > pairs =
-            StringUtils.parseStringPairList(str);
-
-        m_guiboard.clearMarks();
-        m_guiboard.aboutToDirtyStones();
-
-        HexPoint p = HexPoint.get(pairs.get(0).first);
-        HexColor color = HexColor.get(pairs.get(0).second);
-        m_guiboard.setColor(p, color);
-        m_guiboard.setAlphaColor(p, Color.blue);
-
-        for (int i=1; i<pairs.size(); i++)
-        {
-	    HexPoint point = HexPoint.get(pairs.get(i).first);
-            String value = pairs.get(i).second;
-            if (value.equals("#"))
-                m_guiboard.setAlphaColor(point, Color.green);
-            else
-                m_guiboard.setAlphaColor(point, Color.red);
-
-            m_guiboard.setText(point, Integer.toString(i));
-            color = color.otherColor();
-            m_guiboard.setColor(point, color);
-	}
-	m_guiboard.repaint();
-    }
-
-    private void htpMohexShowRollout(HexPoint point, HexColor color)
-    {
-	Runnable callback = new Runnable()
-	    {
-		public void run() { cbMohexShowRollout(); }
-	    };
-
-	sendCommand("mohex-show-rollout " + point.toString() + " "
-                    + color.toString() + "\n",
-                    callback);
-    }
 
     public void guifx(String fx)
     {
@@ -1408,6 +1363,7 @@ public final class HexGui
         int i=0;
 
         m_guiboard.clearMarks();
+        m_guiboard.aboutToDirtyStones();
 
         //////////////////////////////////////
         // display variation
@@ -1420,17 +1376,22 @@ public final class HexGui
         ++i; // skip "VAR";
 
         Vector<HexPoint> var = new Vector<HexPoint>();
+        Vector<HexColor> col = new Vector<HexColor>();
         for (; i<tk.length; ) {
             String s = tk[i].trim();
             if (s.equals("INFLUENCE"))
                 break;
+            ++i; // skip 'B' and 'W'
 
-            i++; // skip 'B' and 'W'
+            col.add((s.charAt(0) == 'B') ? HexColor.BLACK : HexColor.WHITE);
+
             HexPoint point = HexPoint.get(tk[i++].trim());
             var.add(point);
         }
         
+        m_guiboard.setColor(var.get(0), col.get(0));
         m_guiboard.setAlphaColor(var.get(0), Color.green);
+        m_guiboard.setColor(var.get(1), col.get(1));
         m_guiboard.setAlphaColor(var.get(1), Color.red);
 
         /////////////////////////////////////////
