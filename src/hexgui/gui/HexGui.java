@@ -773,18 +773,18 @@ public final class HexGui
             cb = new Runnable() { public void run() { cbDisplayPointList(); } };
 
         else if (c.equals("compute-inferior"))
-            cb = new Runnable() { public void run() { cbComputeDeadCells(); } };
+            cb = new Runnable() { public void run() { cbShowInferiorCells(); } };
         else if (c.equals("compute-fillin"))
-            cb = new Runnable() { public void run() { cbComputeDeadCells(); } };
+            cb = new Runnable() { public void run() { cbShowInferiorCells(); } };
         else if (c.equals("compute-vulnerable"))
-            cb = new Runnable() { public void run() { cbComputeDeadCells(); } };
+            cb = new Runnable() { public void run() { cbShowInferiorCells(); } };
         else if (c.equals("compute-dominated"))
-            cb = new Runnable() { public void run() { cbComputeDeadCells(); } };
+            cb = new Runnable() { public void run() { cbShowInferiorCells(); } };
 
         else if (c.equals("vc-build"))
-            cb = new Runnable() { public void run() { cbComputeDeadCells(); } };
+            cb = new Runnable() { public void run() { cbShowInferiorCells(); } };
         else if (c.equals("vc-build-incremental"))
-            cb = new Runnable() { public void run() { cbComputeDeadCells(); } };
+            cb = new Runnable() { public void run() { cbShowInferiorCells(); } };
 
         else if (c.equals("solver-find-winning"))
             cb = new Runnable() { public void run() { cbDisplayPointList(); } };
@@ -809,7 +809,7 @@ public final class HexGui
             cb = new Runnable() { public void run() { cbBetweenCells(); } };
 
         else if (c.equals("vc-get-mustplay"))
-            cb = new Runnable() { public void run() { cbDisplayPointList(); } };
+            cb = new Runnable() { public void run() { cbShowInferiorCells(); } };
         else if (c.equals("vc-intersection"))
             cb = new Runnable() { public void run() { cbDisplayPointList(); } };
         else if (c.equals("vc-union"))
@@ -1054,6 +1054,7 @@ public final class HexGui
 	m_guiboard.repaint();
     }
 
+
     private void htpAllLegalMoves()
     {
 	Runnable callback = new Runnable()
@@ -1082,7 +1083,7 @@ public final class HexGui
 	m_guiboard.repaint();
     }
 
-    public void cbComputeDeadCells()
+    public void cbShowInferiorCells()
     {
 	if (!m_white.wasSuccess()) return;
 
@@ -1179,6 +1180,10 @@ public final class HexGui
             {
                 m_guiboard.setColor(point, HexColor.WHITE);
                 m_guiboard.setAlphaColor(point, Color.red);
+            }
+            else if (value.charAt(0) == 'x')  // not in consider set
+            {
+                m_guiboard.setAlphaColor(point, Color.gray);
             }
 	}
 	m_guiboard.repaint();
