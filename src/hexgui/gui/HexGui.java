@@ -18,6 +18,7 @@ import hexgui.version.Version;
 
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.ArrayBlockingQueue;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -73,6 +74,9 @@ public final class HexGui
         setVisible(true);
         
         m_locked = false;
+
+        m_htp_queue = new ArrayBlockingQueue<HtpCommand>(256);
+        new Thread(new CommandHandler(this, m_htp_queue)).start();
 
         // attach program from the last run of HexGui
         m_program = null;
@@ -853,41 +857,73 @@ public final class HexGui
         m_locked = false;
     }
 
+    /** A (command, callback) pair. */
+    private class HtpCommand
+    {
+        public HtpCommand()
+        {
+        }
+
+        public HtpCommand(String cmd, Runnable callback)
+        {
+            this.str = cmd;
+            this.callback = callback;
+        }
+
+        public String str;
+        public Runnable callback;
+    }
+
+    /** Waits for commands to be added to the queue, then processes
+        each in turn. */
     private class CommandHandler
         implements Runnable
     {
 
-        public CommandHandler(Component parent, String cmd, Runnable callback)
+        public CommandHandler(Component parent, 
+                              ArrayBlockingQueue<HtpCommand> queue)
         {
             m_parent = parent;
-            m_cmd = cmd;
-            m_callback = callback;
+            m_queue = queue;
         }
 
         public void run()
         {
-            if (commandNeedsToLockGUI(m_cmd))
-                lockGUI();
-
-            try  {
-                m_white.sendCommand(m_cmd, m_callback);
-
-                if (m_callback != null) {
-                    m_callback.run();
+            while (true) 
+            {
+                HtpCommand cmd = null;
+                try 
+                {
+                    // block until queue contains an element
+                    cmd = m_queue.take();
                 }
-            }
-            
-            catch (HtpError e) {
-                ShowError.msg(m_parent, e.getMessage());
-            }
+                catch(InterruptedException e)
+                {
+                    System.out.println("INTERUPTED! HUH?");
+                }
+                
+                if (commandNeedsToLockGUI(cmd.str))
+                    lockGUI();
 
-            if (commandNeedsToLockGUI(m_cmd))
-                unlockGUI();
+                try  {
+                    m_white.sendCommand(cmd.str, cmd.callback);
+                    
+                    if (cmd.callback != null) {
+                        cmd.callback.run();
+                    }
+                }
+                
+                catch (HtpError e) {
+                    ShowError.msg(m_parent, e.getMessage());
+                }
+                
+                if (commandNeedsToLockGUI(cmd.str))
+                    unlockGUI();
+            }
         }
 
         Component m_parent;
-        String m_cmd;
-        Runnable m_callback;
+        ArrayBlockingQueue<HtpCommand> m_queue;
     }
 
     private void sendCommand(String cmd, Runnable callback)
@@ -895,10 +931,13 @@ public final class HexGui
 	if (m_white == null)
 	    return;
 
-        CommandHandler handler = new CommandHandler(this, cmd, callback);
-        Thread handler_thread = new Thread(handler);
-        handler_thread.start();
-
+        try {
+            m_htp_queue.put(new HtpCommand(cmd, callback));
+        }
+        catch (InterruptedException e)
+        {
+            System.out.println("Interrupted while adding!");
+        }
     }
 
     // FIXME: add callback?
@@ -2009,6 +2048,7 @@ public final class HexGui
     private Program m_program;
     private Vector<Program> m_programs;
 
+    private ArrayBlockingQueue<HtpCommand> m_htp_queue;
     private HtpController m_white;
     private String m_white_name;
     private String m_white_version;
