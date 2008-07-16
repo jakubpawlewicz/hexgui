@@ -60,6 +60,23 @@ public final class StringUtils
 	return ret;
     }
 
+    public static Vector<Pair<HexColor, HexPoint> > parseVariation(String str)
+    {
+        Vector<Pair<HexColor, HexPoint> > ret 
+            =  new Vector<Pair<HexColor, HexPoint> >(); 
+
+        Vector<Pair<String, String> > pairs 
+            = StringUtils.parseStringPairList(str.trim());
+        for (int i=0; i<pairs.size(); ++i) 
+        {
+            HexColor color = (pairs.get(i).first.charAt(0) == 'B') 
+                ? HexColor.BLACK : HexColor.WHITE;
+            HexPoint point = HexPoint.get(pairs.get(i).second);
+            ret.add(new Pair<HexColor, HexPoint>(color, point));
+        }
+        return ret;
+    }
+
     public static Vector<HexPoint> parsePointList(String str)
     {
         return parsePointList(str, " ");
