@@ -1406,6 +1406,8 @@ public final class HexGui
         
         if (fx.length() > 3 && fx.substring(0, 3).equals("uct"))
             guifx_uct(fx.substring(3));
+        else if (fx.length() > 2 && fx.substring(0, 2).equals("ab"))
+            guifx_ab(fx.substring(2));
 
     }
 
@@ -1481,6 +1483,49 @@ public final class HexGui
 	}
 
         m_guiboard.repaint();
+        m_statusbar.setMessage(fx.substring(fx.indexOf("TEXT")+5));
+    }
+
+    private void guifx_ab(String fx)
+    {
+        m_guiboard.clearMarks();
+        m_guiboard.aboutToDirtyStones();
+
+        int var = fx.indexOf("VAR");
+        int label = fx.indexOf("LABEL");
+        int text = fx.indexOf("TEXT");
+        guifxDisplayVariation(fx.substring(var+3, label));
+
+        String label_str = fx.substring(label+5, text).trim();
+        Vector<Pair<String, String> > labels =
+            StringUtils.parseStringPairList(label_str);
+
+        for (int i=0; i<labels.size(); ++i) {
+            HexPoint pt = HexPoint.get(labels.get(i).first);
+            m_guiboard.setText(pt, labels.get(i).second);
+        }
+    
+        m_guiboard.repaint();
+        m_statusbar.setMessage(fx.substring(text+5));
+    }
+
+    private void guifxDisplayVariation(String var)
+    {
+        Vector<Pair<String, String> > pairs =
+            StringUtils.parseStringPairList(var.trim());
+        Vector<HexPoint> pt = new Vector<HexPoint>();
+        Vector<HexColor> cl = new Vector<HexColor>();
+        for (int i=0; i<pairs.size(); ++i) 
+        {
+            cl.add((pairs.get(i).first.charAt(0) == 'B') 
+                   ? HexColor.BLACK : HexColor.WHITE);
+            pt.add(HexPoint.get(pairs.get(i).second));
+            
+        }
+        m_guiboard.setColor(pt.get(0), cl.get(0));
+        m_guiboard.setAlphaColor(pt.get(0), Color.green);
+        m_guiboard.setColor(pt.get(1), cl.get(1));
+        m_guiboard.setAlphaColor(pt.get(1), Color.red);
     }
     
     //------------------------------------------------------------
