@@ -19,6 +19,7 @@ import hexgui.version.Version;
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.Semaphore;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -75,6 +76,7 @@ public final class HexGui
         
         m_locked = false;
 
+        m_semaphore = new Semaphore(1);
         m_htp_queue = new ArrayBlockingQueue<HtpCommand>(256);
         new Thread(new CommandHandler(this, m_htp_queue)).start();
 
@@ -420,15 +422,24 @@ public final class HexGui
 	    });
 	m_white = new HtpController(in, out, m_shell, this);
 
+        // get name and version information; block until
+        // version is returned.  
+
+        acquireSemaphore();
 	htpName();
-	htpVersion();
+	htpVersion();  // releases semaphore when finished. 
+        acquireSemaphore();
+        releaseSemaphore();
 
 	m_shell.setTitle("HexGui: [" + m_white_name + " "
                             + m_white_version + "] Shell");
 
-        htpListCommands();   // FIXME: make sure we block until its
-                             // callback is finished (when we do stuff
-                             // in separate threads. Not an issue now.
+        // get list of accepted commands; block until
+        // this is completed.
+        acquireSemaphore();
+        htpListCommands();   // releases semaphore when finished
+        acquireSemaphore();
+        releaseSemaphore();
 
 	m_toolbar.setProgramConnected(true);
 	m_menubar.setProgramConnected(true);
@@ -967,6 +978,7 @@ public final class HexGui
     {
 	String str = m_white.getResponse();
 	m_white_version = str.trim();
+        releaseSemaphore();
     }
 
     private void htpVersion()
@@ -990,7 +1002,7 @@ public final class HexGui
 	Vector<String> cmds = StringUtils.parseStringList(str);
         Collections.sort(cmds);
         m_analyze.setCommands(cmds);
-
+        releaseSemaphore();
     }
 
     private void htpListCommands()
@@ -1324,6 +1336,9 @@ public final class HexGui
         m_guiboard.clearMarks();
         m_guiboard.aboutToDirtyStones();
 
+        /** @todo Fix this to parse like guifx_ab() and
+            guifx_solver(). */
+
         //////////////////////////////////////
         // display variation
         for (; i<tk.length; ++i) {
@@ -1452,10 +1467,6 @@ public final class HexGui
         for (int i=0; i<levels.length; ++i)
         {
             String[] nums = levels[i].trim().split("/");
-            // System.out.println(levels[i]);
-//             System.out.println(nums[0]);
-//             System.out.println(nums[1]);
-            
             int cur = Integer.decode(nums[0]).intValue();
             int max = Integer.decode(nums[1]).intValue();
             progress += contribution*cur/max;
@@ -2110,6 +2121,23 @@ public final class HexGui
 	return null;
     }
 
+    //------------------------------------------------------------
+    
+    private void acquireSemaphore()
+    {
+        try {
+            m_semaphore.acquire();
+        }
+        catch(InterruptedException e) {
+            System.out.println("Acquire interrupted!");
+        }
+    }
+
+    private void releaseSemaphore()
+    {
+        m_semaphore.release();
+    }
+
     private AboutDialog m_about;
     private GuiPreferences m_preferences;
     private GuiBoard m_guiboard;
@@ -2134,6 +2162,7 @@ public final class HexGui
     private Vector<Program> m_programs;
 
     private ArrayBlockingQueue<HtpCommand> m_htp_queue;
+    private Semaphore m_semaphore;
     private HtpController m_white;
     private String m_white_name;
     private String m_white_version;
