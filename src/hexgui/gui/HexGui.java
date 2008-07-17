@@ -1405,8 +1405,10 @@ public final class HexGui
 
         m_guiboard.setColor(vr.get(0).second, vr.get(0).first);
         m_guiboard.setAlphaColor(vr.get(0).second, Color.green);
-        m_guiboard.setColor(vr.get(1).second, vr.get(1).first);
-        m_guiboard.setAlphaColor(vr.get(1).second, Color.red);
+        if (vr.size() >= 2) {
+            m_guiboard.setColor(vr.get(1).second, vr.get(1).first);
+            m_guiboard.setAlphaColor(vr.get(1).second, Color.red);
+        }
 
         String label_str = fx.substring(label+5, text).trim();
         Vector<Pair<String, String> > labels =
@@ -1425,6 +1427,7 @@ public final class HexGui
     {
         m_guiboard.clearMarks();
         m_guiboard.aboutToDirtyStones();
+        m_statusbar.setProgressVisible(true);
 
         int var = fx.indexOf("VAR");
         int label = fx.indexOf("LABEL");
@@ -1441,12 +1444,27 @@ public final class HexGui
         String label_str = fx.substring(label+5, text).trim();
         showInferiorCells(label_str);
     
+        String prog_str = fx.substring(text+4).trim();
+        String[] levels = prog_str.split(" ");
+
+        double contribution = 1.0;
+        double progress = 0.0;
+        for (int i=0; i<levels.length; ++i)
+        {
+            String[] nums = levels[i].trim().split("/");
+            // System.out.println(levels[i]);
+//             System.out.println(nums[0]);
+//             System.out.println(nums[1]);
+            
+            int cur = Integer.decode(nums[0]).intValue();
+            int max = Integer.decode(nums[1]).intValue();
+            progress += contribution*cur/max;
+            contribution *= 1.0/max;
+        }
+        
         m_guiboard.repaint();
         m_statusbar.setMessage(fx.substring(text+5));
-    }
-
-    private void guifxDisplayVariation(String var)
-    {
+        m_statusbar.setProgress(progress);
     }
 
     /** Draws the inferior cells to the gui board. */
