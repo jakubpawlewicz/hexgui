@@ -83,6 +83,7 @@ public final class HexGui
         // attach program from the last run of HexGui
         m_program = null;
         m_programs = Program.load();
+        /*
         if (m_preferences.getBoolean("is-program-attached"))
         {
             String name = m_preferences.get("attached-program");
@@ -90,6 +91,7 @@ public final class HexGui
             if (prog != null)
                 cmdConnectLocalProgram(prog);
         }
+        */
     }
 
     //-------------------------------------------------------------------
@@ -1730,12 +1732,13 @@ public final class HexGui
 
         m_guiboard.clearMarks();
 	markLastPlayedStone();
-	m_guiboard.paintImmediately();
 	m_toolbar.updateButtonStates(m_current);
         m_menubar.updateMenuStates(m_current);
 
 	setGameChanged(true);
 	setFrameTitle();
+
+	m_guiboard.paintImmediately();
     }
 
     private void addSetupMove(Move move)
