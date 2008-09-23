@@ -96,7 +96,7 @@ class GuiClock
     */
     private static final long serialVersionUID = 0L; // SUID
 
-    private static final int COLUMNS = 8;
+    private static final int COLUMNS = 5;
 
     private final HexColor m_color;
 
