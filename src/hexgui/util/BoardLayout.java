@@ -27,8 +27,8 @@ public class BoardLayout
         size.height -= insets.top + insets.bottom;
 	int w = size.width;
 	int h = size.height;
-	if (h*3/2 > w) h = 2*w/3;
-	if (h*3/2 < w) w = h*3/2;
+	//if (h*3/2 > w) h = 2*w/3;
+	//if (h*3/2 < w) w = h*3/2;
 
         int x = (size.width - w) / 2;
         int y = (size.height - h) / 2;
