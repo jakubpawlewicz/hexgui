@@ -196,6 +196,10 @@ public final class HexGui
 	    htpGenMove(m_tomove);
         else if (cmd.equals("game_delete_branch"))
             cmdDeleteBranch();
+        else if (cmd.equals("game_start_clock"))
+            startClock();
+        else if (cmd.equals("game_stop_clock"))
+            stopClock();
 	else if (cmd.equals("stop"))
         {
         }
@@ -1884,6 +1888,7 @@ public final class HexGui
             playNode(child);
             m_current = child;
 	}
+        stopClock();
         refreshGuiForBoardState();
     }
 
@@ -1898,6 +1903,7 @@ public final class HexGui
             undoNode(m_current);
 	    m_current = m_current.getParent();
 	}
+        stopClock();
         refreshGuiForBoardState();
     }
 
@@ -1910,6 +1916,7 @@ public final class HexGui
             m_current = m_current.getNext();
             playNode(m_current);
 
+            stopClock();
             refreshGuiForBoardState();
 	}
     }
@@ -1923,6 +1930,7 @@ public final class HexGui
 	    m_current = m_current.getPrev();
             playNode(m_current);
 
+            stopClock();            
             refreshGuiForBoardState();
 	}
     }
@@ -2161,12 +2169,23 @@ public final class HexGui
 
     //------------------------------------------------------------
 
+    private void stopClock()
+    {
+        stopClock(HexColor.BLACK);
+        stopClock(HexColor.WHITE);
+    }
+
     private void stopClock(HexColor color)
     {
         if (color == HexColor.BLACK)
             m_blackClock.stop();
         else 
             m_whiteClock.stop();
+    }
+
+    private void startClock()
+    {
+        startClock(m_tomove);
     }
 
     private void startClock(HexColor color)

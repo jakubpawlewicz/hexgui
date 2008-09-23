@@ -230,19 +230,19 @@ public final class GuiMenuBar
 	return menu;
     }
 
-    // FIXME: implement!
     private JMenu createClockMenu()
     {
 	JMenu menu = new JMenu("Clock");
 	JMenuItem item;
 	
 	item = new JMenuItem("Start");
+        item.addActionListener(m_listener);
+        item.setActionCommand("game_start_clock");
 	menu.add(item);
 
-	item = new JMenuItem("Pause");
-	menu.add(item);
-
-	item = new JMenuItem("Resume");
+	item = new JMenuItem("Stop");
+        item.addActionListener(m_listener);
+        item.setActionCommand("game_stop_clock");
 	menu.add(item);
 
 	return menu;

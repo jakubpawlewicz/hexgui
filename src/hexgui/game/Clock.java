@@ -37,6 +37,8 @@ public class Clock
     
     public void start()
     {
+        if (m_startTime != -1) // already started
+            return;
         m_startTime = System.currentTimeMillis();
         m_timer.setInitialDelay((m_elapsed+999)/1000*1000 - m_elapsed);
         m_timer.start();
@@ -44,7 +46,7 @@ public class Clock
 
     public void stop()
     {
-        if (m_startTime == -1)
+        if (m_startTime == -1)  // already stopped
             return;
         m_timer.stop();
         m_elapsed += (int)(System.currentTimeMillis() - m_startTime);
