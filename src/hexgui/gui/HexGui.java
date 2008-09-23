@@ -9,6 +9,7 @@ import hexgui.util.Pair;
 import hexgui.util.StringUtils;
 import hexgui.game.Node;
 import hexgui.game.GameInfo;
+import hexgui.game.Clock;
 import hexgui.sgf.SgfWriter;
 import hexgui.sgf.SgfReader;
 import hexgui.htp.HtpController;
@@ -68,6 +69,16 @@ public final class HexGui
 
 	m_guiboard = new GuiBoard(this, m_preferences);
         getContentPane().add(m_guiboard, BorderLayout.CENTER);
+
+        JPanel panel = new JPanel(new BorderLayout());
+        getContentPane().add(panel, BorderLayout.EAST);
+
+        m_blackClock = new Clock();
+        m_whiteClock = new Clock();
+        m_gameinfopanel = new GameInfoPanel(m_blackClock, m_whiteClock);
+        m_comment = new Comment();
+        panel.add(m_gameinfopanel, BorderLayout.NORTH);
+        panel.add(m_comment, BorderLayout.CENTER);
 
 	cmdNewGame();
 
@@ -544,6 +555,11 @@ public final class HexGui
 	    m_current = m_root;
 	    m_gameinfo = new GameInfo();
 	    m_gameinfo.setBoardSize(dim);
+            stopClock(HexColor.BLACK);
+            stopClock(HexColor.WHITE);
+            m_blackClock.setElapsed(0);
+            m_whiteClock.setElapsed(0);
+
 	    m_file = null;
 	    setGameChanged(false);
 	    setFrameTitle();
@@ -1724,8 +1740,10 @@ public final class HexGui
 	    m_current = node;
 	}
 
+        stopClock(m_tomove);
         if (m_current.getMove().getPoint() != HexPoint.SWAP_PIECES)
             cmdToggleToMove();
+        startClock(m_tomove);
 
 	m_guiboard.setColor(m_current.getMove().getPoint(),
                             m_current.getMove().getColor());
@@ -2141,6 +2159,24 @@ public final class HexGui
         m_semaphore.release();
     }
 
+    //------------------------------------------------------------
+
+    private void stopClock(HexColor color)
+    {
+        if (color == HexColor.BLACK)
+            m_blackClock.stop();
+        else 
+            m_whiteClock.stop();
+    }
+
+    private void startClock(HexColor color)
+    {
+        if (color == HexColor.BLACK)
+            m_blackClock.start();
+        else 
+            m_whiteClock.start();
+    }
+
     private AboutDialog m_about;
     private GuiPreferences m_preferences;
     private GuiBoard m_guiboard;
@@ -2150,7 +2186,8 @@ public final class HexGui
     private HtpShell m_shell;
     private AnalyzeDialog m_analyze;
     private EvalGraphDialog m_evalgraph;
-
+    private GameInfoPanel m_gameinfopanel;
+    private Comment m_comment;
     private boolean m_locked;
     
     private Node m_root;
@@ -2158,6 +2195,8 @@ public final class HexGui
     private GameInfo m_gameinfo;
     private HexColor m_tomove;
     private boolean m_gameChanged;
+    private Clock m_blackClock;
+    private Clock m_whiteClock;
 
     private Vector<HexPoint> m_selected_cells;
 
