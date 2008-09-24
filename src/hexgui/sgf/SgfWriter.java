@@ -89,7 +89,8 @@ public final class SgfWriter
 	Iterator<Map.Entry<String,String> >  it = map.entrySet().iterator();
 	while(it.hasNext()) {
 	    Map.Entry<String,String> e = it.next();
-            print(e.getKey() + "[" + e.getValue() + "]");
+            if (!(e.getKey().equals("C") && e.getValue().equals("")))
+                print(e.getKey() + "[" + e.getValue() + "]");
 	}
 	
 	int num = node.numChildren();

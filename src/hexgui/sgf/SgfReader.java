@@ -168,7 +168,11 @@ public final class SgfReader
             if (done) 
                 break;
 
-            String val = parseValue();
+            String val;
+            if (name.equals("C"))
+                val = parseComment();
+            else
+                val = parseValue();
             //System.out.println(name + "[" + val + "]");
 	
             if (name.equals("W")) {
@@ -242,6 +246,36 @@ public final class SgfReader
 		else {
 		    if (c != '\r' && c != '\n')
 			sb.append((char)c);
+		}
+	    } else {
+		quoted = false;
+		sb.append(c);
+	    }
+	}
+
+	return sb.toString();
+    }
+
+    private String parseComment() throws SgfError, IOException
+    {
+	int ttype = m_tokenizer.nextToken();
+	if (ttype != '[')
+	    throw sgfError("Comment missing opening '['.");
+
+	StringBuilder sb = new StringBuilder(4096);
+	boolean quoted = false;
+	while (true) {
+	    int c = m_reader.read();
+	    if (c < 0)
+		throw sgfError("Comment runs to EOF.");
+
+	    if (!quoted) {
+		if (c == ']') break;
+
+		if (c == '\\') 
+		    quoted = true;
+		else {
+                    sb.append((char)c);
 		}
 	    } else {
 		quoted = false;

@@ -34,7 +34,8 @@ public final class HexGui
     extends JFrame
     implements ActionListener, GuiBoard.Listener, 
                HtpShell.Callback, HtpController.GuiFxCallback, 
-               AnalyzeDialog.Callback, AnalyzeDialog.SelectionCallback
+               AnalyzeDialog.Callback, AnalyzeDialog.SelectionCallback,
+               Comment.Listener
 {
     public HexGui()
     {
@@ -76,7 +77,7 @@ public final class HexGui
         m_blackClock = new Clock();
         m_whiteClock = new Clock();
         m_gameinfopanel = new GameInfoPanel(m_blackClock, m_whiteClock);
-        m_comment = new Comment();
+        m_comment = new Comment(this);
         panel.add(m_gameinfopanel, BorderLayout.NORTH);
         panel.add(m_comment, BorderLayout.CENTER);
 
@@ -563,6 +564,7 @@ public final class HexGui
             stopClock(HexColor.WHITE);
             m_blackClock.setElapsed(0);
             m_whiteClock.setElapsed(0);
+            setComment(m_current);
 
 	    m_file = null;
 	    setGameChanged(false);
@@ -1756,6 +1758,7 @@ public final class HexGui
         m_menubar.updateMenuStates(m_current);
         m_statusbar.setMessage(move.getColor().toString() + " " +
                                move.getPoint().toString());
+        setComment(m_current);
 
 	setGameChanged(true);
 	setFrameTitle();
@@ -1872,6 +1875,7 @@ public final class HexGui
 	m_guiboard.repaint();
 	m_toolbar.updateButtonStates(m_current);
         m_menubar.updateMenuStates(m_current);
+        setComment(m_current);
         determineColorToMove();
         htpShowboard();
     }
@@ -2194,6 +2198,17 @@ public final class HexGui
             m_blackClock.start();
         else 
             m_whiteClock.start();
+    }
+
+    private void setComment(Node node)
+    {
+        String comment = node.getComment();
+        m_comment.setText(comment);
+    }
+
+    public void commentChanged(String string)
+    {
+        m_current.setComment(string);
     }
 
     private AboutDialog m_about;
