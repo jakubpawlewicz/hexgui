@@ -1057,8 +1057,6 @@ public final class HexGui
 	sendCommand("play " + move.getColor().toString() +
 		    " " + move.getPoint().toString() + "\n",
 		    callback);
-        m_statusbar.setMessage(move.getColor().toString() + " " +
-                               move.getPoint().toString());
     }
 
     private void htpUndo()
@@ -1756,6 +1754,8 @@ public final class HexGui
 	markLastPlayedStone();
 	m_toolbar.updateButtonStates(m_current);
         m_menubar.updateMenuStates(m_current);
+        m_statusbar.setMessage(move.getColor().toString() + " " +
+                               move.getPoint().toString());
 
 	setGameChanged(true);
 	setFrameTitle();
