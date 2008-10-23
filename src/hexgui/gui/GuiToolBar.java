@@ -126,6 +126,8 @@ public final class GuiToolBar
 
         m_swap.setEnabled(false);
 
+	m_play.setEnabled(false);
+
         m_tomove.setEnabled(false);
 
         enableStopButton();
@@ -134,6 +136,8 @@ public final class GuiToolBar
     public void unlockToolbar(Node node)
     {
         disableStopButton();
+
+	m_play.setEnabled(true);
 
         m_tomove.setEnabled(true);
 
