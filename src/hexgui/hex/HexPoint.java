@@ -35,9 +35,9 @@ public final class HexPoint implements Comparable
     public static final HexPoint RESIGN;
     public static final HexPoint INVALID;
 
-    public static final int MAX_WIDTH  = 16;
-    public static final int MAX_HEIGHT = 15;
-    public static final int MAX_POINTS = 256;
+    public static final int MAX_WIDTH  = 19;
+    public static final int MAX_HEIGHT = 19;
+    public static final int MAX_POINTS = MAX_WIDTH*MAX_HEIGHT + 7;
 
     private static HexPoint s_points[];
 
@@ -60,16 +60,6 @@ public final class HexPoint implements Comparable
 		s_points[7 + y*MAX_WIDTH+ x] = new HexPoint(x, y, name);
 	    }
 	}
-        
-        s_points[248] = new HexPoint(248, "--");
-        s_points[249] = new HexPoint(249, "--");
-        s_points[250] = new HexPoint(250, "--");
-        s_points[251] = new HexPoint(251, "--");
-        s_points[252] = new HexPoint(252, "--");
-        s_points[253] = new HexPoint(253, "--");
-        s_points[254] = new HexPoint(254, "--");
-
-
     }
 
     /** Returns the point with the given index.
