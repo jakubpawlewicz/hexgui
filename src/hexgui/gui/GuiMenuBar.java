@@ -454,14 +454,6 @@ public final class GuiMenuBar
 
 	menu.addSeparator();
 
-        m_evalgraph_visible = new JCheckBoxMenuItem("Show Eval Graph");
-        m_evalgraph_visible.addActionListener(m_listener);
-        m_evalgraph_visible.setActionCommand("gui_evalgraph_visible");
-        m_evalgraph_visible.setEnabled(true);
-        menu.add(m_evalgraph_visible);
-        
-	menu.addSeparator();
-
         JMenuItem item = new JMenuItem("Clear Marks");
         item.addActionListener(m_listener);
         item.setActionCommand("gui-clear-marks");

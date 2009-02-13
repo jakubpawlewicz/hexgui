@@ -162,8 +162,6 @@ public final class HexGui
 	    cmdGuiShellVisible();
 	else if (cmd.equals("gui_analyze_visible"))
             cmdGuiAnalyzeVisible();
-        else if (cmd.equals("gui_evalgraph_visible"))
-            cmdGuiEvalGraphVisible();
 	else if (cmd.equals("gui_board_draw_type"))
 	    cmdGuiBoardDrawType();
 	else if (cmd.equals("gui_board_orientation"))
@@ -693,45 +691,6 @@ public final class HexGui
 	if (m_analyze == null) return;
 	boolean visible = m_menubar.getAnalyzeVisible();
 	m_analyze.setVisible(visible);
-    }
-
-    private void cmdGuiEvalGraphVisible()
-    {
-	boolean visible = m_menubar.getEvalGraphVisible();
-        if (visible)
-        {
-            Vector<Integer> movenum = new Vector<Integer>();
-            Vector<Double> score = new Vector<Double>();
-
-            int move = 1;
-            Node node = m_root;
-            while (node != null)
-            {
-                String value = node.getSgfProperty("V");
-                if (value != null)
-                {
-                    movenum.add(new Integer(move++));
-                    score.add(new Double(value));
-                }
-                Node child = node.getChildContainingNode(m_current);
-                if (child == null)
-                    child = node.getChild();
-
-                node = child;
-            }
-            m_evalgraph = new EvalGraphDialog(this, movenum, score);
-            m_evalgraph.addWindowListener(new WindowAdapter()
-                {
-                    public void windowClosing(WindowEvent winEvt)
-                    {
-                        m_menubar.setEvalGraphVisible(false);
-                    }
-                });
-        }
-        else
-        {
-            m_evalgraph.setVisible(false);
-        }
     }
 
     private void cmdGuiBoardDrawType()
@@ -2219,7 +2178,6 @@ public final class HexGui
     private GuiMenuBar m_menubar;
     private HtpShell m_shell;
     private AnalyzeDialog m_analyze;
-    private EvalGraphDialog m_evalgraph;
     private GameInfoPanel m_gameinfopanel;
     private Comment m_comment;
     private boolean m_locked;

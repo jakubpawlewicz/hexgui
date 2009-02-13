@@ -6,7 +6,7 @@ JAVAC = javac
 JAVADOC = javadoc
 JFLAGS =
 JAR = jar
-CLASSPATH = ../lib/jfreechart/jcommon-1.0.12.jar:../lib/jfreechart/jfreechart-1.0.8a.jar:.
+CLASSPATH = .
 
 DOCDIR = ../doc/
 VERSIONDIR = hexgui/version/
