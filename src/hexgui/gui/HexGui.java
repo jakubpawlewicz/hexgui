@@ -788,7 +788,7 @@ public final class HexGui
             cb = new Runnable() { public void run() { cbDisplayPointList(); } };
         else if (c.equals("book-depths"))
             cb = new Runnable() { public void run() { cbDisplayPointText(); } };
-        else if (c.equals("book-sizes"))
+        else if (c.equals("book-counts"))
             cb = new Runnable() { public void run() { cbDisplayPointText(); } };
         else if (c.equals("book-scores"))
             cb = new Runnable() { public void run() { cbDisplayPointText(); } };
