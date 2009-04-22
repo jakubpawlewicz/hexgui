@@ -791,7 +791,7 @@ public final class HexGui
         else if (c.equals("book-counts"))
             cb = new Runnable() { public void run() { cbDisplayPointText(); } };
         else if (c.equals("book-scores"))
-            cb = new Runnable() { public void run() { cbDisplayPointText(); } };
+            cb = new Runnable() { public void run() { cbDisplayBookScores(); } };
 	else if (c.equals("book-priorities"))
             cb = new Runnable() { public void run() { cbDisplayPointText(); } };
 
@@ -1157,6 +1157,29 @@ public final class HexGui
 	    HexPoint point = HexPoint.get(pairs.get(i).first);
             String value = pairs.get(i).second;
             m_guiboard.setText(point, value);
+	}
+	m_guiboard.repaint();
+    }
+
+    public void cbDisplayBookScores()
+    {
+	if (!m_white.wasSuccess()) return;
+
+	String str = m_white.getResponse();
+        Vector<Pair<String, String> > pairs =
+            StringUtils.parseStringPairList(str);
+
+        m_guiboard.clearMarks();
+
+        for (int i=0; i<pairs.size(); i++)
+        {
+	    HexPoint point = HexPoint.get(pairs.get(i).first);
+            String value = pairs.get(i).second;
+            m_guiboard.setText(point, value);
+            if (i == 0)
+                m_guiboard.setAlphaColor(point, Color.red);
+            else if (1 <= i && i <= 3)
+                m_guiboard.setAlphaColor(point, Color.green);
 	}
 	m_guiboard.repaint();
     }
