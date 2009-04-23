@@ -200,8 +200,7 @@ public final class HexGui
         else if (cmd.equals("game_stop_clock"))
             stopClock();
 	else if (cmd.equals("stop"))
-        {
-        }
+            m_white.interrupt();
         else if (cmd.equals("toggle_tomove"))
         {
             cmdToggleToMove();

@@ -55,6 +55,14 @@ public class HtpController
 	sendCommand(cmd, null);
     }
 
+    public void interrupt()
+    {
+        System.out.println("Sending interrupt");
+        m_out.print("# interrupt\n");
+        m_out.flush();
+        m_io.sentCommand("# interrupt");
+    }
+
     /** Sends command over the htp channel. 
 
         Note this method is synchronized, and so HtpController will process only
