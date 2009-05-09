@@ -392,8 +392,28 @@ public final class HexGui
 
 	try
         {
-            //m_white_process = runtime.exec(cmd, null, working);
-            m_white_process = runtime.exec(cmd);
+            // Create command array with StringUtil::splitArguments
+            // because Runtime.exec(String) uses a default StringTokenizer
+            // which does not respect ".
+            String[] cmdArray = StringUtils.splitArguments(cmd);
+            // Make file name absolute, if working directory is not current
+            // directory. With Java 1.5, it seems that Runtime.exec succeeds
+            // if the relative path is valid from the current, but not from
+            // the given working directory, but the process is not usable
+            // (reading from its input stream immediately returns
+            // end-of-stream)
+            if (cmdArray.length > 0)
+            {
+                File file = new File(cmdArray[0]);
+                // Only replace if executable is a path to a file, not
+                // an executable in the exec-path
+                if (file.exists())
+                    cmdArray[0] = file.getAbsolutePath();
+            }
+
+            m_white_process = runtime.exec(cmdArray);
+            //m_white_process = runtime.exec(cmdArray, null, workingDirectory);
+            //m_white_process = runtime.exec(cmd);
 	}
 	catch (Throwable e)
         {

@@ -13,6 +13,7 @@ import java.io.StringReader;
 import java.io.PrintStream;
 import java.io.IOException;
 import java.util.Vector;
+import java.util.ArrayList;
 
 public final class StringUtils
 {
@@ -196,6 +197,46 @@ public final class StringUtils
         }
         return ret.toString();
     }
+
+    /** Split command line into arguments.
+        Allows " for words containing whitespaces.
+    */
+    public static String[] splitArguments(String string)
+    {
+        assert string != null;
+        ArrayList<String> result = new ArrayList<String>();
+        boolean escape = false;
+        boolean inString = false;
+        StringBuilder token = new StringBuilder();
+        for (int i = 0; i < string.length(); ++i)
+        {
+            char c = string.charAt(i);
+            if (c == '"' && ! escape)
+            {
+                if (inString)
+                {
+                    result.add(token.toString());
+                    token.setLength(0);
+                }
+                inString = ! inString;
+            }
+            else if (Character.isWhitespace(c) && ! inString)
+            {
+                if (token.length() > 0)
+                {
+                    result.add(token.toString());
+                    token.setLength(0);
+                }
+            }
+            else
+                token.append(c);
+            escape = (c == '\\' && ! escape);
+        }
+        if (token.length() > 0)
+            result.add(token.toString());
+        return result.toArray(new String[result.size()]);
+    }
+
 }
 
 //----------------------------------------------------------------------------
