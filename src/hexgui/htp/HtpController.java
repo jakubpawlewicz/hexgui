@@ -65,13 +65,14 @@ public class HtpController
 
     /** Sends command over the htp channel. 
 
-        Note this method is synchronized, and so HtpController will process only
-        a single command at a time.
+        Note this method is synchronized, and so HtpController will
+        process only a single command at a time.
     */
-    public synchronized void sendCommand(String cmd, Runnable callback) throws HtpError
+    public synchronized void sendCommand(String cmd, Runnable callback) 
+        throws HtpError
     {
 	if (!m_connected) 
-	    throw new HtpError("Hex Program Disconnected.");
+            return;
 
 	System.out.println("controller: sending '" + cmd.trim() + "'");
 	m_out.print(cmd);
@@ -103,7 +104,13 @@ public class HtpController
             
             //System.out.println("got: '" + response + "'");
             
-            if (response == null) {
+            if (!m_connected) {
+                m_success = false;
+                m_response = "";
+                m_waiting = false;
+                throw new HtpError("Program Disconnected.");
+            }
+            else if (response == null) {
                 m_success = false;
                 m_response = "";
                 m_waiting = false;
@@ -165,7 +172,7 @@ public class HtpController
 	    if (clean.equals(""))
 		break;
 	}
-	//System.out.println("controller: done waiting on response.");
+	System.out.println("controller: done waiting on response.");
 	return ret.toString();
     }
 
@@ -183,6 +190,11 @@ public class HtpController
 	    }
 	}      
 	return out.toString();
+    }
+
+    public boolean connected()
+    {
+        return m_connected;
     }
 
     private boolean m_connected;

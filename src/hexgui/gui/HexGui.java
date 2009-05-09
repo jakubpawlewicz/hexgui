@@ -339,7 +339,8 @@ public final class HexGui
 	}
 	catch (IOException e)
         {
-	    ShowError.msg(this, "Error creating socket: '" + e.getMessage() + "'");
+	    ShowError.msg(this, "Error creating socket: '" 
+                          + e.getMessage() + "'");
             System.out.println("\nconnection attempt aborted.");
 	    return;
 	}
@@ -354,7 +355,8 @@ public final class HexGui
 	}
 	catch (IOException e)
         {
-	    ShowError.msg(this, "Error obtaining socket stream: " + e.getMessage());
+	    ShowError.msg(this, "Error obtaining socket stream: " 
+                          + e.getMessage());
 	    m_white = null;
 	    return;
 	}
@@ -894,24 +896,33 @@ public final class HexGui
                 {
                     System.out.println("INTERUPTED! HUH?");
                 }
-                
-                if (commandNeedsToLockGUI(cmd.str))
-                    lockGUI();
 
-                try  {
-                    m_white.sendCommand(cmd.str, cmd.callback);
+                if (m_white != null && m_white.connected()) 
+                {
+                    if (commandNeedsToLockGUI(cmd.str))
+                        lockGUI();
                     
-                    if (cmd.callback != null) {
-                        cmd.callback.run();
+                    try  {
+                        m_white.sendCommand(cmd.str, cmd.callback);
+                        
+                        if (cmd.callback != null) {
+                            cmd.callback.run();
+                        }
                     }
+                    catch (HtpError e) {
+                        System.out.println("Caught error '" 
+                                           + e.getMessage() + "'");
+                        ShowError.msg(m_parent, e.getMessage());
+                    }
+                    
+                    if (commandNeedsToLockGUI(cmd.str))
+                        unlockGUI();
                 }
-                
-                catch (HtpError e) {
-                    ShowError.msg(m_parent, e.getMessage());
+                else
+                {
+                    System.out.println("Not sending to disconnected: '" 
+                                       + cmd.str.trim() + "'");
                 }
-                
-                if (commandNeedsToLockGUI(cmd.str))
-                    unlockGUI();
             }
         }
 
@@ -925,6 +936,7 @@ public final class HexGui
 	    return;
 
         try {
+            System.out.println("sendCommand: '" + cmd.trim() + "'");
             m_htp_queue.put(new HtpCommand(cmd, callback));
         }
         catch (InterruptedException e)
