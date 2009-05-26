@@ -1059,7 +1059,6 @@ public final class HexGui
 	    };
 
 	sendCommand("undo\n", callback);
-        m_statusbar.setMessage("Undo!");
     }
 
     private void htpBoardsize(Dimension size)
@@ -1769,8 +1768,9 @@ public final class HexGui
 	markLastPlayedStone();
 	m_toolbar.updateButtonStates(m_current);
         m_menubar.updateMenuStates(m_current);
-        m_statusbar.setMessage(move.getColor().toString() + " " +
-                               move.getPoint().toString());
+        m_statusbar.setMessage(m_current.getDepth() + " " 
+                               + move.getColor().toString() + " " 
+                               + move.getPoint().toString());
         setComment(m_current);
 
 	setGameChanged(true);
@@ -1858,8 +1858,15 @@ public final class HexGui
             htpPlay(move);
             if (move.getPoint() == HexPoint.RESIGN)
             {
-                m_statusbar.setMessage(move.getColor().toString() +
-                                       " resigned.");
+                m_statusbar.setMessage(node.getDepth() + " " 
+                                       + move.getColor().toString() 
+                                       + " resigned.");
+            }
+            else
+            {
+                m_statusbar.setMessage(node.getDepth() + " "
+                                       + move.getColor().toString() + " "
+                                       + move.getPoint().toString());
             }
         }
         else if (node.hasSetup())
@@ -1879,6 +1886,7 @@ public final class HexGui
         else if (node.hasSetup())
         {
             undoSetup(node);
+            m_statusbar.setMessage("Undo setup stones");
         }
     }
 
@@ -1889,6 +1897,13 @@ public final class HexGui
 	m_toolbar.updateButtonStates(m_current);
         m_menubar.updateMenuStates(m_current);
         setComment(m_current);
+        if (m_current.hasMove())
+        {
+            Move move = m_current.getMove();
+            m_statusbar.setMessage(m_current.getDepth() + " " 
+                                   + move.getColor().toString() + " " 
+                                   + move.getPoint().toString());
+        }
         determineColorToMove();
         htpShowboard();
     }
