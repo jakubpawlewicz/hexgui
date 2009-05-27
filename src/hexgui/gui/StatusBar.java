@@ -56,10 +56,10 @@ public class StatusBar
     {
         m_progress.setValue((int)(pct*1000000.0));
 
-        // show 2 decimal places of accuracy
+        // show 4 decimal places of accuracy
         NumberFormat nf = NumberFormat.getInstance();
         if (nf instanceof DecimalFormat) 
-            ((DecimalFormat)nf).applyPattern("##0.00");
+            ((DecimalFormat)nf).applyPattern("##0.0000");
 
         m_progress.setString(nf.format(pct*100.0)+"%");
     }
