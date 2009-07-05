@@ -1358,6 +1358,8 @@ public final class HexGui
             guifx_uct(fx.substring(3));
         else if (fx.length() > 2 && fx.substring(0, 2).equals("ab"))
             guifx_ab(fx.substring(2));
+        else if (fx.length() > 4 && fx.substring(0, 4).equals("dfpn"))
+            guifx_dfpn(fx.substring(4));
         else if (fx.length() > 6 && fx.substring(0, 6).equals("solver"))
             guifx_solver(fx.substring(6));
     }
@@ -1510,6 +1512,32 @@ public final class HexGui
         m_guiboard.repaint();
         m_statusbar.setMessage(fx.substring(text+5));
         m_statusbar.setProgress(progress);
+    }
+
+    private void guifx_dfpn(String fx)
+    {
+        m_guiboard.clearMarks();
+        m_guiboard.aboutToDirtyStones();
+
+        int var = fx.indexOf("VAR");
+        int label = fx.indexOf("LABEL");
+        int text = fx.indexOf("TEXT");
+
+        String label_str = fx.substring(label+5, text).trim();
+        Vector<Pair<String, String> > pairs =
+            StringUtils.parseStringPairList(label_str);
+
+        for (int i=0; i<pairs.size(); i++)
+        {
+	    HexPoint point = HexPoint.get(pairs.get(i).first);
+            String value = pairs.get(i).second;
+            m_guiboard.setText(point, value);
+            if (value.trim().equals("W"))
+                m_guiboard.setAlphaColor(point, Color.green);
+            else if (value.trim().equals("L"))
+                m_guiboard.setAlphaColor(point, Color.red);
+        }    
+        m_guiboard.repaint();
     }
 
     /** Draws the inferior cells to the gui board. */
