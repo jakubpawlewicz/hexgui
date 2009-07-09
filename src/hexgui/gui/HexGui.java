@@ -1523,6 +1523,15 @@ public final class HexGui
         int label = fx.indexOf("LABEL");
         int text = fx.indexOf("TEXT");
 
+        Vector<Pair<HexColor, HexPoint> > vr 
+            =  StringUtils.parseVariation(fx.substring(var+3, label));
+        for (int i=0; i<vr.size(); ++i) 
+        {
+            m_guiboard.setColor(vr.get(i).second, vr.get(i).first);
+            m_guiboard.setText(vr.get(i).second, Integer.toString(i+1));
+            m_guiboard.setAlphaColor(vr.get(i).second, Color.blue);
+        }
+
         String label_str = fx.substring(label+5, text).trim();
         Vector<Pair<String, String> > pairs =
             StringUtils.parseStringPairList(label_str);
@@ -1538,6 +1547,7 @@ public final class HexGui
                 m_guiboard.setAlphaColor(point, Color.red);
         }    
         m_guiboard.repaint();
+        m_statusbar.setMessage(fx.substring(text+5));
     }
 
     /** Draws the inferior cells to the gui board. */
