@@ -147,6 +147,8 @@ public class AnalyzeDialog
 		     name.equals("compute-fillin") ||
 		     name.equals("compute-vulnerable") ||
 		     name.equals("compute-dominated") ||
+                     name.equals("find-comb-decomp") || 
+                     name.equals("find-split-decomp") || 
                      name.equals("vc-build") ||
                      name.equals("vc-get-mustplay") ||
 		     name.equals("vc-maintain") ||

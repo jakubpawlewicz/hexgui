@@ -786,9 +786,9 @@ public final class HexGui
         else if (c.equals("get_absorb_group"))
             cb = new Runnable() { public void run() { cbGetAbsorbGroup(); } };
 
-	else if (c.equals("shortest-paths"))
+	else if (c.equals("find-comb-decomp"))
             cb = new Runnable() { public void run() { cbDisplayPointList(); } };
-	else if (c.equals("shortest-vc-paths"))
+	else if (c.equals("find-split-decomp"))
             cb = new Runnable() { public void run() { cbDisplayPointList(); } };
 
         else if (c.equals("compute-inferior"))
