@@ -159,7 +159,6 @@ public class AnalyzeDialog
                      name.equals("shortest-paths") ||
                      name.equals("shortest-vc-paths") ||
                      name.equals("solve-state") ||
-                     name.equals("solve-state-dfpn") ||
                      name.equals("solver-find-winning"))
             {
                 HexColor color = getSelectedColor();

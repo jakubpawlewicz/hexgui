@@ -855,7 +855,7 @@ public final class HexGui
     {
         if ((cmd.length() > 7 && cmd.substring(0, 7).equals("genmove")) ||
             (cmd.length() > 11 && cmd.substring(0, 11).equals("solve-state")) ||
-            (cmd.length() > 16 && cmd.substring(0, 16).equals("solve-state-dfpn")) ||
+            (cmd.length() > 16 && cmd.substring(0, 16).equals("dfpn-solve-state")) ||
             (cmd.length() > 19 && cmd.substring(0, 19).equals("solver-find-winning")))
             return true;
         return false;
