@@ -807,6 +807,8 @@ public final class HexGui
 
         else if (c.equals("solver-find-winning"))
             cb = new Runnable() { public void run() { cbDisplayPointList(); } };
+        else if (c.equals("dfpn-solver-find-winning"))
+            cb = new Runnable() { public void run() { cbDisplayPointList(); } };
         else if (c.equals("book-depths"))
             cb = new Runnable() { public void run() { cbDisplayPointText(); } };
         else if (c.equals("book-counts"))
@@ -856,7 +858,8 @@ public final class HexGui
         if ((cmd.length() > 7 && cmd.substring(0, 7).equals("genmove")) ||
             (cmd.length() > 11 && cmd.substring(0, 11).equals("solve-state")) ||
             (cmd.length() > 16 && cmd.substring(0, 16).equals("dfpn-solve-state")) ||
-            (cmd.length() > 19 && cmd.substring(0, 19).equals("solver-find-winning")))
+            (cmd.length() > 19 && cmd.substring(0, 19).equals("solver-find-winning")) ||
+            (cmd.length() > 24 && cmd.substring(0, 24).equals("dfpn-solver-find-winning")))
             return true;
         return false;
     }
