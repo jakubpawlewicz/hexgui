@@ -192,6 +192,9 @@ public final class SgfReader
             else if (name.equals("AE")) {
                 node.addSetup(HexColor.EMPTY, HexPoint.get(val));
             }
+            else if (name.equals("LB")) {
+                node.addLabel(val);
+            }
             else if (name.equals("FF")) {
                 node.setSgfProperty(name, val);
                 x = parseInt(val);

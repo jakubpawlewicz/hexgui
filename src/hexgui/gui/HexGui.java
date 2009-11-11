@@ -1819,6 +1819,11 @@ public final class HexGui
 	setFrameTitle();
 
 	m_guiboard.paintImmediately();
+        if (m_current.hasLabel())
+        {
+            displayLabels(m_current);
+            m_guiboard.paintImmediately();
+        }
     }
 
     private void addSetupMove(Move move)
@@ -1854,6 +1859,18 @@ public final class HexGui
     }
 
     //----------------------------------------------------------------------
+
+    private void displayLabels(Node node)
+    {
+        Vector<String> labels = node.getLabels();
+        for (int i = 0; i < labels.size(); ++i)
+        {
+            String lb = labels.get(i);
+            String[] strs = lb.split(":");
+            HexPoint p = HexPoint.get(strs[0].trim());
+            m_guiboard.setText(p, strs[1].trim());
+        }
+    }
 
     private void playSetup(Node node)
     {
@@ -1946,6 +1963,8 @@ public final class HexGui
                                    + move.getColor().toString() + " " 
                                    + move.getPoint().toString());
         }
+        if (m_current.hasLabel())
+            displayLabels(m_current);
         determineColorToMove();
         htpShowboard();
     }

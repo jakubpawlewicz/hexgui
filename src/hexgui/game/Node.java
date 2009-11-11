@@ -34,6 +34,7 @@ public class Node
         m_setup_black = new Vector<HexPoint>();
         m_setup_white = new Vector<HexPoint>();
         m_setup_empty = new Vector<HexPoint>();
+        m_label = new Vector<String>();
 	setMove(move);
     }
 
@@ -254,6 +255,21 @@ public class Node
                 !m_setup_empty.isEmpty());
     }
     
+    public boolean hasLabel()
+    {
+        return !m_label.isEmpty();
+    }
+
+    public Vector<String> getLabels()
+    {
+        return m_label;
+    }
+    
+    public void addLabel(String str)
+    {
+        m_label.add(str);
+    }
+    
     /** Sets the PL proprety to the given color. */
     public void setPlayerToMove(HexColor color)
     {
@@ -278,6 +294,8 @@ public class Node
     private Vector<HexPoint> m_setup_black;
     private Vector<HexPoint> m_setup_white;
     private Vector<HexPoint> m_setup_empty;
+
+    private Vector<String> m_label;
 
     private Move m_move;
     private Node m_parent, m_prev, m_next, m_child;
