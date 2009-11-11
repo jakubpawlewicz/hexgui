@@ -38,6 +38,7 @@ public class Comment
     public void setText(String text)
     {
         m_textPane.setText(text);
+        m_textPane.getCaret().setDot(0);
     }
 
     public void changedUpdate(DocumentEvent e)
