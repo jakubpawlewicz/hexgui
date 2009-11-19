@@ -146,6 +146,7 @@ public class AnalyzeDialog
             else if (name.equals("compute-inferior") ||
 		     name.equals("compute-fillin") ||
 		     name.equals("compute-vulnerable") ||
+		     name.equals("compute-reversible") ||
 		     name.equals("compute-dominated") ||
                      name.equals("find-comb-decomp") || 
                      name.equals("find-split-decomp") || 
