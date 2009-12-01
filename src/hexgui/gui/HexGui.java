@@ -1566,106 +1566,49 @@ public final class HexGui
         {
 	    HexPoint point = HexPoint.get(pairs.get(i).first);
             String value = pairs.get(i).second;
-            if (value.charAt(0) == 'd')        // dead
-            {
-                m_guiboard.setAlphaColor(point, Color.cyan);
-                if (value.length() >= 2)
-                {
-                    if (value.charAt(1) == 'b')
-                        m_guiboard.setColor(point, HexColor.BLACK);
-                    else
-                        m_guiboard.setColor(point, HexColor.WHITE);
-                }
-            }
-            else if (value.charAt(0) == 'p' && // black perm.inf
-                     value.charAt(1) == 'b')
-            {
-                m_guiboard.setAlphaColor(point, Color.gray);
-                m_guiboard.setColor(point, HexColor.BLACK);
 
-                if (value.charAt(2) == '[' &&
-                    value.charAt(value.length()-1) == ']')
+            if (value.charAt(0) == 'f')        // fill-in
+            {
+                assert(3 == value.length());
+                if (value.charAt(1) == 'd')          // dead
+                    m_guiboard.setAlphaColor(point, Color.cyan);
+                else if (value.charAt(1) == 'p')     // permanently inferior
+                    m_guiboard.setAlphaColor(point, Color.gray);
+                else                                 // captured
                 {
-                    String pts = value.substring(3, value.length()-1);
-                    Vector<HexPoint> pp = StringUtils.parsePointList(pts,"-");
-                    for (int j=0; j<pp.size(); ++j)
-                    {
-                        m_guiboard.addArrow(point, pp.get(j));
-                    }
+                    assert(value.charAt(1) == 'c');
+                    m_guiboard.setAlphaColor(point, Color.red);
+                }
+                if (value.charAt(2) == 'b')
+                    m_guiboard.setColor(point, HexColor.BLACK);
+                else
+                {
+                    assert(value.charAt(2) == 'w');
+                    m_guiboard.setColor(point, HexColor.WHITE);
                 }
             }
-            else if (value.charAt(0) == 'p' && // white perm.inf
-                     value.charAt(1) == 'w')
+            else if (value.charAt(0) == 'i')   // ignorable
             {
-                m_guiboard.setAlphaColor(point, Color.gray);
-                m_guiboard.setColor(point, HexColor.WHITE);
-
-                if (value.charAt(2) == '[' &&
-                    value.charAt(value.length()-1) == ']')
+                assert(4 <= value.length());
+                if (value.charAt(1) == 'v')          // vulnerable
+                    m_guiboard.setAlphaColor(point, Color.green);
+                else if (value.charAt(1) == 'r')     // reversible
+                    m_guiboard.setAlphaColor(point, Color.magenta);
+                else                                 // dominated
                 {
-                    String pts = value.substring(3, value.length()-1);
-                    Vector<HexPoint> pp = StringUtils.parsePointList(pts,"-");
-                    for (int j=0; j<pp.size(); ++j)
-                    {
-                        m_guiboard.addArrow(point, pp.get(j));
-                    }
+                    assert(value.charAt(1) == 'd');
+                    m_guiboard.setAlphaColor(point, Color.yellow);
                 }
+                assert(value.charAt(2) == '[' &&
+                       value.charAt(value.length()-1) == ']');
+                String pts = value.substring(3, value.length()-1);
+                Vector<HexPoint> pp = StringUtils.parsePointList(pts,"-");
+                for (int j=0; j<pp.size(); ++j)
+                    m_guiboard.addArrow(point, pp.get(j));
             }
-
-            else if (value.charAt(0) == '#')  // vulnerable
+            else                               // not in consider set
             {
-                m_guiboard.setAlphaColor(point, Color.green);
-                if (value.charAt(1) == '[' &&
-                    value.charAt(value.length()-1) == ']')
-                {
-                    String pts = value.substring(2, value.length()-1);
-                    Vector<HexPoint> pp = StringUtils.parsePointList(pts,"-");
-                    for (int j=0; j<pp.size(); ++j)
-                    {
-                        m_guiboard.addArrow(point, pp.get(j));
-                    }
-                }
-            }
-            else if (value.charAt(0) == '@')  // reversible
-            {
-                m_guiboard.setAlphaColor(point, Color.magenta);
-                if (value.charAt(1) == '[' &&
-                    value.charAt(value.length()-1) == ']')
-                {
-                    String pts = value.substring(2, value.length()-1);
-                    Vector<HexPoint> pp = StringUtils.parsePointList(pts,"-");
-                    for (int j=0; j<pp.size(); ++j)
-                    {
-                        m_guiboard.addArrow(point, pp.get(j));
-                    }
-                }
-            }
-            else if (value.charAt(0) == '!')  // dominated
-            {
-                m_guiboard.setAlphaColor(point, Color.yellow);
-                if (value.charAt(1) == '[' &&
-                    value.charAt(value.length()-1) == ']')
-                {
-                    String pts = value.substring(2, value.length()-1);
-                    Vector<HexPoint> pp = StringUtils.parsePointList(pts,"-");
-                    for (int j=0; j<pp.size(); ++j)
-                    {
-                        m_guiboard.addArrow(point, pp.get(j));
-                    }
-                }
-            }
-            else if (value.charAt(0) == 'b')  // black captured
-            {
-                m_guiboard.setColor(point, HexColor.BLACK);
-                m_guiboard.setAlphaColor(point, Color.red);
-            }
-            else if (value.charAt(0) == 'w')  // white captured
-            {
-                m_guiboard.setColor(point, HexColor.WHITE);
-                m_guiboard.setAlphaColor(point, Color.red);
-            }
-            else if (value.charAt(0) == 'x')  // not in consider set
-            {
+                assert(value.charAt(0) == 'x');
                 m_guiboard.setAlphaColor(point, Color.gray);
             }
 	}
