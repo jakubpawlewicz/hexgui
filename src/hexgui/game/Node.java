@@ -206,6 +206,16 @@ public class Node
     
     public String getComment() { return getSgfProperty("C"); }
 
+    public boolean hasCount() 
+    {
+        return (getSgfProperty("CN") != null);
+    }
+
+    public String getCount()
+    {
+        return getSgfProperty("CN");
+    }            
+
     /** Adds a stone of specified color to the setup list and the sgf
         property string. */
     public void addSetup(HexColor color, HexPoint point)

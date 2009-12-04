@@ -820,6 +820,11 @@ public final class HexGui
 	else if (c.equals("book-priorities"))
             cb = new Runnable() { public void run() { cbDisplayPointText(); } };
 
+        else if (c.equals("mohex-rave-values"))
+            cb = new Runnable() { public void run() { cbDisplayPointText(); } };
+        else if (c.equals("mohex-bounds"))
+            cb = new Runnable() { public void run() { cbDisplayPointText(); } };
+
         else if (c.equals("db-get"))
             cb = new Runnable() { public void run() { cbDBGet(); } };
 
@@ -1924,6 +1929,8 @@ public final class HexGui
         }
         if (m_current.hasLabel())
             displayLabels(m_current);
+        if (m_current.hasCount())
+            System.out.println("Count: " + m_current.getCount());
         determineColorToMove();
         htpShowboard();
     }
