@@ -811,6 +811,10 @@ public final class HexGui
             cb = new Runnable() { public void run() { cbDisplayPointList(); } };
         else if (c.equals("dfpn-solver-find-winning"))
             cb = new Runnable() { public void run() { cbDisplayPointList(); } };
+        else if (c.equals("dfpn-get-bounds"))
+            cb = new Runnable() { public void run() { cbDisplayPointText(); } };
+        else if (c.equals("dfpn-get-work"))
+            cb = new Runnable() { public void run() { cbDisplayPointText(); } };
         else if (c.equals("book-depths"))
             cb = new Runnable() { public void run() { cbDisplayPointText(); } };
         else if (c.equals("book-counts"))
@@ -823,6 +827,8 @@ public final class HexGui
         else if (c.equals("mohex-rave-values"))
             cb = new Runnable() { public void run() { cbDisplayPointText(); } };
         else if (c.equals("mohex-bounds"))
+            cb = new Runnable() { public void run() { cbDisplayPointText(); } };
+        else if (c.equals("mohex-values"))
             cb = new Runnable() { public void run() { cbDisplayPointText(); } };
 
         else if (c.equals("db-get"))
