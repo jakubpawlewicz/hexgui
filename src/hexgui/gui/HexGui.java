@@ -807,7 +807,7 @@ public final class HexGui
         else if (c.equals("vc-build-incremental"))
             cb = new Runnable() { public void run() { cbShowInferiorCells(); } };
 
-        else if (c.equals("solver-find-winning"))
+        else if (c.equals("dfs-solver-find-winning"))
             cb = new Runnable() { public void run() { cbDisplayPointList(); } };
         else if (c.equals("dfpn-solver-find-winning"))
             cb = new Runnable() { public void run() { cbDisplayPointList(); } };
@@ -869,9 +869,9 @@ public final class HexGui
     private boolean commandNeedsToLockGUI(String cmd)
     {
         if ((cmd.length() > 7 && cmd.substring(0, 7).equals("genmove")) ||
-            (cmd.length() > 11 && cmd.substring(0, 11).equals("solve-state")) ||
+            (cmd.length() > 15 && cmd.substring(0, 15).equals("dfs-solve-state")) ||
             (cmd.length() > 16 && cmd.substring(0, 16).equals("dfpn-solve-state")) ||
-            (cmd.length() > 19 && cmd.substring(0, 19).equals("solver-find-winning")) ||
+            (cmd.length() > 23 && cmd.substring(0, 23).equals("dfs-solver-find-winning")) ||
             (cmd.length() > 24 && cmd.substring(0, 24).equals("dfpn-solver-find-winning")))
             return true;
         return false;

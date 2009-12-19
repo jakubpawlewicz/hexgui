@@ -148,6 +148,12 @@ public class AnalyzeDialog
 		     name.equals("compute-vulnerable") ||
 		     name.equals("compute-reversible") ||
 		     name.equals("compute-dominated") ||
+                     name.equals("dfpn-get-bounds") ||
+                     name.equals("dfpn-get-work") ||
+                     name.equals("dfpn-solve-state") ||
+                     name.equals("dfpn-solver-find-winning") ||
+                     name.equals("dfs-solve-state") ||
+                     name.equals("dfs-solver-find-winning") ||
                      name.equals("find-comb-decomp") || 
                      name.equals("find-split-decomp") || 
                      name.equals("vc-build") ||
@@ -158,9 +164,7 @@ public class AnalyzeDialog
                      name.equals("eval-resist-delta") ||
                      name.equals("eval-twod") ||
                      name.equals("shortest-paths") ||
-                     name.equals("shortest-vc-paths") ||
-                     name.equals("solve-state") ||
-                     name.equals("solver-find-winning"))
+                     name.equals("shortest-vc-paths"))
             {
                 HexColor color = getSelectedColor();
                 cmd.append(" " + color.toString());
