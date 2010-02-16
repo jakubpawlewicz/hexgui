@@ -35,16 +35,22 @@ public class AnalyzeDialog
         Vector<HexPoint> getSelectedCells();
     }
 
+    public interface ColorToMoveCallback
+    {
+        HexColor getColorToMove();
+    }
 
     public AnalyzeDialog(JFrame owner,
                          Callback callback,
                          SelectionCallback selection,
+                         ColorToMoveCallback colorToMove,
                          StatusBar statusbar)
     {
 	super(owner, "HexGui: Analyze");
 
         m_callback = callback;
         m_selection = selection;
+        m_colorToMove = colorToMove;
         m_statusbar = statusbar;
 
         JPanel panel = new JPanel();
@@ -64,13 +70,10 @@ public class AnalyzeDialog
         m_run.addActionListener(this);
         m_run.setActionCommand("run");
 
-        m_color = new JComboBox(m_colors);
-        m_color.setEditable(false);
         m_type = new JComboBox(m_types);
         m_type.setEditable(false);
 
         runpanel.add(m_run);
-        runpanel.add(m_color);
         runpanel.add(m_type);
 
         panel.add(m_scrollpane);
@@ -218,9 +221,7 @@ public class AnalyzeDialog
 
     private HexColor getSelectedColor()
     {
-        if (m_colors[m_color.getSelectedIndex()].equals("white"))
-            return HexColor.WHITE;
-        return HexColor.BLACK;
+        return m_colorToMove.getColorToMove();
     }
 
     private int getSelectedType()
@@ -230,6 +231,7 @@ public class AnalyzeDialog
 
     Callback m_callback;
     SelectionCallback m_selection;
+    ColorToMoveCallback m_colorToMove;
     StatusBar m_statusbar;
 
     JList m_list;

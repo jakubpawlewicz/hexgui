@@ -35,7 +35,7 @@ public final class HexGui
     implements ActionListener, GuiBoard.Listener, 
                HtpShell.Callback, HtpController.GuiFxCallback, 
                AnalyzeDialog.Callback, AnalyzeDialog.SelectionCallback,
-               Comment.Listener
+               AnalyzeDialog.ColorToMoveCallback, Comment.Listener
 {
     public HexGui()
     {
@@ -440,7 +440,7 @@ public final class HexGui
 
     private void connectProgram(InputStream in, OutputStream out)
     {
-        m_analyze = new AnalyzeDialog(this, this, this, m_statusbar);
+        m_analyze = new AnalyzeDialog(this, this, this, this, m_statusbar);
 	m_analyze.addWindowListener(new WindowAdapter()
 	    {
 		public void windowClosing(WindowEvent winEvt)
@@ -1709,6 +1709,11 @@ public final class HexGui
     public Vector<HexPoint> getSelectedCells()
     {
         return m_selected_cells;
+    }
+
+    public HexColor getColorToMove()
+    {
+        return m_tomove;
     }
 
     public void humanMove(Move move)
