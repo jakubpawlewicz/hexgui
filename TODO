@@ -1,40 +1,8 @@
 HexGui TODO
 
-[07/02/28]
-
-* keep S on swap move
+[10/02/26]
 
 * implement more Preferences
-  * colors
-  * gui placement
-
-* handle 'forfeit' and 'resign' moves
-
 * allow computer to play white or black
   * self play
-
-* analyze dialog
-  * clean it up
-
-* program shell
-  * close it properly when program is disconnected/dies/etc
-  * store location/size as preferences
-
-* put remote program in its own thread (a total bitch, probably)
-
-* implement htp interrupts
-  + implement 'stop' button
-  + get info while search is on
-
-* logging, instead of printing to stdout
-
-+ game clock
-
-* support more sgf properties
-  * allow game information to be edited
-
-* allow single hexes to be redrawn and use this when a move is made
-
-* better Makefile
-  * compile to a jar
-  * use Ant to build?
+* allow game information to be edited
