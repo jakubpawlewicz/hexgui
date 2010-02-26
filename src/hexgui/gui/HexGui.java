@@ -42,7 +42,7 @@ public final class HexGui
         super("HexGui");
 
 	System.out.println("HexGui v" + Version.id + "; " + Version.date
-			   + "; build " + Version.build + "\n");
+			   + "\n");
 
 	// Catch the close action and shutdown nicely
 	setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);

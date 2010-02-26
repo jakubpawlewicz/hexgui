@@ -1,5 +1,5 @@
 //----------------------------------------------------------------------------
-// $Id$
+/** */
 //----------------------------------------------------------------------------
 
 package hexgui.version;
@@ -17,8 +17,7 @@ public final class Version
     {
     }
 
-    public static String id = "1.0";
-    public static String build = "@BUILD@";
+    public static String id = "@VERSION@";
     public static String date = "@DATE@";
 }
 

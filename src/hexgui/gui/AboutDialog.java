@@ -34,9 +34,8 @@ public class AboutDialog
         
         String about = "<html><body>" 
             + "<h3>HexGui v" + Version.id +  "</h3>"
-            + "(C)opyright 2008, Broderick Arneson.<br><br>" 
-            + "build: " + Version.build + ", "
-            + Version.date + "<br>"
+            + "(C)opyright 2010, Broderick Arneson.<br><br>" 
+            + "Date: " + Version.date + "<br>"
             + "<p><b>HexGui</b> is full of Hexy Goodness!"
             + "<br><br>"
             + "</body></html>";
