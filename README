@@ -1,11 +1,11 @@
-HexGui README [06/12/21]
+HexGui README [10/02/261]
 
 To build: 
-  cd src/
-  make
+  ant
 
-To run (must be in src/):
-  make run
+To run:
+  bin/hexgui
+
 
 
 
