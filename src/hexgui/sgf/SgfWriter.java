@@ -52,7 +52,7 @@ public final class SgfWriter
 	    String value;
 
 	    node.setSgfProperty("FF", "4");
-	    node.setSgfProperty("AP", "HexGui:"+Version.id+"."+Version.build);
+	    node.setSgfProperty("AP", "HexGui:"+Version.id);
 	    node.setSgfProperty("GM", "11");
 	    
 	    Dimension dim = m_gameinfo.getBoardSize();
