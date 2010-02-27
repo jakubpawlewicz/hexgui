@@ -21,36 +21,7 @@ Comment out the exec svnversion for releases.
 
 <property environment="env"/>
 
-<property name="findbugs.home" value="${env.FINDBUGS_HOME}"/>
-
 <property name="pmd.home" value="${env.PMD_HOME}"/>
-
-<property name="docbook.name" value="docbook-xsl-1.68.1"/>
-
-<property name="looks.zipfile" value="external/jgoodies/looks-2_2_1.zip"/>
-<property name="looks.dir" value="looks-2.2.1"/>
-<property name="looks.jarfile" value="looks-2.2.1.jar"/>
-
-<property name="quaqua.nestedzipfile"
- value="external/quaqua/quaqua-5.0.nested.zip"/>
-<property name="quaqua.zipfile" value="Quaqua 5.0.zip"/>
-<property name="quaqua.dir" value="Quaqua 5.0/dist"/>
-<property name="quaqua.jarfile" value="quaqua.jar"/>
-
-<property name="docbook.path" value="external/docbook/${docbook.name}"/>
-
-<available property="docbook.available"
- file="${docbook.path}/html/chunk.xsl"/>
-
-<available property="looks.available"
- file="external/jgoodies/${looks.dir}/${looks.jarfile}"/>
-
-<available property="looks.zip-available" file="${looks.zipfile}"/>
-
-<available property="quaqua.available"
- file="external/quaqua/${quaqua.dir}/${quaqua.jarfile}"/>
-
-<available property="quaqua.zip-available" file="${quaqua.nestedzipfile}"/>
 
 <target name="all"
  description="Compile all programs (default target)"
