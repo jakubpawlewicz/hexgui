@@ -812,7 +812,7 @@ public final class HexGui
         else if (c.equals("dfpn-solver-find-winning"))
             cb = new Runnable() { public void run() { cbDisplayPointList(); } };
         else if (c.equals("dfpn-get-bounds"))
-            cb = new Runnable() { public void run() { cbDisplayPointText(); } };
+            cb = new Runnable() { public void run() { cbDfpnDisplayBounds();} };
         else if (c.equals("dfpn-get-work"))
             cb = new Runnable() { public void run() { cbDisplayPointText(); } };
         else if (c.equals("book-depths"))
@@ -1133,6 +1133,14 @@ public final class HexGui
 	m_guiboard.repaint();
     }
 
+    private void cbDfpnDisplayBounds()
+    {
+	if (!m_white.wasSuccess()) return;
+
+	String str = m_white.getResponse();
+        showDfpnBounds(str);
+	m_guiboard.repaint();
+    }
 
     private void htpAllLegalMoves()
     {
@@ -1550,9 +1558,16 @@ public final class HexGui
         }
 
         String label_str = fx.substring(label+5, text).trim();
-        Vector<Pair<String, String> > pairs =
-            StringUtils.parseStringPairList(label_str);
+        showDfpnBounds(label_str);
 
+        m_guiboard.repaint();
+        m_statusbar.setMessage(fx.substring(text+5));
+    }
+
+    private void showDfpnBounds(String str)
+    {
+        Vector<Pair<String, String> > pairs =
+            StringUtils.parseStringPairList(str);
         for (int i=0; i<pairs.size(); i++)
         {
 	    HexPoint point = HexPoint.get(pairs.get(i).first);
@@ -1563,8 +1578,6 @@ public final class HexGui
             else if (value.trim().equals("L"))
                 m_guiboard.setAlphaColor(point, Color.red);
         }    
-        m_guiboard.repaint();
-        m_statusbar.setMessage(fx.substring(text+5));
     }
 
     /** Draws the inferior cells to the gui board. */
