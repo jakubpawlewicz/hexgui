@@ -267,13 +267,19 @@ public final class GuiToolBar
         m_toolBar.addSeparator();
 
 	String pref = m_preferences.get("first-move-color");
-	m_tomove = makeButton(null,
+	m_tomove = makeButton("hexgui/images/black-24x24.png",
                               "toggle_tomove",
                               "Color of player to move",
                               pref);
         m_tomove.setText("");
-        m_black_to_play = new ImageIcon("hexgui/images/black-24x24.png", "black");
-        m_white_to_play = new ImageIcon("hexgui/images/white-24x24.png", "white");
+        {
+            URL imageURL = getURL("hexgui/images/black-24x24.png");
+            m_black_to_play = new ImageIcon(imageURL, "black");
+        }
+        {
+            URL imageURL = getURL("hexgui/images/white-24x24.png");
+            m_white_to_play = new ImageIcon(imageURL, "white");
+        }
         setToMove(pref);
 
 	m_toolBar.add(m_tomove);
