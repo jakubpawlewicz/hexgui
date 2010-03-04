@@ -14,6 +14,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.border.EtchedBorder;
 import java.awt.*;
 import java.awt.event.*;
+import java.net.URL;
 
 /** Displays info about the current game. */
 public class GameInfoPanel
@@ -26,14 +27,16 @@ public class GameInfoPanel
         
         JPanel bpanel = new JPanel();
         bpanel.setLayout(new BoxLayout(bpanel, BoxLayout.Y_AXIS));
-        JLabel blab = new JLabel(new ImageIcon("hexgui/images/black-24x24.png"));
+        URL bURL = getURL("hexgui/images/black-24x24.png");        
+        JLabel blab = new JLabel(new ImageIcon(bURL));
         blab.setAlignmentX(Component.CENTER_ALIGNMENT);
         bpanel.add(blab);
         bpanel.add(new GuiClock(HexColor.BLACK, blackClock));
 
         JPanel wpanel = new JPanel();
         wpanel.setLayout(new BoxLayout(wpanel, BoxLayout.Y_AXIS));
-        JLabel wlab = new JLabel(new ImageIcon("hexgui/images/white-24x24.png"));
+        URL wURL = getURL("hexgui/images/white-24x24.png");
+        JLabel wlab = new JLabel(new ImageIcon(wURL));
         wlab.setAlignmentX(Component.CENTER_ALIGNMENT);
         wpanel.add(wlab);
         wpanel.add(new GuiClock(HexColor.WHITE, whiteClock));
@@ -42,6 +45,16 @@ public class GameInfoPanel
         panel.add(wpanel);
 
         //setPreferredSize(new Dimension(200, 150));
+    }
+
+    private URL getURL(String filename)
+    {
+        URL url = null;
+        if (filename != null) {
+            ClassLoader classLoader = getClass().getClassLoader();
+            url = classLoader.getResource(filename);
+        }
+        return url;
     }
 
 };
