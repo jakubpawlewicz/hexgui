@@ -85,9 +85,8 @@ Comment out the exec svnversion for releases.
  src/hexgui/*/*.properties
  src/hexgui/*/*.java
  src/hexgui/*/*.java.in
- src/hexgui/gui/analyze-commands
- src/hexgui/tools/*/*.java
-" />
+ src/hexgui/*.java
+"/>
 <zipfileset prefix="hexgui-${version}" dir="." filemode="755" includes="
  bin/hexgui,
 " />
