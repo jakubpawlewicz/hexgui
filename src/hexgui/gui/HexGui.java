@@ -1425,9 +1425,9 @@ public final class HexGui
         }
         
         m_guiboard.setColor(var.get(0), col.get(0));
-        m_guiboard.setAlphaColor(var.get(0), Color.green);
+        m_guiboard.setAlphaColor(var.get(0), Color.cyan);
         m_guiboard.setColor(var.get(1), col.get(1));
-        m_guiboard.setAlphaColor(var.get(1), Color.red);
+        m_guiboard.setAlphaColor(var.get(1), Color.blue);
 
         /////////////////////////////////////////
         // display score/search counts
@@ -1441,7 +1441,12 @@ public final class HexGui
                 break;
 
             HexPoint point = HexPoint.get(tk[i++].trim());
-            map.put(point, tk[i++].trim());
+            String score = tk[i++].trim();
+            map.put(point, score);
+            if (score.equals("W"))
+                m_guiboard.setAlphaColor(point, Color.green);
+            else if (score.equals("L"))
+                m_guiboard.setAlphaColor(point, Color.red);
         }
 
         ++i; // skip "LABEL";
