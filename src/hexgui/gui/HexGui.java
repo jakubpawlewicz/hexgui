@@ -830,6 +830,8 @@ public final class HexGui
             cb = new Runnable() { public void run() { cbDisplayPointText(); } };
         else if (c.equals("mohex-values"))
             cb = new Runnable() { public void run() { cbDisplayPointText(); } };
+        else if (c.equals("mohex-book-scores"))
+            cb = new Runnable() { public void run() { cbDisplayPointText(); } };
 
         else if (c.equals("db-get"))
             cb = new Runnable() { public void run() { cbDBGet(); } };
@@ -1426,8 +1428,11 @@ public final class HexGui
         
         m_guiboard.setColor(var.get(0), col.get(0));
         m_guiboard.setAlphaColor(var.get(0), Color.cyan);
-        m_guiboard.setColor(var.get(1), col.get(1));
-        m_guiboard.setAlphaColor(var.get(1), Color.blue);
+        if (var.size() > 1)
+        {
+            m_guiboard.setColor(var.get(1), col.get(1));
+            m_guiboard.setAlphaColor(var.get(1), Color.blue);
+        }
 
         /////////////////////////////////////////
         // display score/search counts
