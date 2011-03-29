@@ -40,6 +40,7 @@ public final class HexGui
     public HexGui()
     {
         super("HexGui");
+        setIcon();
 
 	System.out.println("HexGui v" + Version.id + "; " + Version.date
 			   + "\n");
@@ -2298,6 +2299,16 @@ public final class HexGui
     public void commentChanged(String string)
     {
         m_current.setComment(string);
+    }
+
+    private void setIcon()
+    {
+        ClassLoader loader = ClassLoader.getSystemClassLoader();
+        // There are problems on some platforms with transparency (e.g. Linux
+        // Sun Java 1.5.0). Best solution for now is to take an icon without
+        // transparency
+        URL url = loader.getResource("hexgui/images/hexgui-48x48-notrans.png");
+        setIconImage(new ImageIcon(url).getImage());
     }
 
     private AboutDialog m_about;
