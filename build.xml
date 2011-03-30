@@ -22,6 +22,7 @@ Comment out the exec svnversion for releases.
 <property environment="env"/>
 
 <property name="pmd.home" value="${env.PMD_HOME}"/>
+<property name="launch4j" value="launch4jc.exe"/>
 
 <target name="all"
  description="Compile all programs (default target)"
@@ -74,10 +75,6 @@ Comment out the exec svnversion for releases.
  README
  build.xml
  lib/*.jar
- sgf/openings/9x9/README
- sgf/openings/9x9/*.sgf
- sgf/openings/19x19/README
- sgf/openings/19x19/*.sgf
  src/hexgui/images/*.png
  src/hexgui/images/*.svg
  src/hexgui/overview.html
@@ -86,9 +83,11 @@ Comment out the exec svnversion for releases.
  src/hexgui/*/*.java
  src/hexgui/*/*.java.in
  src/hexgui/*.java
+ windows/icons/hexgui.ico
+ windows/l4j/*.xml
 "/>
 <zipfileset prefix="hexgui-${version}" dir="." filemode="755" includes="
- bin/hexgui,
+ bin/hexgui
 " />
 </zip>
 </target>
@@ -97,7 +96,7 @@ Comment out the exec svnversion for releases.
 <mkdir dir="lib"/>
 <jar destfile="lib/hexgui.jar" compress="true">
 <manifest>
-<attribute name="Main-Class" value="hexgui.Main"/>
+<attribute name="Main-Class" value="hexgui.MainWrapper"/>
 <attribute name="Built-By" value="${user.name}"/>
 <attribute name="Build-Date" value="${DSTAMP} ${TSTAMP}"/>
 <attribute name="Class-Path" value=""/>
@@ -114,6 +113,16 @@ Comment out the exec svnversion for releases.
  hexgui/*.class
 "/>
 </jar>
+</target>
+
+<target name="l4j" depends="hexgui.jar"
+	description="Create Windows exe wrapper using Launch4j">
+  <!-- Use absolute paths for launch4j arguments to make it work with the
+       launch4j Unix script included in Launch4j 3.0.2, which changes the
+       working directory before running launch4j.jar -->
+  <exec executable="${launch4j}" failonerror="true">
+    <arg line="${basedir}/windows/l4j/hexgui.xml"/>
+  </exec>
 </target>
 
 <target name="run" depends="hexgui.jar" description="Run HexGui">
