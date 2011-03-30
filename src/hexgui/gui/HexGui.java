@@ -37,7 +37,7 @@ public final class HexGui
                AnalyzeDialog.Callback, AnalyzeDialog.SelectionCallback,
                AnalyzeDialog.ColorToMoveCallback, Comment.Listener
 {
-    public HexGui()
+    public HexGui(String command)
     {
         super("HexGui");
         setIcon();
@@ -95,6 +95,11 @@ public final class HexGui
 
         // attach program from the last run of HexGui
         m_program = null;
+        if (command != null)
+        {
+            cmdConnectLocalProgram(new Program("", command, ""));
+            setFrameTitle();
+        }
         m_programs = Program.load();
         /*
         if (m_preferences.getBoolean("is-program-attached"))

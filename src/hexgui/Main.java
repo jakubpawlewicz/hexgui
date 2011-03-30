@@ -5,6 +5,8 @@
 package hexgui;
 
 import hexgui.gui.HexGui;
+import hexgui.util.Options;
+import hexgui.version.Version;
 
 import javax.swing.*;          
 import java.awt.*;
@@ -54,16 +56,39 @@ public final class Main
         }
     }
 
-    private static void createAndShowGUI() {
+    private static void createAndShowGUI(String command) {
         initLookAndFeel();
         JFrame.setDefaultLookAndFeelDecorated(true);
-        HexGui app = new HexGui();
+        HexGui app = new HexGui(command);
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
+        String options[] = {
+            "program:",
+            "help",
+            "version"
+        };
+        Options opt = Options.parse(args, options);
+        if (opt.contains("help")) {
+            String helpText =
+                "Usage: hexgui [options]\n" +
+                "Graphical user interface for Hex programs\n" +
+                "using the Hex Text Protocol.\n" +
+                "\n" +
+                "-help          Display this help and exit\n" +
+                "-program       Command for Hex program to attach\n" +
+                "-version       Print version and exit\n";
+            System.out.print(helpText);
+            return;
+        }
+        if (opt.contains("version")) {
+            System.out.println("HexGui " + Version.id + " " + Version.date);
+            return;
+        }
+        final String command = opt.get("program", null);
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                createAndShowGUI();
+                createAndShowGUI(command);
             }
         });
     }
