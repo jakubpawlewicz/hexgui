@@ -86,6 +86,8 @@ public final class GuiToolBar
     public void setProgramConnected(boolean f)
     {
 	m_play.setEnabled(f);
+        m_hint.setEnabled(f);
+        m_solve.setEnabled(f);
     }
     
     public void updateButtonStates(Node node)
@@ -130,6 +132,9 @@ public final class GuiToolBar
 
         m_tomove.setEnabled(false);
 
+        m_hint.setEnabled(false);
+        m_solve.setEnabled(false);
+
         enableStopButton();
     }
 
@@ -148,6 +153,9 @@ public final class GuiToolBar
         m_load.setEnabled(true);
         m_save.setEnabled(true);
 
+        m_hint.setEnabled(true);
+        m_solve.setEnabled(true);
+       
         updateButtonStates(node);
     }
 
@@ -283,6 +291,18 @@ public final class GuiToolBar
         setToMove(pref);
 
 	m_toolBar.add(m_tomove);
+
+        m_toolBar.addSeparator();
+
+        m_hint = makeButton(null, "show_consider_set",
+                           "Show provably inferior cells", "Hint");
+        m_toolBar.add(m_hint);
+        m_hint.setEnabled(false);
+
+        m_solve = makeButton(null, "solve_state", "Solve State with DFPN",
+                             "Solve");
+        m_toolBar.add(m_solve);
+        m_solve.setEnabled(false);
     }
 
     private JButton makeButton(String imageFile, String actionCommand,
@@ -363,7 +383,8 @@ public final class GuiToolBar
 
     private JButton m_tomove;
     private ImageIcon m_black_to_play, m_white_to_play;
-    
+
+    private JButton m_solve, m_hint;
 }
 
 //----------------------------------------------------------------------------

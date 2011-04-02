@@ -215,7 +215,19 @@ public final class HexGui
         {
             cmdSetToMove();
         }
-
+        //
+        // other
+        //
+        else if (cmd.equals("show_consider_set"))
+        {
+            analyzeCommand("vc-build " + getColorToMove().toString() + "\n");
+        }
+        else if (cmd.equals("solve_state"))
+        {
+            commandEntered("param_dfpn use_guifx 1\n");
+            analyzeCommand("dfpn-solve-state " 
+                           + getColorToMove().toString() + "\n");
+        }
 	//
 	// unknown command
 	//
