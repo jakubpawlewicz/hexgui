@@ -18,6 +18,7 @@ import hexgui.htp.StreamCopy;
 import hexgui.version.Version;
 
 import java.io.*;
+import static java.text.MessageFormat.format;
 import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.Semaphore;
@@ -1135,7 +1136,8 @@ public final class HexGui
 	    {
 		public void run() { cbGenMove(); }
 	    };
-	sendCommand("genmove " + color.toString() + "\n", callback);
+        m_statusbar.setMessage(format("{0} is thinking...", m_white_name));
+ 	sendCommand("genmove " + color.toString() + "\n", callback);
 	sendCommand("showboard\n", null);
     }
 
