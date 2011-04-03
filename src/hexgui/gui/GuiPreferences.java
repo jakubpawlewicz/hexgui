@@ -30,7 +30,7 @@ public final class GuiPreferences
 
             {"analyze-show-on-connect",           "true"},
 
-            {"auto-respond",                      "false"},
+            {"auto-respond",                      "true"},
 
             {"first-move-color",                  "black"},
 
