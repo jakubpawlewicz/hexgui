@@ -1767,7 +1767,9 @@ public final class HexGui
 	play(move);
 	htpPlay(move);
         htpShowboard();
-        if (!m_guiboard.isBoardFull() && m_preferences.getBoolean("auto-respond"))
+        if (! m_guiboard.isBoardFull()
+            && m_preferences.getBoolean("auto-respond")
+            && m_program != null)
             htpGenMove(m_tomove);
     }
 
