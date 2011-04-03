@@ -309,6 +309,7 @@ public final class GuiToolBar
 			      String tooltip, String altText)
     {
 	JButton button = new JButton();
+        button.setFocusable(false);
 	button.addActionListener(m_listener);
 	button.setActionCommand(actionCommand);
 	button.setToolTipText(tooltip);
@@ -320,6 +321,7 @@ public final class GuiToolBar
                                            String tooltip, String altText)
     {
 	JToggleButton button = new JToggleButton();
+        button.setFocusable(false);
 	button.addActionListener(this);
 	button.setActionCommand(actionCommand);
 	button.setToolTipText(tooltip);
