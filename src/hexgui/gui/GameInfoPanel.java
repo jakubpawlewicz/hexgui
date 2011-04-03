@@ -73,6 +73,7 @@ class GuiClock
         //Monspace font doesn't center correctly on the Mac
         //GuiUtil.setMonospacedFont(this);
         setEditable(false);
+        setFocusable(false);
         setHorizontalAlignment(SwingConstants.CENTER);
         //setMinimumSize(getPreferredSize());
         m_color = color;
