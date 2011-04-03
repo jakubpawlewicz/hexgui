@@ -91,6 +91,7 @@ public final class GuiBoard
 	    System.out.println("GuiBoard: unknown draw type '" + name + "'.");
 	    m_drawer = new BoardDrawerDiamond();
 	} 
+        repaint();
     }
 
     /** Sets whether black on letters is on top or if white on 
@@ -107,6 +108,7 @@ public final class GuiBoard
 	    System.out.println("GuiBoard: unknown orientation '" + 
 			       orient + "'.");
 	}
+        repaint();
     }
 
     /** Creates a board of the given dimensions.
@@ -137,6 +139,7 @@ public final class GuiBoard
 	m_field[w*h+3] = new GuiField(HexPoint.EAST);
 	
 	clearAll();
+        repaint();
     }
 
     /** Creates a board with the given dimensions.
@@ -167,6 +170,7 @@ public final class GuiBoard
 	getField(HexPoint.SOUTH).setColor(HexColor.BLACK);
 	getField(HexPoint.WEST).setColor(HexColor.WHITE);
 	getField(HexPoint.EAST).setColor(HexColor.WHITE);
+        repaint();
     }
 
     /** Makes a copy of the current fields if the dirty flag is not already set,
@@ -192,11 +196,13 @@ public final class GuiBoard
     public void addArrow(HexPoint from, HexPoint to)
     {
         m_arrows.add(new Pair<HexPoint, HexPoint>(from, to));
+        repaint();
     }
 
     public void clearArrows()
     {
         m_arrows.clear();
+        repaint();
     }
 
     /** Clears dynamnic marks, leaving stones intact. If the dirty flag is set,
@@ -219,6 +225,7 @@ public final class GuiBoard
                                        GuiField.SWAP_PLAYED | 
                                        GuiField.DRAW_TEXT | 
                                        GuiField.DRAW_ALPHA);
+        repaint();
     }
 
     /** Sets the given point to the given color.
@@ -234,6 +241,7 @@ public final class GuiBoard
 
 	GuiField f = getField(point);
 	f.setColor(color);
+        repaint();
     }
 
     /** Gets the color of the specified point.
@@ -281,6 +289,7 @@ public final class GuiBoard
 	} else {
 	    m_last_played = null;
 	}
+        repaint();
     }
 
     /** Marks the given point to show which move was swapped. */
@@ -295,6 +304,7 @@ public final class GuiBoard
             m_swap_played = getField(point);
             m_swap_played.setAttributes(GuiField.SWAP_PLAYED);
         }
+        repaint();
     }
 
     /** Sets the given points's alpha color. */
@@ -306,6 +316,7 @@ public final class GuiBoard
             return;
 
 	getField(point).setAlphaColor(color);
+        repaint();
     }
 
     /** Returns the points's alpha color; null if it is 'swap-pieces'
@@ -324,12 +335,14 @@ public final class GuiBoard
     public void setText(HexPoint point, String str)
     {
         getField(point).setText(str);
+        repaint();
     }
 
     /** Sets wheither this cell is selected. */
     public void setSelected(HexPoint point, boolean selected)
     {
         getField(point).setSelected(selected);
+        repaint();
     }
 
     public boolean isBoardFull()
