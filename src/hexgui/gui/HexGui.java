@@ -500,6 +500,9 @@ public final class HexGui
 	m_toolbar.setProgramConnected(true);
 	m_menubar.setProgramConnected(true);
 
+	m_shell.setVisible(m_preferences.getBoolean("shell-show-on-connect"));
+	m_analyze.setVisible(m_preferences.getBoolean("analyze-show-on-connect"));
+
 	htpBoardsize(m_guiboard.getBoardSize());
 
         // play up to current move

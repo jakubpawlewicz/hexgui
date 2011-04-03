@@ -26,9 +26,9 @@ public final class GuiPreferences
 
 	    {"gui-toolbar-visible",               "true"},
 
-	    {"shell-show-on-connect",             "true"},
+	    {"shell-show-on-connect",             "false"},
 
-            {"analyze-show-on-connect",           "true"},
+            {"analyze-show-on-connect",           "false"},
 
             {"auto-respond",                      "true"},
 

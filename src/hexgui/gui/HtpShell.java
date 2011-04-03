@@ -49,7 +49,6 @@ public class HtpShell
 	getContentPane().add(m_field, BorderLayout.SOUTH);	
 	
 	pack();
-	setVisible(true);
     }
 
     public void appendText(String text)

@@ -84,8 +84,6 @@ public class AnalyzeDialog
 
 	Dimension size = owner.getSize();
 	setLocation(size.width, size.height);
-
-        setVisible(true);
     }
 
     public void setCommands(Vector<String> commands)
