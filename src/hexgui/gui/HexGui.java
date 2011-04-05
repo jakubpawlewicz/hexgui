@@ -776,8 +776,8 @@ public final class HexGui
         String cleaned = StringUtils.cleanWhiteSpace(cmd.trim());
         String args[] = cleaned.split(" ");
 	String c = args[0];
-        Runnable cb 
-	    = new Runnable() { public void run() { cbEmptyResponse(); } };
+        Runnable cb = new Runnable() 
+            { public void run() { cbEmptyResponse(); } };
 
         if (c.equals("genmove"))
             cb = new Runnable() { public void run() { cbGenMove(); } };
@@ -848,9 +848,6 @@ public final class HexGui
             cb = new Runnable() { public void run() { cbDisplayPointText(); } };
         else if (c.equals("eval-resist"))
             cb = new Runnable() { public void run() { cbEvalResist(); } };
-
-        else if (c.equals("quit"))
-            cb = new Runnable() { public void run() { cbEmptyResponse(); } };
 
         sendCommand(cmd, cb);
     }
@@ -993,7 +990,8 @@ public final class HexGui
 
     private void htpListCommands()
     {
-	Runnable cb = new Runnable() { public void run() { cbListCommands(); } };
+	Runnable cb = new Runnable() 
+            { public void run() { cbListCommands(); } };
 	sendCommand("list_commands\n", cb);
     }
 
@@ -1004,24 +1002,13 @@ public final class HexGui
 
     private void htpPlay(Move move)
     {
-	Runnable callback = new Runnable()
-	    {
-		public void run() { cbEmptyResponse(); }
-	    };
-
 	sendCommand("play " + move.getColor().toString() +
-		    " " + move.getPoint().toString() + "\n",
-		    callback);
+		    " " + move.getPoint().toString() + "\n", null);
     }
 
     private void htpUndo()
     {
-	Runnable callback = new Runnable()
-	    {
-		public void run() { cbEmptyResponse(); }
-	    };
-
-	sendCommand("undo\n", callback);
+	sendCommand("undo\n", null);
     }
 
     private void htpGenMove(HexColor color)
@@ -1045,7 +1032,6 @@ public final class HexGui
                     checkBoardSizeSupported();
                 }
 	    };
-
         sendCommand("boardsize " + size.width + " " + size.height + "\n",
                     callback);
         m_statusbar.setMessage("New game");
@@ -1156,33 +1142,24 @@ public final class HexGui
 	m_guiboard.repaint();
     }
 
-    //==================================================
-    // vc commands
-    //==================================================
-
     public void cbBetweenCells()
     {
-	if (!m_white.wasSuccess()) return;
-
+	if (!m_white.wasSuccess()) 
+            return;
         String str = m_white.getResponse();
         Vector<VC> vcs = StringUtils.parseVCList(str);
         new VCDisplayDialog(this, m_guiboard, vcs);
     }
 
-    //==================================================
-    // evaluation commands
-    //==================================================
-
     public void cbDisplayPointText()
     {
-	if (!m_white.wasSuccess()) return;
-
+	if (!m_white.wasSuccess()) 
+            return;
 	String str = m_white.getResponse();
         Vector<Pair<String, String> > pairs =
             StringUtils.parseStringPairList(str);
 
         m_guiboard.clearMarks();
-
         for (int i=0; i<pairs.size(); i++)
         {
 	    HexPoint point = HexPoint.get(pairs.get(i).first);
@@ -1194,14 +1171,13 @@ public final class HexGui
 
     public void cbDisplayBookScores()
     {
-	if (!m_white.wasSuccess()) return;
-
+	if (!m_white.wasSuccess()) 
+            return;
 	String str = m_white.getResponse();
         Vector<Pair<String, String> > pairs =
             StringUtils.parseStringPairList(str);
 
         m_guiboard.clearMarks();
-
         for (int i=0; i<pairs.size(); i++)
         {
 	    HexPoint point = HexPoint.get(pairs.get(i).first);
@@ -1217,12 +1193,11 @@ public final class HexGui
 
     public void cbEvalResist()
     {
-	if (!m_white.wasSuccess()) return;
-
+	if (!m_white.wasSuccess()) 
+            return;
 	String str = m_white.getResponse();
         Vector<Pair<String, String> > pairs =
             StringUtils.parseStringPairList(str);
-
         String res = "";
         String rew = "";
         String reb = "";
@@ -1244,6 +1219,7 @@ public final class HexGui
             else
             {
                 HexPoint point = HexPoint.get(pairs.get(i).first);
+
                 String value = pairs.get(i).second;
                 m_guiboard.setText(point, value);
             }
@@ -1256,7 +1232,6 @@ public final class HexGui
     //==================================================
     // gfx commands
     //==================================================
-
     public void guifx(String fx)
     {
         System.out.println("gogui-gfx:\n'" + fx + "'");
