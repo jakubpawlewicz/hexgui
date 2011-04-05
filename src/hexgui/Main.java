@@ -68,6 +68,7 @@ public final class Main
         try
         {
             String options[] = {
+                "config:",
                 "program:",
                 "help",
                 "version"
@@ -79,6 +80,7 @@ public final class Main
                     "Graphical user interface for Hex programs\n" +
                     "using the Hex Text Protocol.\n" +
                     "\n" +
+                    "-config file   Read command line arguments from file\n" +
                     "-help          Display this help and exit\n" +
                     "-program       Command for Hex program to attach\n" +
                     "-version       Print version and exit\n";
