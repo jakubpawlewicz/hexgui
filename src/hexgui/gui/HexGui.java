@@ -838,9 +838,6 @@ public final class HexGui
         else if (c.equals("mohex-book-scores"))
             cb = new Runnable() { public void run() { cbDisplayPointText(); } };
 
-        else if (c.equals("db-get"))
-            cb = new Runnable() { public void run() { cbDBGet(); } };
-
         else if (c.equals("vc-connected-to"))
             cb = new Runnable() { public void run() { cbDisplayPointList(); } };
         else if (c.equals("vc-between-cells"))
@@ -1313,73 +1310,6 @@ public final class HexGui
 	}
 	m_guiboard.repaint();
         m_statusbar.setMessage("Resistance: " + res);
-    }
-
-    //==================================================
-    // db commands
-    //==================================================
-
-    public void cbDBGet()
-    {
-        if (!m_white.wasSuccess())
-            return;
-
-        String str = m_white.getResponse();
-        String cleaned = StringUtils.cleanWhiteSpace(str.trim());
-
-	String[] pts = cleaned.split(" ");
-
-        HexColor winner = HexColor.get(pts[0].trim());
-        m_statusbar.setMessage(winner + " wins in " + pts[1]);
-
-        m_guiboard.clearMarks();
-
-        Vector<HexPoint> proofset = new Vector<HexPoint>();
-
-        int state = 0;
-	for (int i=2; i<pts.length; ++i)
-        {
-            if (pts[i].equals("Winning"))
-            {
-                state = 1;
-                continue;
-            }
-            else if (pts[i].equals("Losing"))
-            {
-                state = 2;
-                continue;
-            }
-	    HexPoint point = HexPoint.get(pts[i].trim());
-
-            if (state == 0)  // part of the proof
-            {
-                proofset.add(point);
-                if (m_guiboard.getColor(point) == HexColor.EMPTY)
-                    m_guiboard.setAlphaColor(point, Color.green);
-                else
-                    m_guiboard.setAlphaColor(point, Color.red);
-            }
-            else if (state == 1) // winning move
-            {
-                m_guiboard.setText(point, pts[++i]);
-                Color old = m_guiboard.getAlphaColor(point);
-
-                // cyan if inside proof, magenta if outside; but that
-                // probably cannot happen.
-                if (proofset.contains(point))
-                    m_guiboard.setAlphaColor(point, Color.cyan);
-                else
-                    m_guiboard.setAlphaColor(point, Color.magenta);
-
-            }
-            else if (state == 2) // losing move
-            {
-                // green if inside the proof, otherwise no color
-                m_guiboard.setText(point, pts[++i]);
-            }
-	}
-
-	m_guiboard.repaint();
     }
 
     //==================================================
