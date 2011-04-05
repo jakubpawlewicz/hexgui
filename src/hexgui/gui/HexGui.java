@@ -1106,7 +1106,10 @@ public final class HexGui
     {
 	Runnable callback = new Runnable()
 	    {
-		public void run() { cbEmptyResponse(); }
+		public void run() {
+                    m_unsupportedBoardSize = ! m_white.wasSuccess();
+                    checkBoardSizeSupported();
+                }
 	    };
 
         sendCommand("boardsize " + size.width + " " + size.height + "\n",
@@ -1135,11 +1138,13 @@ public final class HexGui
 
     private void htpGenMove(HexColor color)
     {
+        if (! checkBoardSizeSupported())
+            return;
+        m_statusbar.setMessage(format("{0} is thinking...", m_white_name));
 	Runnable callback = new Runnable()
 	    {
 		public void run() { cbGenMove(); }
 	    };
-        m_statusbar.setMessage(format("{0} is thinking...", m_white_name));
  	sendCommand("genmove " + color.toString() + "\n", callback);
 	sendCommand("showboard\n", null);
     }
@@ -2325,6 +2330,18 @@ public final class HexGui
         m_current.setComment(string);
     }
 
+    private boolean checkBoardSizeSupported()
+    {
+        if (m_unsupportedBoardSize)
+        {
+            ShowError.msg(HexGui.this,
+                          format("{0} does not support this board size.",
+                                 m_white_name));
+            return false;
+        }
+        return true;
+    }
+
     private void setIcon()
     {
         ClassLoader loader = ClassLoader.getSystemClassLoader();
@@ -2346,7 +2363,7 @@ public final class HexGui
     private GameInfoPanel m_gameinfopanel;
     private Comment m_comment;
     private boolean m_locked;
-    
+    private boolean m_unsupportedBoardSize;
     private Node m_root;
     private Node m_current;
     private GameInfo m_gameinfo;
