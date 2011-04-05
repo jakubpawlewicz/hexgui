@@ -776,8 +776,8 @@ public final class HexGui
         String cleaned = StringUtils.cleanWhiteSpace(cmd.trim());
         String args[] = cleaned.split(" ");
 	String c = args[0];
-
-        Runnable cb = new Runnable() { public void run() { cbEmptyResponse(); } };
+        Runnable cb 
+	    = new Runnable() { public void run() { cbEmptyResponse(); } };
 
         if (c.equals("genmove"))
             cb = new Runnable() { public void run() { cbGenMove(); } };
@@ -979,25 +979,10 @@ public final class HexGui
 	sendCommand("quit\n", null);
     }
 
-    // FIXME: handle errors!
-    public void cbName()
-    {
-	String str = m_white.getResponse();
-	m_white_name = str.trim();
-    }
-
     private void htpName()
     {
 	Runnable cb = new Runnable() { public void run() { cbName(); } };
 	sendCommand("name\n", cb);
-    }
-
-    public void cbVersion()
-    {
-	String str = m_white.getResponse();
-	// FIXME: handle errors!
-	m_white_version = str.trim();
-        releaseSemaphore();
     }
 
     private void htpVersion()
@@ -1006,29 +991,10 @@ public final class HexGui
 	sendCommand("version\n", cb);
     }
 
-    private void cbListCommands()
-    {
-        if (m_analyze == null)
-        {
-            System.out.println("No analyze dialog!!");
-            return;
-        }
-        String str = m_white.getResponse();
-	Vector<String> cmds = StringUtils.parseStringList(str);
-        Collections.sort(cmds);
-        m_analyze.setCommands(cmds);
-        releaseSemaphore();
-    }
-
     private void htpListCommands()
     {
 	Runnable cb = new Runnable() { public void run() { cbListCommands(); } };
 	sendCommand("list_commands\n", cb);
-    }
-
-    // FIXME: check for errors
-    public void cbEmptyResponse()
-    {
     }
 
     private void htpShowboard()
@@ -1058,6 +1024,18 @@ public final class HexGui
 	sendCommand("undo\n", callback);
     }
 
+    private void htpGenMove(HexColor color)
+    {
+        if (! checkBoardSizeSupported())
+            return;
+        m_statusbar.setMessage(format("{0} is thinking...", m_white_name));
+	Runnable callback = new GuiRunnable(new Runnable()
+	    {
+		public void run() { cbGenMove(); }
+	    });
+ 	sendCommand("genmove " + color.toString() + "\n", callback);
+    }
+
     private void htpBoardsize(Dimension size)
     {
 	Runnable callback = new Runnable()
@@ -1072,14 +1050,49 @@ public final class HexGui
                     callback);
         m_statusbar.setMessage("New game");
     }
+    
+    //
+    // Callbacks
+    //
+    public void cbEmptyResponse()
+    {
+	// FIXME: check for errors
+    }
+
+    public void cbName()
+    {
+	String str = m_white.getResponse();
+	// FIXME: handle errors!
+	m_white_name = str.trim();
+    }
+
+    public void cbVersion()
+    {
+	String str = m_white.getResponse();
+	// FIXME: handle errors!
+	m_white_version = str.trim();
+        releaseSemaphore();
+    }
+
+    private void cbListCommands()
+    {
+        if (m_analyze == null)
+        {
+            System.out.println("No analyze dialog!!");
+            return;
+        }
+        String str = m_white.getResponse();
+	Vector<String> cmds = StringUtils.parseStringList(str);
+        Collections.sort(cmds);
+        m_analyze.setCommands(cmds);
+        releaseSemaphore();
+    }
 
     public void cbGenMove()
     {
         if (!m_white.wasSuccess())
             return;
-
         m_guiboard.clearMarks();
-
 	String str = m_white.getResponse();
 	HexPoint point = HexPoint.get(str.trim());
 	if (point == null)
@@ -1092,22 +1105,10 @@ public final class HexGui
 	}
     }
 
-    private void htpGenMove(HexColor color)
-    {
-        if (! checkBoardSizeSupported())
-            return;
-        m_statusbar.setMessage(format("{0} is thinking...", m_white_name));
-	Runnable callback = new GuiRunnable(new Runnable()
-	    {
-		public void run() { cbGenMove(); }
-	    });
- 	sendCommand("genmove " + color.toString() + "\n", callback);
-    }
-
     public void cbDisplayPointList()
     {
-	if (!m_white.wasSuccess()) return;
-
+	if (!m_white.wasSuccess())
+	    return;
 	String str = m_white.getResponse();
 	Vector<HexPoint> points = StringUtils.parsePointList(str);
         m_guiboard.clearMarks();
@@ -1120,20 +1121,11 @@ public final class HexGui
 
     private void cbDfpnDisplayBounds()
     {
-	if (!m_white.wasSuccess()) return;
-
+	if (!m_white.wasSuccess()) 
+	    return;
 	String str = m_white.getResponse();
         showDfpnBounds(str);
 	m_guiboard.repaint();
-    }
-
-    private void htpAllLegalMoves()
-    {
-	Runnable callback = new Runnable()
-	    {
-		public void run() { cbDisplayPointList(); }
-	    };
-	sendCommand("all_legal_moves\n", callback);
     }
 
     public void cbGroupGet()
@@ -1156,8 +1148,8 @@ public final class HexGui
 
     public void cbShowInferiorCells()
     {
-	if (!m_white.wasSuccess()) return;
-
+	if (!m_white.wasSuccess()) 
+	    return;
         m_guiboard.clearMarks();
         m_guiboard.aboutToDirtyStones();
         showInferiorCells(m_white.getResponse());
