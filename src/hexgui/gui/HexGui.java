@@ -842,10 +842,6 @@ public final class HexGui
             cb = new Runnable() { public void run() { cbDisplayPointList(); } };
         else if (c.equals("vc-between-cells"))
             cb = new Runnable() { public void run() { cbBetweenCells(); } };
-
-	else if (c.equals("vc-maintain"))
-            cb = new Runnable() { public void run() { cbBetweenCells(); } };
-
         else if (c.equals("vc-get-mustplay"))
             cb = new Runnable() { public void run() { cbShowInferiorCells(); } };
         else if (c.equals("vc-intersection"))
@@ -857,10 +853,6 @@ public final class HexGui
             cb = new Runnable() { public void run() { cbDisplayPointText(); } };
         else if (c.equals("eval-resist"))
             cb = new Runnable() { public void run() { cbEvalResist(); } };
-        else if (c.equals("eval-resist-delta"))
-            cb = new Runnable() { public void run() { cbEvalResistDelta(); } };
-	else if (c.equals("eval-influence"))
-            cb = new Runnable() { public void run() { cbDisplayPointText(); } };
 
         else if (c.equals("quit"))
             cb = new Runnable() { public void run() { cbEmptyResponse(); } };
@@ -1283,33 +1275,6 @@ public final class HexGui
 	m_guiboard.repaint();
         m_statusbar.setMessage("Resistance: " + res +
                                " (" + rew + " - " + reb + ")");
-    }
-
-    public void cbEvalResistDelta()
-    {
-	if (!m_white.wasSuccess()) return;
-
-	String str = m_white.getResponse();
-        Vector<Pair<String, String> > pairs =
-            StringUtils.parseStringPairList(str);
-
-        String res = "";
-        m_guiboard.clearMarks();
-        for (int i=0; i<pairs.size(); i++)
-        {
-            if (pairs.get(i).first.equals("res"))
-            {
-                res = pairs.get(i).second;
-            }
-            else
-            {
-                HexPoint point = HexPoint.get(pairs.get(i).first);
-                String value = pairs.get(i).second;
-                m_guiboard.setText(point, value);
-            }
-	}
-	m_guiboard.repaint();
-        m_statusbar.setMessage("Resistance: " + res);
     }
 
     //==================================================
