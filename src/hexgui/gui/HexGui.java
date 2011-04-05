@@ -228,7 +228,7 @@ public final class HexGui
         }
         else if (cmd.equals("solve_state"))
         {
-            commandEntered("param_dfpn use_guifx 1\n");
+            sendCommand("param_dfpn use_guifx 1\n", null);
             analyzeCommand("dfpn-solve-state " 
                            + getColorToMove().toString() + "\n");
         }
@@ -849,7 +849,8 @@ public final class HexGui
         else if (c.equals("eval-resist"))
             cb = new Runnable() { public void run() { cbEvalResist(); } };
 
-        sendCommand(cmd, cb);
+        Runnable callback = new GuiRunnable(cb);
+        sendCommand(cmd, callback);
     }
 
     //----------------------------------------------------------------------
