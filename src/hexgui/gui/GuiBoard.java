@@ -374,6 +374,7 @@ public final class GuiBoard
 
     public void paintImmediately()
     {
+        assert SwingUtilities.isEventDispatchThread();
 	super.paintImmediately(0, 0, getWidth(),getHeight());
     }
 

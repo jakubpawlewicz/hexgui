@@ -1124,10 +1124,10 @@ public final class HexGui
         if (! checkBoardSizeSupported())
             return;
         m_statusbar.setMessage(format("{0} is thinking...", m_white_name));
-	Runnable callback = new Runnable()
+	Runnable callback = new SwingRunnable(new Runnable()
 	    {
 		public void run() { cbGenMove(); }
-	    };
+	    });
  	sendCommand("genmove " + color.toString() + "\n", callback);
 	sendCommand("showboard\n", null);
     }
