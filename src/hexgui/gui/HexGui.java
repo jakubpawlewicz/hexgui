@@ -38,7 +38,7 @@ public final class HexGui
                AnalyzeDialog.Callback, AnalyzeDialog.SelectionCallback,
                AnalyzeDialog.ColorToMoveCallback, Comment.Listener
 {
-    public HexGui(String command)
+    public HexGui(File file, String command)
     {
         super("HexGui");
         setIcon();
@@ -111,6 +111,9 @@ public final class HexGui
                 cmdConnectLocalProgram(prog);
         }
         */
+
+        if (file != null)
+            loadGame(file);
     }
 
     //-------------------------------------------------------------------
@@ -665,29 +668,9 @@ public final class HexGui
     {
 	if (gameChanged() && !askSaveGame())
 	    return;
-
 	File file = showOpenDialog();
-	if (file == null) return;
-
-	System.out.println("Loading sgf from file: " + file.getName());
-	SgfReader sgf = load(file);
-	if (sgf != null)
-        {
-	    m_root = sgf.getGameTree();
-	    m_gameinfo = sgf.getGameInfo();
-	    m_current = m_root;
-
-	    m_guiboard.initSize(m_gameinfo.getBoardSize());
-            htpBoardsize(m_guiboard.getBoardSize());
-
-	    forward(1000);
-
-	    m_file = file;
-	    setGameChanged(false);
-	    setFrameTitle();
-
-	    m_preferences.put("path-load-game", file.getPath());
-	}
+	if (file != null)
+            loadGame(file);
     }
 
     private void cmdPrintPreview()
@@ -2340,6 +2323,29 @@ public final class HexGui
             return false;
         }
         return true;
+    }
+
+    private void loadGame(File file)
+    {
+	System.out.println("Loading sgf from file: " + file.getName());
+	SgfReader sgf = load(file);
+	if (sgf != null)
+        {
+	    m_root = sgf.getGameTree();
+	    m_gameinfo = sgf.getGameInfo();
+	    m_current = m_root;
+
+	    m_guiboard.initSize(m_gameinfo.getBoardSize());
+            htpBoardsize(m_guiboard.getBoardSize());
+
+	    forward(1000);
+
+	    m_file = file;
+	    setGameChanged(false);
+	    setFrameTitle();
+
+	    m_preferences.put("path-load-game", file.getPath());
+	}
     }
 
     private void setIcon()

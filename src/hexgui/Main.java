@@ -11,6 +11,8 @@ import hexgui.version.Version;
 import javax.swing.*;          
 import java.awt.*;
 import java.awt.event.*;
+import java.io.*;
+import java.util.*;
 
 public final class Main
 {
@@ -56,40 +58,56 @@ public final class Main
         }
     }
 
-    private static void createAndShowGUI(String command) {
+    private static void createAndShowGUI(File file, String command) {
         initLookAndFeel();
         JFrame.setDefaultLookAndFeelDecorated(true);
-        HexGui app = new HexGui(command);
+        HexGui app = new HexGui(file, command);
     }
 
     public static void main(String[] args) throws Exception {
-        String options[] = {
-            "program:",
-            "help",
-            "version"
-        };
-        Options opt = Options.parse(args, options);
-        if (opt.contains("help")) {
-            String helpText =
-                "Usage: hexgui [options]\n" +
-                "Graphical user interface for Hex programs\n" +
-                "using the Hex Text Protocol.\n" +
-                "\n" +
-                "-help          Display this help and exit\n" +
-                "-program       Command for Hex program to attach\n" +
-                "-version       Print version and exit\n";
-            System.out.print(helpText);
-            return;
-        }
-        if (opt.contains("version")) {
-            System.out.println("HexGui " + Version.id + " " + Version.date);
-            return;
-        }
-        final String command = opt.get("program", null);
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                createAndShowGUI(command);
+        try
+        {
+            String options[] = {
+                "program:",
+                "help",
+                "version"
+            };
+            Options opt = Options.parse(args, options);
+            if (opt.contains("help")) {
+                String helpText =
+                    "Usage: hexgui [options] [file]\n" +
+                    "Graphical user interface for Hex programs\n" +
+                    "using the Hex Text Protocol.\n" +
+                    "\n" +
+                    "-help          Display this help and exit\n" +
+                    "-program       Command for Hex program to attach\n" +
+                    "-version       Print version and exit\n";
+                System.out.print(helpText);
+                return;
             }
-        });
+            if (opt.contains("version")) {
+                System.out.println("HexGui " + Version.id + " "
+                                   + Version.date);
+                return;
+            }
+            final String command = opt.get("program", null);
+            ArrayList<String> arguments = opt.getArguments();
+            final File file;
+            if (arguments.size() == 0)
+                file = null;
+            else if (arguments.size() == 1)
+                file = new File(arguments.get(0));
+            else
+                throw new Exception("Only one argument allowed");
+            javax.swing.SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        createAndShowGUI(file, command);
+                    }
+                });
+        }
+        catch (Exception e)
+        {
+            System.err.println(e.getMessage());
+        }
     }
 }
