@@ -771,7 +771,6 @@ public final class HexGui
         By the name of the command it choose the propery callback function.
         Arguments are passed as given.
     */
-
     public void commandEntered(String cmd)
     {
         String cleaned = StringUtils.cleanWhiteSpace(cmd.trim());
@@ -780,11 +779,7 @@ public final class HexGui
 
         Runnable cb = new Runnable() { public void run() { cbEmptyResponse(); } };
 
-	if (c.equals("name"))
-            cb = new Runnable() { public void run() { cbName(); } };
-        else if (c.equals("version"))
-            cb = new Runnable() { public void run() { cbVersion(); } };
-        else if (c.equals("genmove"))
+        if (c.equals("genmove"))
             cb = new Runnable() { public void run() { cbGenMove(); } };
         else if (c.equals("all_legal_moves"))
             cb = new Runnable() { public void run() { cbDisplayPointList(); } };
@@ -993,28 +988,22 @@ public final class HexGui
 
     private void htpName()
     {
-	Runnable callback = new Runnable()
-	    {
-		public void run() { cbName(); }
-	    };
-	sendCommand("name\n", callback);
+	Runnable cb = new Runnable() { public void run() { cbName(); } };
+	sendCommand("name\n", cb);
     }
 
-    // FIXME: handle errors!
     public void cbVersion()
     {
 	String str = m_white.getResponse();
+	// FIXME: handle errors!
 	m_white_version = str.trim();
         releaseSemaphore();
     }
 
     private void htpVersion()
     {
-	Runnable callback = new Runnable()
-	    {
-		public void run() { cbVersion(); }
-	    };
-	sendCommand("version\n", callback);
+	Runnable cb = new Runnable() { public void run() { cbVersion(); } };
+	sendCommand("version\n", cb);
     }
 
     private void cbListCommands()
@@ -1024,7 +1013,6 @@ public final class HexGui
             System.out.println("No analyze dialog!!");
             return;
         }
-
         String str = m_white.getResponse();
 	Vector<String> cmds = StringUtils.parseStringList(str);
         Collections.sort(cmds);
@@ -1034,13 +1022,9 @@ public final class HexGui
 
     private void htpListCommands()
     {
-	Runnable callback = new Runnable()
-	    {
-		public void run() { cbListCommands(); }
-	    };
-	sendCommand("list_commands\n", callback);
+	Runnable cb = new Runnable() { public void run() { cbListCommands(); } };
+	sendCommand("list_commands\n", cb);
     }
-
 
     // FIXME: check for errors
     public void cbEmptyResponse()
