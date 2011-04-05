@@ -1124,7 +1124,7 @@ public final class HexGui
         if (! checkBoardSizeSupported())
             return;
         m_statusbar.setMessage(format("{0} is thinking...", m_white_name));
-	Runnable callback = new SwingRunnable(new Runnable()
+	Runnable callback = new GuiRunnable(new Runnable()
 	    {
 		public void run() { cbGenMove(); }
 	    });
