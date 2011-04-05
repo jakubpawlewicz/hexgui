@@ -113,7 +113,7 @@ public class AnalyzeDialog
             cmd.append(name);
 
             // commands that need only a point
-            if (name.equals("get_absorb_group"))
+            if (name.equals("group-get"))
             {
                 if (selected.size() < 1)
                 {
@@ -121,10 +121,8 @@ public class AnalyzeDialog
                                            "running.");
                     return;
                 }
-
                 HexPoint p = selected.get(0);
                 cmd.append(" " + p.toString());
-
             }
             // commands that need AT LEAST one point
             else if (name.equals("encode-pattern"))

@@ -788,8 +788,8 @@ public final class HexGui
             cb = new Runnable() { public void run() { cbGenMove(); } };
         else if (c.equals("all_legal_moves"))
             cb = new Runnable() { public void run() { cbDisplayPointList(); } };
-        else if (c.equals("get_absorb_group"))
-            cb = new Runnable() { public void run() { cbGetAbsorbGroup(); } };
+        else if (c.equals("group-get"))
+            cb = new Runnable() { public void run() { cbGroupGet(); } };
 
 	else if (c.equals("find-comb-decomp"))
             cb = new Runnable() { public void run() { cbDisplayPointList(); } };
@@ -1163,14 +1163,13 @@ public final class HexGui
 	sendCommand("all_legal_moves\n", callback);
     }
 
-    public void cbGetAbsorbGroup()
+    public void cbGroupGet()
     {
-        if (!m_white.wasSuccess()) return;
-
+        if (!m_white.wasSuccess())
+	    return;
 	String str = m_white.getResponse();
 	Vector<HexPoint> points = StringUtils.parsePointList(str);
         m_guiboard.clearMarks();
-
         if (points.size() > 0)
         {
             m_guiboard.setAlphaColor(points.get(0), Color.blue);
