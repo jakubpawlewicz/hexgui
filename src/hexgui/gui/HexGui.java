@@ -1129,7 +1129,6 @@ public final class HexGui
 		public void run() { cbGenMove(); }
 	    });
  	sendCommand("genmove " + color.toString() + "\n", callback);
-	sendCommand("showboard\n", null);
     }
 
     public void cbDisplayPointList()
