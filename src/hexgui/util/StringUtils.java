@@ -17,6 +17,19 @@ import java.util.ArrayList;
 
 public final class StringUtils
 {
+    /** Capitalize the first word and trim whitespaces. */
+    public static String capitalize(String message)
+    {
+        message = message.trim();
+        if (message.equals(""))
+            return message;
+        StringBuilder buffer = new StringBuilder(message);
+        char first = buffer.charAt(0);
+        if (! Character.isUpperCase(first))
+            buffer.setCharAt(0, Character.toUpperCase(first));
+        return buffer.toString();
+    }
+
     /** Converts all whitespace characters to a single ' '. */
     public static String cleanWhiteSpace(String str)
     {

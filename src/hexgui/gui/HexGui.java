@@ -16,6 +16,7 @@ import hexgui.htp.HtpController;
 import hexgui.htp.HtpError;
 import hexgui.htp.StreamCopy;
 import hexgui.version.Version;
+import hexgui.gui.ParameterDialog;
 
 import java.io.*;
 import static java.text.MessageFormat.format;
@@ -776,6 +777,7 @@ public final class HexGui
         String cleaned = StringUtils.cleanWhiteSpace(cmd.trim());
         String args[] = cleaned.split(" ");
 	String c = args[0];
+        m_lastAnalyzeCommand = new String(c);
         Runnable cb = new Runnable() 
             { public void run() { cbEmptyResponse(); } };
 
@@ -848,6 +850,9 @@ public final class HexGui
             cb = new Runnable() { public void run() { cbDisplayPointText(); } };
         else if (c.equals("eval-resist"))
             cb = new Runnable() { public void run() { cbEvalResist(); } };
+
+        else if (c.regionMatches(0, "param", 0, 5))
+            cb = new Runnable() { public void run() { cbEditParameters(); } };
 
         Runnable callback = new GuiRunnable(cb);
         sendCommand(cmd, callback);
@@ -1228,6 +1233,15 @@ public final class HexGui
 	m_guiboard.repaint();
         m_statusbar.setMessage("Resistance: " + res +
                                " (" + rew + " - " + reb + ")");
+    }
+
+    public void cbEditParameters()
+    {
+        if (!m_white.wasSuccess()) 
+            return;
+	String response = m_white.getResponse();
+        ParameterDialog.editParameters(m_lastAnalyzeCommand, this,
+                                       "Edit Parameters", response, m_white);
     }
 
     //==================================================
@@ -2233,6 +2247,7 @@ public final class HexGui
     private HtpController m_white;
     private String m_white_name;
     private String m_white_version;
+    private String m_lastAnalyzeCommand;
     private Process m_white_process;
     private Socket m_white_socket;
 
