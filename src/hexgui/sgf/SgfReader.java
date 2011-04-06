@@ -14,7 +14,8 @@ import java.io.*;
 import java.awt.Dimension;
 import java.lang.StringBuilder;
 import java.lang.NumberFormatException;
-import java.util.Vector;
+import static java.text.MessageFormat.format;
+import java.util.*;
 
 //----------------------------------------------------------------------------
 
@@ -152,6 +153,54 @@ public final class SgfReader
 	return node;
     }
 
+    /** Parse a point or move value.
+        Supports both standard SGF notation for Hex (a1, ...) and Go-like
+        notation used by Little Golem (aa, ...) */
+    private HexPoint parsePoint(String s) throws SgfError
+    {
+        s = s.trim().toLowerCase(Locale.ENGLISH);
+        HexPoint result = null;
+        if (s.length() >= 2)
+        {
+            if (s.length() == 2 && s.charAt(1) >= 'a' && s.charAt(1) <= 'z')
+            {
+                // Go-like SGF notation
+                int x = s.charAt(0) - 'a';
+                int y = s.charAt(1) - 'a';
+                if (x < HexPoint.MAX_WIDTH && y < HexPoint.MAX_HEIGHT)
+                    result = HexPoint.get(x, y);
+            }
+            else
+            {
+                // Standard SGF notation for Hex
+                try
+                {
+                    int x = s.charAt(0) - 'a';
+                    int y = Integer.parseInt(s.substring(1)) - 1;
+                    if (y >= 0 && y < HexPoint.MAX_HEIGHT)
+                        result = HexPoint.get(x, y);
+                }
+                catch (NumberFormatException e)
+                {
+                }
+            }
+        }
+        if (result == null)
+            throw sgfError(format("Invalid point {0}", s));
+        return result;
+    }
+
+    private HexPoint parseMove(String s) throws SgfError
+    {
+        s = s.trim().toLowerCase(Locale.ENGLISH);
+        // HexPoint.get() handles special move values like "swap"
+        HexPoint result = HexPoint.get(s);
+        if (result == null)
+            // Handles Go-style point notation (aa, ...)
+            result = parsePoint(s);
+        return result;
+    }
+
     private void parseProperty(Node node, boolean isroot) 
 	throws SgfError, IOException
     {
@@ -176,21 +225,21 @@ public final class SgfReader
             //System.out.println(name + "[" + val + "]");
 	
             if (name.equals("W")) {
-                HexPoint point = HexPoint.get(val);
+                HexPoint point = parseMove(val);
                 node.setMove(new Move(point, HexColor.WHITE));
             } 
             else if (name.equals("B")) {
-                HexPoint point = HexPoint.get(val);
+                HexPoint point = parseMove(val);
                 node.setMove(new Move(point, HexColor.BLACK));
             } 
             else if (name.equals("AB")) {
-                node.addSetup(HexColor.BLACK, HexPoint.get(val));
+                node.addSetup(HexColor.BLACK, parsePoint(val));
             }
             else if (name.equals("AW")) {
-                node.addSetup(HexColor.WHITE, HexPoint.get(val));
+                node.addSetup(HexColor.WHITE, parsePoint(val));
             }
             else if (name.equals("AE")) {
-                node.addSetup(HexColor.EMPTY, HexPoint.get(val));
+                node.addSetup(HexColor.EMPTY, parsePoint(val));
             }
             else if (name.equals("LB")) {
                 node.addLabel(val);
