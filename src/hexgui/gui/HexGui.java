@@ -39,7 +39,7 @@ public final class HexGui
                AnalyzeDialog.Callback, AnalyzeDialog.SelectionCallback,
                AnalyzeDialog.ColorToMoveCallback, Comment.Listener
 {
-    public HexGui(File file, String command)
+    public HexGui(final File file, final String command)
     {
         super("HexGui");
         setIcon();
@@ -87,34 +87,20 @@ public final class HexGui
 	cmdNewGame();
 
         pack();
-        setVisible(true);
-        
+
         m_locked = false;
 
         m_semaphore = new Semaphore(1);
         m_htp_queue = new ArrayBlockingQueue<HtpCommand>(256);
         new Thread(new CommandHandler(this, m_htp_queue)).start();
 
-        // attach program from the last run of HexGui
-        m_program = null;
-        if (command != null)
-        {
-            cmdConnectLocalProgram(new Program("", command, ""));
-            setFrameTitle();
-        }
-        m_programs = Program.load();
-        /*
-        if (m_preferences.getBoolean("is-program-attached"))
-        {
-            String name = m_preferences.get("attached-program");
-            Program prog = Program.findWithName(name, m_programs);
-            if (prog != null)
-                cmdConnectLocalProgram(prog);
-        }
-        */
-
-        if (file != null)
-            loadGame(file);
+        setVisible(true);
+        // After frame is visible, further code using Swing functions must
+        // be run in the Swing event dispatch thread.
+        SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    initialize(file, command);
+                } });
     }
 
     //-------------------------------------------------------------------
@@ -2182,6 +2168,30 @@ public final class HexGui
             return false;
         }
         return true;
+    }
+
+    private void initialize(File file, String command)
+    {
+        // attach program from the last run of HexGui
+        m_program = null;
+        if (command != null)
+        {
+            cmdConnectLocalProgram(new Program("", command, ""));
+            setFrameTitle();
+        }
+        m_programs = Program.load();
+        /*
+        if (m_preferences.getBoolean("is-program-attached"))
+        {
+            String name = m_preferences.get("attached-program");
+            Program prog = Program.findWithName(name, m_programs);
+            if (prog != null)
+                cmdConnectLocalProgram(prog);
+        }
+        */
+
+        if (file != null)
+            loadGame(file);
     }
 
     private void loadGame(File file)
