@@ -821,15 +821,23 @@ public final class HexGui
         else if (c.equals("mohex-book-scores"))
             cb = new Runnable() { public void run() { cbDisplayPointText(); } };
 
-        else if (c.equals("vc-connected-to"))
+        else if (c.equals("vc-connected-to-full"))
             cb = new Runnable() { public void run() { cbDisplayPointList(); } };
-        else if (c.equals("vc-between-cells"))
+        else if (c.equals("vc-connected-to-semi"))
+            cb = new Runnable() { public void run() { cbDisplayPointList(); } };
+        else if (c.equals("vc-between-cells-full"))
+            cb = new Runnable() { public void run() { cbBetweenCells(); } };
+        else if (c.equals("vc-between-cells-semi"))
             cb = new Runnable() { public void run() { cbBetweenCells(); } };
         else if (c.equals("vc-get-mustplay"))
             cb = new Runnable() { public void run() { cbShowInferiorCells(); } };
-        else if (c.equals("vc-intersection"))
+        else if (c.equals("vc-intersection-full"))
             cb = new Runnable() { public void run() { cbDisplayPointList(); } };
-        else if (c.equals("vc-union"))
+        else if (c.equals("vc-intersection-semi"))
+            cb = new Runnable() { public void run() { cbDisplayPointList(); } };
+        else if (c.equals("vc-union-full"))
+            cb = new Runnable() { public void run() { cbDisplayPointList(); } };
+        else if (c.equals("vc-union-semi"))
             cb = new Runnable() { public void run() { cbDisplayPointList(); } };
 
         else if (c.equals("eval-twod"))

@@ -70,11 +70,7 @@ public class AnalyzeDialog
         m_run.addActionListener(this);
         m_run.setActionCommand("run");
 
-        m_type = new JComboBox(m_types);
-        m_type.setEditable(false);
-
         runpanel.add(m_run);
-        runpanel.add(m_type);
 
         panel.add(m_scrollpane);
         panel.add(runpanel);
@@ -166,10 +162,10 @@ public class AnalyzeDialog
                 HexColor color = getSelectedColor();
                 cmd.append(" " + color.toString());
             }
-            // commands that need a point, a color, and a vctype
-            else if (name.equals("vc-connected-to"))
+            // commands that need a point and a color
+            else if (name.equals("vc-connected-to-full") ||
+                     name.equals("vc-connected-to-semi"))
             {
-
                 if (selected.size() < 1)
                 {
                     m_statusbar.setMessage("Please select a cell before " +
@@ -178,16 +174,16 @@ public class AnalyzeDialog
                 }
                 HexPoint p = selected.get(0);
                 HexColor c = getSelectedColor();
-                int t = getSelectedType();
-
                 cmd.append(" " + p.toString());
                 cmd.append(" " + c.toString());
-                cmd.append(" " + t);
             }
-            // commands that need 2 points, a color, and a vc type
-            else if (name.equals("vc-between-cells") ||
-                     name.equals("vc-intersection") ||
-                     name.equals("vc-union"))
+            // commands that need 2 points and a color
+            else if (name.equals("vc-between-cells-full") ||
+                     name.equals("vc-between-cells-semi") ||
+                     name.equals("vc-intersection-full") ||
+                     name.equals("vc-intersection-semi") ||
+                     name.equals("vc-union-full") ||
+                     name.equals("vc-union-semi"))
             {
                 if (selected.size() < 2)
                 {
@@ -198,14 +194,10 @@ public class AnalyzeDialog
                 HexPoint p1 = selected.get(0);
                 HexPoint p2 = selected.get(1);
                 HexColor c = getSelectedColor();
-                int t = getSelectedType();
-
                 cmd.append(" " + p1.toString());
                 cmd.append(" " + p2.toString());
                 cmd.append(" " + c.toString());
-                cmd.append(" " + t);
             }
-
             cmd.append("\n");
             m_callback.analyzeCommand(cmd.toString());
         }
@@ -218,11 +210,6 @@ public class AnalyzeDialog
         return m_colorToMove.getColorToMove();
     }
 
-    private int getSelectedType()
-    {
-        return m_type.getSelectedIndex();
-    }
-
     Callback m_callback;
     SelectionCallback m_selection;
     ColorToMoveCallback m_colorToMove;
@@ -233,11 +220,6 @@ public class AnalyzeDialog
     Vector<String> m_commands;
 
     JButton m_run;
-    JComboBox m_color;
-    JComboBox m_type;
-
-    static final String m_colors[] = { "black", "white" };
-    static final String m_types[] = {"full", "semi" };
 }
 
 //----------------------------------------------------------------------------
