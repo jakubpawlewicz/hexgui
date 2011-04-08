@@ -44,16 +44,19 @@ public class StatusBar
 
     public void setMessage(String msg)
     {
+        assert SwingUtilities.isEventDispatchThread();
         m_message.setText(msg);
     }
 
     public void setProgressVisible(boolean visible)
     {
+        assert SwingUtilities.isEventDispatchThread();
         m_progress.setVisible(visible);
     }
 
     public void setProgress(double pct)
     {
+        assert SwingUtilities.isEventDispatchThread();
         m_progress.setValue((int)(pct*1000000.0));
 
         // show 4 decimal places of accuracy
