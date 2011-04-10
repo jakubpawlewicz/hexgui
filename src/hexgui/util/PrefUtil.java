@@ -1,8 +1,4 @@
-//----------------------------------------------------------------------------
-// $Id$
-//----------------------------------------------------------------------------
-
-/** Stole this from GoGui. :-) */
+// PrefUtil.java
 
 package hexgui.util;
 
@@ -15,8 +11,7 @@ public final class PrefUtil
 {
     /** Get node path, create if not already existing.
         @param path The absolute path name of the node.
-        @return The node
-    */
+        @return The node */
     public static Preferences createNode(String path)
     {
         assert ! path.startsWith("/");
@@ -27,17 +22,16 @@ public final class PrefUtil
         The list is stored as a size property end element_N properties with
         N being the element index.
         @param path The absolute path name of the node.
-        @return The list of strings.
-    */
-    public static ArrayList getList(String path)
+        @return The list of strings. */
+    public static ArrayList<String> getList(String path)
     {
         Preferences prefs = getNode(path);
         if (prefs == null)
-            return new ArrayList();
+            return new ArrayList<String>();
         int size = prefs.getInt("size", 0);
         if (size <= 0)
-            return new ArrayList();
-        ArrayList result = new ArrayList(size);
+            return new ArrayList<String>();
+        ArrayList<String> result = new ArrayList<String>(size);
         for (int i = 0; i < size; ++i)
         {
             String element = prefs.get("element_" + i, null);
@@ -52,8 +46,7 @@ public final class PrefUtil
     /** Get node for package and path, return null if not already existing.
         @param path The absolute path name of the node.
         @return The node or null, if node does not exist or failure in the
-        backing store.
-    */
+        backing store. */
     public static Preferences getNode(String path)
     {
         assert ! path.startsWith("/");
@@ -74,16 +67,15 @@ public final class PrefUtil
         The list is stored as a size property end element_N properties with
         N being the element index.
         @param path The absolute path name of the node.
-        @param list The list of strings.
-    */
-    public static void putList(String path, ArrayList list)
+        @param list The list of strings. */
+    public static void putList(String path, ArrayList<String> list)
     {
         Preferences prefs = createNode(path);
         if (prefs == null)
             return;
         prefs.putInt("size", list.size());
         for (int i = 0; i < list.size(); ++i)
-            prefs.put("element_" + i, (String)list.get(i));
+            prefs.put("element_" + i, list.get(i));
     }
 
     /** Make constructor unavailable; class is for namespace only. */
@@ -91,5 +83,3 @@ public final class PrefUtil
     {
     }
 }
-
-//-----------------------------------------------------------------------------

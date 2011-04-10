@@ -1,20 +1,13 @@
-//----------------------------------------------------------------------------
-// $Id$ 
-//----------------------------------------------------------------------------
-
 package hexgui.hex;
 
 import java.lang.Exception;
 import java.lang.NumberFormatException;
 import java.awt.Dimension;
 
-//----------------------------------------------------------------------------
-
 /** A cell on a Hex board. 
     In addition to each playable cell, HexPoints are created for each edge of 
     the board and for some special cases like swap moves, resignations, and
-    forfeitures. 
-*/
+    forfeitures. */
 public final class HexPoint implements Comparable
 {
     /**  Exception. */
@@ -38,6 +31,8 @@ public final class HexPoint implements Comparable
     public static final int MAX_WIDTH  = 19;
     public static final int MAX_HEIGHT = 19;
     public static final int MAX_POINTS = MAX_WIDTH*MAX_HEIGHT + 7;
+
+    public static final int DEFAULT_SIZE = 11;
 
     private static HexPoint s_points[];
 
@@ -73,7 +68,6 @@ public final class HexPoint implements Comparable
 	assert(i < MAX_POINTS);
 	return s_points[i];
     }
-
 
     /** Returns the point with the given coordinates.  Note that it is
 	not possible to obtain points for board edges and special
@@ -115,6 +109,24 @@ public final class HexPoint implements Comparable
     public String toString()
     {
 	return m_string;
+    }
+
+    /** Convert a list of points to a string.
+        Points are separated by a single space.
+        If pointList is null, "(null)" is returned. */
+    public static String toString(ConstPointList pointList)
+    {
+        if (pointList == null)
+            return "(null)";
+        int length = pointList.size();
+        StringBuilder buffer = new StringBuilder(length * 4);
+        for (int i = 0; i < length; ++i)
+        {
+            buffer.append(pointList.get(i));
+            if (i < length - 1)
+                buffer.append(' ');
+        }
+        return buffer.toString();
     }
 
     public int compareTo(Object other)

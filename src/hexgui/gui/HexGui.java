@@ -1,7 +1,3 @@
-//----------------------------------------------------------------------------
-// $Id$
-//----------------------------------------------------------------------------
-
 package hexgui.gui;
 
 import hexgui.hex.*;
@@ -17,6 +13,10 @@ import hexgui.htp.HtpError;
 import hexgui.htp.StreamCopy;
 import hexgui.version.Version;
 import hexgui.gui.ParameterDialog;
+import hexgui.htp.AnalyzeDefinition;
+import hexgui.htp.AnalyzeCommand;
+import hexgui.htp.AnalyzeType;
+import hexgui.util.ErrorMessage;
 
 import java.io.*;
 import static java.text.MessageFormat.format;
@@ -36,8 +36,7 @@ public final class HexGui
     extends JFrame
     implements ActionListener, GuiBoard.Listener, 
                HtpShell.Callback, HtpController.GuiFxCallback, 
-               AnalyzeDialog.Callback, AnalyzeDialog.SelectionCallback,
-               AnalyzeDialog.ColorToMoveCallback, Comment.Listener
+               AnalyzeDialog.Listener, Comment.Listener
 {
     public HexGui(final File file, final String command)
     {
@@ -211,13 +210,15 @@ public final class HexGui
         //
         else if (cmd.equals("show_consider_set"))
         {
-            analyzeCommand("vc-build " + getColorToMove().toString() + "\n");
+            Runnable cb = new Runnable() 
+                { public void run() { cbShowInferiorCells(); } };
+            Runnable callback = new GuiRunnable(cb);            
+            sendCommand("vc-build " + m_tomove.toString() + "\n", callback);
         }
         else if (cmd.equals("solve_state"))
         {
             sendCommand("param_dfpn use_guifx 1\n", null);
-            analyzeCommand("dfpn-solve-state " 
-                           + getColorToMove().toString() + "\n");
+            sendCommand("dfpn-solve-state " + m_tomove + "\n", null);
         }
 	//
 	// unknown command
@@ -447,17 +448,31 @@ public final class HexGui
 	connectProgram(proc.getInputStream(), proc.getOutputStream());
     }
 
+    private void createAnalyzeDialog()
+    {
+        m_analyzeDialog = new AnalyzeDialog(this, this, m_analyzeCommands);
+        m_analyzeDialog.addWindowListener(new WindowAdapter() {
+                public void windowClosing(WindowEvent e) {
+                    actionDisposeAnalyzeDialog();
+                }
+            });
+        m_analyzeDialog.setBoardSize(m_guiboard.getBoardSize().width);
+        m_analyzeDialog.setSelectedColor(m_tomove);
+        m_analyzeDialog.setVisible(true);
+    }
+
+    public void actionDisposeAnalyzeDialog()
+    {
+        if (m_analyzeDialog != null)
+        {
+            m_analyzeDialog.dispose();
+            m_analyzeDialog = null;
+            m_menubar.setAnalyzeVisible(false);
+        }
+    }
+
     private void connectProgram(InputStream in, OutputStream out)
     {
-        m_analyze = new AnalyzeDialog(this, this, this, this, m_statusbar);
-	m_analyze.addWindowListener(new WindowAdapter()
-	    {
-		public void windowClosing(WindowEvent winEvt)
-                {
-		    m_menubar.setAnalyzeVisible(false);
-		}
-	    });
-
 	m_shell = new HtpShell(this, this);
 	m_shell.addWindowListener(new WindowAdapter()
 	    {
@@ -483,15 +498,17 @@ public final class HexGui
         // get list of accepted commands; block until
         // this is completed.
         acquireSemaphore();
-        htpListCommands();   // releases semaphore when finished
+        htpAnalyzeCommands();   // releases semaphore when finished
         acquireSemaphore();
         releaseSemaphore();
+
+        createAnalyzeDialog();
 
 	m_toolbar.setProgramConnected(true);
 	m_menubar.setProgramConnected(true);
 
 	m_shell.setVisible(m_preferences.getBoolean("shell-show-on-connect"));
-	m_analyze.setVisible(m_preferences.getBoolean("analyze-show-on-connect"));
+	m_analyzeDialog.setVisible(m_preferences.getBoolean("analyze-show-on-connect"));
 
 	htpBoardsize(m_guiboard.getBoardSize());
 
@@ -529,8 +546,8 @@ public final class HexGui
 	    m_white = null;
 	    m_shell.dispose();
 	    m_shell = null;
-            m_analyze.dispose();
-            m_analyze = null;
+            m_analyzeDialog.dispose();
+            m_analyzeDialog = null;
             m_program = null;
 	    m_menubar.setProgramConnected(false);
 	    m_toolbar.setProgramConnected(false);
@@ -701,9 +718,9 @@ public final class HexGui
 
     private void cmdGuiAnalyzeVisible()
     {
-	if (m_analyze == null) return;
+	if (m_analyzeDialog == null) return;
 	boolean visible = m_menubar.getAnalyzeVisible();
-	m_analyze.setVisible(visible);
+	m_analyzeDialog.setVisible(visible);
     }
 
     private void cmdGuiBoardDrawType()
@@ -748,108 +765,84 @@ public final class HexGui
 
     //------------------------------------------------------------
 
-    /** Analyze dialog callback; calls the commandEntered method. */
-    public void analyzeCommand(String cmd)
+    public void actionClearAnalyzeCommand()
     {
-        commandEntered(cmd);
+        
     }
 
-    /** HtpShell Callback.
-        By the name of the command it choose the propery callback function.
-        Arguments are passed as given.
-    */
-    public void commandEntered(String cmd)
+    public void actionSetAnalyzeCommand(AnalyzeCommand command)
     {
+        actionSetAnalyzeCommand(command, false, true, true, false);
+    }
+
+    public void actionSetAnalyzeCommand(AnalyzeCommand command,
+                                        boolean autoRun, boolean clearBoard,
+                                        boolean oneRunOnly,
+                                        boolean reuseTextWindow)
+    {
+        AnalyzeType type = command.getType();
+        if (command.needsPointArg())
+        {
+            Vector<HexPoint> selected = getSelectedCells();
+            if (selected.size() < 1)
+            {
+                m_statusbar.setMessage("Please select a cell before " +
+                                       "running.");
+                return;
+            }
+            command.setPointArg(selected.get(0));
+        }
+        if (command.needsPointListArg())
+        {
+            Vector<HexPoint> selected = getSelectedCells();
+            if (type == AnalyzeType.VC && selected.size() != 2)
+            {
+                m_statusbar.setMessage("Please select a pair of cells before " +
+                                       "running.");
+                return;
+            }
+            PointList blah = new PointList(selected);
+            command.setPointListArg(blah);
+        }
+        String cmd = command.replaceWildCards(m_tomove);
         String cleaned = StringUtils.cleanWhiteSpace(cmd.trim());
         String args[] = cleaned.split(" ");
 	String c = args[0];
         m_lastAnalyzeCommand = new String(c);
+
         Runnable cb = new Runnable() 
             { public void run() { cbEmptyResponse(); } };
-
-        if (c.equals("genmove"))
-            cb = new Runnable() { public void run() { cbGenMove(); } };
-        else if (c.equals("all_legal_moves"))
-            cb = new Runnable() { public void run() { cbDisplayPointList(); } };
-        else if (c.equals("group-get"))
+        if (type == AnalyzeType.GROUP)
             cb = new Runnable() { public void run() { cbGroupGet(); } };
-
-	else if (c.equals("find-comb-decomp"))
+        else if (type == AnalyzeType.INFERIOR)
+             cb = new Runnable() { public void run() {cbShowInferiorCells();}};
+        else if (type == AnalyzeType.PLIST)
             cb = new Runnable() { public void run() { cbDisplayPointList(); } };
-	else if (c.equals("find-split-decomp"))
-            cb = new Runnable() { public void run() { cbDisplayPointList(); } };
-
-        else if (c.equals("compute-inferior"))
-            cb = new Runnable() { public void run() { cbShowInferiorCells(); } };
-        else if (c.equals("compute-fillin"))
-            cb = new Runnable() { public void run() { cbShowInferiorCells(); } };
-        else if (c.equals("compute-vulnerable"))
-            cb = new Runnable() { public void run() { cbShowInferiorCells(); } };
-        else if (c.equals("compute-reversible"))
-            cb = new Runnable() { public void run() { cbShowInferiorCells(); } };
-        else if (c.equals("compute-dominated"))
-            cb = new Runnable() { public void run() { cbShowInferiorCells(); } };
-
-        else if (c.equals("vc-build"))
-            cb = new Runnable() { public void run() { cbShowInferiorCells(); } };
-        else if (c.equals("vc-build-incremental"))
-            cb = new Runnable() { public void run() { cbShowInferiorCells(); } };
-
-        else if (c.equals("dfs-solver-find-winning"))
-            cb = new Runnable() { public void run() { cbDisplayPointList(); } };
-        else if (c.equals("dfpn-solver-find-winning"))
-            cb = new Runnable() { public void run() { cbDisplayPointList(); } };
-        else if (c.equals("dfpn-get-bounds"))
-            cb = new Runnable() { public void run() { cbDfpnDisplayBounds();} };
-        else if (c.equals("dfpn-get-work"))
+        else if (type == AnalyzeType.PSPAIRS)
             cb = new Runnable() { public void run() { cbDisplayPointText(); } };
-        else if (c.equals("book-depths"))
-            cb = new Runnable() { public void run() { cbDisplayPointText(); } };
-        else if (c.equals("book-counts"))
-            cb = new Runnable() { public void run() { cbDisplayPointText(); } };
-        else if (c.equals("book-scores"))
-            cb = new Runnable() { public void run() { cbDisplayBookScores(); } };
-	else if (c.equals("book-priorities"))
-            cb = new Runnable() { public void run() { cbDisplayPointText(); } };
-
-        else if (c.equals("mohex-rave-values"))
-            cb = new Runnable() { public void run() { cbDisplayPointText(); } };
-        else if (c.equals("mohex-bounds"))
-            cb = new Runnable() { public void run() { cbDisplayPointText(); } };
-        else if (c.equals("mohex-values"))
-            cb = new Runnable() { public void run() { cbDisplayPointText(); } };
-        else if (c.equals("mohex-book-scores"))
-            cb = new Runnable() { public void run() { cbDisplayPointText(); } };
-
-        else if (c.equals("vc-connected-to-full"))
-            cb = new Runnable() { public void run() { cbDisplayPointList(); } };
-        else if (c.equals("vc-connected-to-semi"))
-            cb = new Runnable() { public void run() { cbDisplayPointList(); } };
-        else if (c.equals("vc-between-cells-full"))
-            cb = new Runnable() { public void run() { cbBetweenCells(); } };
-        else if (c.equals("vc-between-cells-semi"))
-            cb = new Runnable() { public void run() { cbBetweenCells(); } };
-        else if (c.equals("vc-get-mustplay"))
-            cb = new Runnable() { public void run() { cbShowInferiorCells(); } };
-        else if (c.equals("vc-intersection-full"))
-            cb = new Runnable() { public void run() { cbDisplayPointList(); } };
-        else if (c.equals("vc-intersection-semi"))
-            cb = new Runnable() { public void run() { cbDisplayPointList(); } };
-        else if (c.equals("vc-union-full"))
-            cb = new Runnable() { public void run() { cbDisplayPointList(); } };
-        else if (c.equals("vc-union-semi"))
-            cb = new Runnable() { public void run() { cbDisplayPointList(); } };
-
-        else if (c.equals("eval-twod"))
-            cb = new Runnable() { public void run() { cbDisplayPointText(); } };
-        else if (c.equals("eval-resist"))
-            cb = new Runnable() { public void run() { cbEvalResist(); } };
-
-        else if (c.regionMatches(0, "param", 0, 5))
+        else if (type == AnalyzeType.PARAM)
             cb = new Runnable() { public void run() { cbEditParameters(); } };
+        else if (type == AnalyzeType.VC)
+            cb = new Runnable() { public void run() { cbVCs(); } };
+
+        // if (c.equals("dfpn-get-bounds"))
+        //     cb = new Runnable() { public void run() { cbDfpnDisplayBounds();} };
+        // else if (c.equals("book-scores"))
+        //     cb = new Runnable() { public void run() { cbDisplayBookScores(); } };
+        // else if (c.equals("eval-resist"))
+        //     cb = new Runnable() { public void run() { cbEvalResist(); } };
 
         Runnable callback = new GuiRunnable(cb);
-        sendCommand(cmd, callback);
+        sendCommand(cmd + "\n", callback);
+    }
+
+    /** HtpShell Callback.
+        By the name of the command it choose the proper callback function.
+        Arguments are passed as given.
+    */
+    public void commandEntered(String cmd)
+    {
+        sendCommand(cmd, null);
     }
 
     //----------------------------------------------------------------------
@@ -988,11 +981,11 @@ public final class HexGui
 	sendCommand("version\n", cb);
     }
 
-    private void htpListCommands()
+    private void htpAnalyzeCommands()
     {
 	Runnable cb = new Runnable() 
-            { public void run() { cbListCommands(); } };
-	sendCommand("list_commands\n", cb);
+            { public void run() { cbAnalyzeCommands(); } };
+	sendCommand("hexgui-analyze_commands\n", cb);
     }
 
     private void htpShowboard()
@@ -1060,17 +1053,18 @@ public final class HexGui
         releaseSemaphore();
     }
 
-    private void cbListCommands()
+    private void cbAnalyzeCommands()
     {
-        if (m_analyze == null)
+        String programAnalyzeCommands = m_white.getResponse();
+        try
         {
-            System.out.println("No analyze dialog!!");
-            return;
+            m_analyzeCommands 
+                = AnalyzeDefinition.read(programAnalyzeCommands);
         }
-        String str = m_white.getResponse();
-	Vector<String> cmds = StringUtils.parseStringList(str);
-        Collections.sort(cmds);
-        m_analyze.setCommands(cmds);
+        catch (ErrorMessage e)
+        {
+            ShowError.msg(this, "Could not parse analyze commands!");
+        }
         releaseSemaphore();
     }
 
@@ -1142,7 +1136,7 @@ public final class HexGui
 	m_guiboard.repaint();
     }
 
-    public void cbBetweenCells()
+    public void cbVCs()
     {
 	if (!m_white.wasSuccess()) 
             return;
@@ -1511,7 +1505,7 @@ public final class HexGui
             }
 	}
     }
-    
+
     //------------------------------------------------------------
 
     /** Callback from GuiBoard.
@@ -2242,7 +2236,7 @@ public final class HexGui
     private StatusBar m_statusbar;
     private GuiMenuBar m_menubar;
     private HtpShell m_shell;
-    private AnalyzeDialog m_analyze;
+    private AnalyzeDialog m_analyzeDialog;
     private GameInfoPanel m_gameinfopanel;
     private Comment m_comment;
     private boolean m_locked;
@@ -2254,6 +2248,8 @@ public final class HexGui
     private boolean m_gameChanged;
     private Clock m_blackClock;
     private Clock m_whiteClock;
+
+    private ArrayList<AnalyzeDefinition> m_analyzeCommands;
 
     private Vector<HexPoint> m_selected_cells;
 
