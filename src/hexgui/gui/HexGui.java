@@ -10,7 +10,7 @@ import hexgui.sgf.SgfWriter;
 import hexgui.sgf.SgfReader;
 import hexgui.htp.HtpController;
 import hexgui.htp.HtpError;
-import hexgui.htp.StreamCopy;
+import hexgui.util.StreamCopy;
 import hexgui.version.Version;
 import hexgui.gui.ParameterDialog;
 import hexgui.htp.AnalyzeDefinition;
@@ -440,8 +440,8 @@ public final class HexGui
 
 	///////////////////////////////
 	/// FIXME: DEBUGING!!! REMOVE!
-	Thread blah = new Thread(new StreamCopy(proc.getErrorStream(),
-						System.out));
+	Thread blah = new Thread(new StreamCopy(false, proc.getErrorStream(),
+						System.out, false));
 	blah.start();
 	///////////////////////////////
 
@@ -450,7 +450,8 @@ public final class HexGui
 
     private void createAnalyzeDialog()
     {
-        m_analyzeDialog = new AnalyzeDialog(this, this, m_analyzeCommands);
+        m_analyzeDialog = new AnalyzeDialog(this, this, m_analyzeCommands,
+                                            m_messageDialogs);
         m_analyzeDialog.addWindowListener(new WindowAdapter() {
                 public void windowClosing(WindowEvent e) {
                     actionDisposeAnalyzeDialog();
@@ -2250,6 +2251,9 @@ public final class HexGui
     private Clock m_whiteClock;
 
     private ArrayList<AnalyzeDefinition> m_analyzeCommands;
+
+    private final MessageDialogs m_messageDialogs =
+        new MessageDialogs("HexGui");
 
     private Vector<HexPoint> m_selected_cells;
 

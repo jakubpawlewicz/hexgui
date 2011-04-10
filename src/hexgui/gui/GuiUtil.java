@@ -45,7 +45,7 @@ import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
-
+import hexgui.util.Platform;
 
 /** GUI utility classes and static functions. */
 public class GuiUtil
@@ -139,6 +139,24 @@ public class GuiUtil
         {
             return null;
         }
+    }
+
+/** Return a style sheet for message labels using HTML.
+        @return A string with a HTML-head tag containing a style tag
+        with formatting options or an empty string. */
+    public static String getMessageCss()
+    {
+        if (Platform.isMac())
+            return
+                "<head><style type=\"text/css\">" +
+                "b { font: 13pt \"Lucida Grande\" }" +
+                "p { font: 11pt \"Lucida Grande\"; margin-top: 8px }" +
+                "</style></head>";
+        else
+            return
+                "<head><style type=\"text/css\">" +
+                "p { margin-top: 8px }" +
+                "</style></head>";
     }
 
     /** Get size of default monspaced font.
@@ -332,7 +350,7 @@ public class GuiUtil
         // Sun Java 1.5.0). Best solution for now is to take an icon without
         // transparency
         s_iconURL =
-            loader.getResource("net/sf/gogui/images/gogui-48x48-notrans.png");
+            loader.getResource("hexgui/images/hexgui-48x48-notrans.png");
     }
 
     private static final Font MONOSPACED_FONT = Font.decode("Monospaced");

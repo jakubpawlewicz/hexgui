@@ -1,7 +1,3 @@
-//----------------------------------------------------------------------------
-// $Id$
-//----------------------------------------------------------------------------
-
 package hexgui.util;
 
 import hexgui.hex.HexPoint;
@@ -28,6 +24,17 @@ public final class StringUtils
         if (! Character.isUpperCase(first))
             buffer.setCharAt(0, Character.toUpperCase(first));
         return buffer.toString();
+    }
+
+    /** Check if string is null, empty, or contains only whitespaces. */
+    public static boolean isEmpty(String s)
+    {
+        if (s == null)
+            return true;
+        for (int i = 0; i < s.length(); ++i)
+            if (! Character.isWhitespace(s.charAt(i)))
+                return false;
+        return true;
     }
 
     /** Converts all whitespace characters to a single ' '. */
@@ -248,6 +255,42 @@ public final class StringUtils
         if (token.length() > 0)
             result.add(token.toString());
         return result.toArray(new String[result.size()]);
+    }
+
+    /** Return a printable error message for an exception.
+        Returns the error message is for instances of ErrorMessage or
+        for other exceptions the class name with the exception message
+        appended, if not empty. */
+    public static String getErrorMessage(Throwable e)
+    {
+        String message = e.getMessage();
+        boolean hasMessage = ! StringUtils.isEmpty(message);
+        String className = e.getClass().getName();
+        String result;
+        if (e instanceof ErrorMessage)
+            result = message;
+        else if (hasMessage)
+            result = className + ":\n" + message;
+        else
+            result = className;
+        return result;
+    }
+
+    /** Print exception to standard error.
+        Prints the class name and message to standard error.
+        For exceptions of type Error or RuntimeException, a stack trace
+        is printed in addition.
+        @return A slightly differently formatted error message
+        for display in an error dialog. */
+    public static String printException(Throwable exception)
+    {
+        String result = getErrorMessage(exception);
+        System.err.println(result);
+        boolean isSevere = (exception instanceof RuntimeException
+                            || exception instanceof Error);
+        if (isSevere)
+            exception.printStackTrace();
+        return result;
     }
 
 }

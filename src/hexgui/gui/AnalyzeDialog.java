@@ -69,10 +69,11 @@ public final class AnalyzeDialog
     }
 
     public AnalyzeDialog(Frame owner, Listener listener,
-                         ArrayList<AnalyzeDefinition> commands)
+                         ArrayList<AnalyzeDefinition> commands,
+                         MessageDialogs messageDialogs)
     {
         super(owner, "Analyze");
-        //m_messageDialogs = messageDialogs;
+        m_messageDialogs = messageDialogs;
         m_commands = commands;
         m_listener = listener;
         Container contentPane = getContentPane();
@@ -208,6 +209,8 @@ public final class AnalyzeDialog
     private JRadioButton m_white;
 
     private final ArrayList<AnalyzeDefinition> m_commands;
+
+    private final MessageDialogs m_messageDialogs;
 
     private final Listener m_listener;
 
@@ -464,26 +467,26 @@ public final class AnalyzeDialog
         }
         if (command.needsFileArg())
         {
-            // File fileArg = FileDialogs.showSelectFile(this, label);
-            // if (fileArg == null)
-            //     return;
-            // command.setFileArg(fileArg);
+            File fileArg = FileDialogs.showSelectFile(this, label);
+            if (fileArg == null)
+                return;
+            command.setFileArg(fileArg);
             return;
         }
         if (command.needsFileOpenArg())
         {
-            // File fileArg = FileDialogs.showOpen(this, label);
-            // if (fileArg == null)
-            //     return;
-            // command.setFileOpenArg(fileArg);
+            File fileArg = FileDialogs.showOpen(this, label);
+            if (fileArg == null)
+                return;
+            command.setFileOpenArg(fileArg);
             return;
         }
         if (command.needsFileSaveArg())
         {
-            // File fileArg = FileDialogs.showSave(this, label);
-            // if (fileArg == null)
-            //     return;
-            // command.setFileSaveArg(fileArg);
+            File fileArg = FileDialogs.showSave(this, label, m_messageDialogs);
+            if (fileArg == null)
+                return;
+            command.setFileSaveArg(fileArg);
             return;
         }
         if (command.needsColorArg())
