@@ -24,6 +24,11 @@ public class AnalyzeCommand
         return m_definition.getLabel();
     }
 
+    public String getCommand()
+    {
+        return m_definition.getCommand();
+    }
+
     public HexColor getColorArg()
     {
         return m_colorArg;

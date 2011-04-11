@@ -17,6 +17,7 @@ import hexgui.htp.AnalyzeDefinition;
 import hexgui.htp.AnalyzeCommand;
 import hexgui.htp.AnalyzeType;
 import hexgui.util.ErrorMessage;
+import hexgui.gui.ShowAnalyzeText;
 
 import java.io.*;
 import static java.text.MessageFormat.format;
@@ -72,6 +73,8 @@ public final class HexGui
 
 	m_guiboard = new GuiBoard(this, m_preferences);
         getContentPane().add(m_guiboard, BorderLayout.CENTER);
+
+        m_showAnalyzeText = new ShowAnalyzeText(this, m_guiboard);
 
         JPanel panel = new JPanel(new BorderLayout());
         getContentPane().add(panel, BorderLayout.EAST);
@@ -809,7 +812,7 @@ public final class HexGui
         String cleaned = StringUtils.cleanWhiteSpace(cmd.trim());
         String args[] = cleaned.split(" ");
 	String c = args[0];
-        m_lastAnalyzeCommand = new String(c);
+        m_curAnalyzeCommand = command;
 
         Runnable cb = new Runnable() 
             { public void run() { cbEmptyResponse(); } };
@@ -825,6 +828,8 @@ public final class HexGui
             cb = new Runnable() { public void run() { cbEditParameters(); } };
         else if (type == AnalyzeType.VC)
             cb = new Runnable() { public void run() { cbVCs(); } };
+        else if (type == AnalyzeType.STRING)
+            cb = new Runnable() { public void run() { cbString(); } };
 
         // if (c.equals("dfpn-get-bounds"))
         //     cb = new Runnable() { public void run() { cbDfpnDisplayBounds();} };
@@ -1146,6 +1151,29 @@ public final class HexGui
         new VCDisplayDialog(this, m_guiboard, vcs);
     }
 
+    public void cbString()
+    {
+	if (!m_white.wasSuccess()) 
+            return;
+        String showText = m_white.getResponse();
+        String title = m_curAnalyzeCommand.getResultTitle();
+        if (showText != null)
+        {
+            if (showText.indexOf("\n") < 0)
+            {
+                if (showText.trim().equals(""))
+                    showText = "(empty response)";
+                m_statusbar.setMessage(format("{0}: {1}", title, showText));
+            }
+            else
+            {
+                HexPoint pointArg = null;
+                m_showAnalyzeText.show(m_curAnalyzeCommand.getType(), 
+                                       pointArg, title, showText, false);
+            }
+        }
+    }
+
     public void cbDisplayPointText()
     {
 	if (!m_white.wasSuccess()) 
@@ -1229,7 +1257,7 @@ public final class HexGui
         if (!m_white.wasSuccess()) 
             return;
 	String response = m_white.getResponse();
-        ParameterDialog.editParameters(m_lastAnalyzeCommand, this,
+        ParameterDialog.editParameters(m_curAnalyzeCommand.getCommand(), this,
                                        "Edit Parameters", response, m_white);
     }
 
@@ -2260,12 +2288,14 @@ public final class HexGui
     private Program m_program;
     private Vector<Program> m_programs;
 
+    private ShowAnalyzeText m_showAnalyzeText;
+
     private ArrayBlockingQueue<HtpCommand> m_htp_queue;
     private Semaphore m_semaphore;
     private HtpController m_white;
     private String m_white_name;
     private String m_white_version;
-    private String m_lastAnalyzeCommand;
+    private AnalyzeCommand m_curAnalyzeCommand;
     private Process m_white_process;
     private Socket m_white_socket;
 
