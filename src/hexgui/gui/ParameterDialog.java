@@ -38,8 +38,6 @@ import hexgui.htp.ParameterType;
 import hexgui.util.ObjectUtil;
 import hexgui.util.StringUtils;
 import hexgui.htp.HtpController;
-import hexgui.gui.ShowError;
-
 
 /** Dialog for editing parameters in response to an analyze command of type
     <i>param</i>. */
@@ -47,7 +45,8 @@ public class ParameterDialog
 {
     public static void editParameters(final String paramCommand, Frame owner,
                                       String title, String response,
-                                      final HtpController htp)
+                                      final HtpController htp,
+                                      final MessageDialogs messageDialogs)
     {
         final ArrayList<Parameter> parameters = parseResponse(response);
         Component mainComponent = createMainComponent(parameters);
@@ -83,7 +82,8 @@ public class ParameterDialog
                                 }
                                 catch (HtpError e)
                                 {
-                                    showError(dialog, parameter, e);
+                                    showError(dialog, messageDialogs, 
+                                              parameter, e);
                                     optionPane.setValue(UNINITIALIZED_VALUE);
                                     return;
                                 }
@@ -404,13 +404,14 @@ public class ParameterDialog
         return AnalyzeUtil.getParameterCommand(paramCommand, key, value);
     }
 
-    private static void showError(JDialog owner, Parameter parameter, HtpError e)
+    private static void showError(JDialog owner, MessageDialogs messageDialogs,
+                                  Parameter parameter, HtpError e)
     {
         String mainMessage =
             MessageFormat.format("Could not change ",
                                  parameter.getLabel());
         String optionalMessage = StringUtils.capitalize(e.getMessage());
-        ShowError.msg(owner, mainMessage);
+        messageDialogs.showError(owner, mainMessage, optionalMessage);
     }
 
     private static final int SMALL_PAD = 2;

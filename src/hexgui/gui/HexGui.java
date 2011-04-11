@@ -1279,7 +1279,8 @@ public final class HexGui
             return;
 	String response = m_white.getResponse();
         ParameterDialog.editParameters(m_curAnalyzeCommand.getCommand(), this,
-                                       "Edit Parameters", response, m_white);
+                                       "Edit Parameters", response, m_white,
+                                       m_messageDialogs);
     }
 
     //==================================================
