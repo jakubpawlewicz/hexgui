@@ -51,6 +51,7 @@ import hexgui.htp.AnalyzeType;
 import hexgui.htp.HtpError;
 //import hexgui.htp.GtpResponseFormatError;
 //import hexgui.htp.GtpUtil;
+import hexgui.util.Platform;
 import hexgui.util.PrefUtil;
 
 /** Dialog for selecting an AnalyzeCommand. */
@@ -305,6 +306,9 @@ public final class AnalyzeDialog
             });
         m_list.addListSelectionListener(this);
         JScrollPane scrollPane = new JScrollPane(m_list);
+        if (Platform.isMac())
+            // Default Apple L&F uses no border, but Quaqua 3.7.4 does
+            scrollPane.setBorder(null);
         panel.add(scrollPane, BorderLayout.CENTER);
         panel.add(createLowerPanel(), BorderLayout.SOUTH);
         String[] labels = new String[m_commands.size()];
