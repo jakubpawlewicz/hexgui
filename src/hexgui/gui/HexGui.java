@@ -814,30 +814,39 @@ public final class HexGui
 	String c = args[0];
         m_curAnalyzeCommand = command;
 
-        Runnable cb = new Runnable() 
-            { public void run() { cbEmptyResponse(); } };
-        if (type == AnalyzeType.GROUP)
+        Runnable cb = null;
+        switch(type)
+        {
+        case GROUP:
             cb = new Runnable() { public void run() { cbGroupGet(); } };
-        else if (type == AnalyzeType.INFERIOR)
+            break;
+        case INFERIOR:
              cb = new Runnable() { public void run() {cbShowInferiorCells();}};
-        else if (type == AnalyzeType.PLIST)
+             break;
+        case PLIST:
             cb = new Runnable() { public void run() { cbDisplayPointList(); } };
-        else if (type == AnalyzeType.PSPAIRS)
+            break;
+        case PSPAIRS:
             cb = new Runnable() { public void run() { cbDisplayPointText(); } };
-        else if (type == AnalyzeType.PARAM)
+            break;
+        case PARAM:
             cb = new Runnable() { public void run() { cbEditParameters(); } };
-        else if (type == AnalyzeType.VC)
+            break;
+        case VC:
             cb = new Runnable() { public void run() { cbVCs(); } };
-        else if (type == AnalyzeType.STRING)
+            break;
+        case STRING:
             cb = new Runnable() { public void run() { cbString(); } };
-
+            break;
+        case VAR:
+            cb = new Runnable() { public void run() { cbVar(); } };
+        }            
         // if (c.equals("dfpn-get-bounds"))
         //     cb = new Runnable() { public void run() { cbDfpnDisplayBounds();} };
         // else if (c.equals("book-scores"))
         //     cb = new Runnable() { public void run() { cbDisplayBookScores(); } };
         // else if (c.equals("eval-resist"))
         //     cb = new Runnable() { public void run() { cbEvalResist(); } };
-
         Runnable callback = new GuiRunnable(cb);
         sendCommand(cmd + "\n", callback);
     }
@@ -1039,11 +1048,6 @@ public final class HexGui
     //
     // Callbacks
     //
-    public void cbEmptyResponse()
-    {
-	// FIXME: check for errors
-    }
-
     public void cbName()
     {
 	String str = m_white.getResponse();
@@ -1172,6 +1176,23 @@ public final class HexGui
                                        pointArg, title, showText, false);
             }
         }
+    }
+
+    public void cbVar()
+    {
+        if (!m_white.wasSuccess())
+            return;
+        String str = m_white.getResponse();
+        Vector<HexPoint> points = StringUtils.parsePointList(str, " ");
+        m_guiboard.clearMarks();
+        HexColor color = m_tomove;
+        for (int i = 0; i < points.size(); i++)
+        {
+            m_guiboard.setColor(points.get(i), color);
+            m_guiboard.setText(points.get(i), Integer.toString(i + 1));
+            color = color.otherColor();
+        }
+	m_guiboard.repaint();
     }
 
     public void cbDisplayPointText()
