@@ -457,7 +457,8 @@ public final class HexGui
                                             m_messageDialogs);
         m_analyzeDialog.addWindowListener(new WindowAdapter() {
                 public void windowClosing(WindowEvent e) {
-                    actionDisposeAnalyzeDialog();
+                    m_analyzeDialog.setVisible(false);
+                    m_menubar.setAnalyzeVisible(false);
                 }
             });
         m_analyzeDialog.setBoardSize(m_guiboard.getBoardSize().width);
@@ -550,11 +551,7 @@ public final class HexGui
 	    m_white = null;
 	    m_shell.dispose();
 	    m_shell = null;
-            if (m_analyzeDialog != null)
-            {
-                m_analyzeDialog.dispose();
-                m_analyzeDialog = null;
-            }
+            actionDisposeAnalyzeDialog();
             m_program = null;
 	    m_menubar.setProgramConnected(false);
 	    m_toolbar.setProgramConnected(false);
