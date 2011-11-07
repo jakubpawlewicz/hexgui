@@ -463,11 +463,9 @@ public final class AnalyzeDialog
         }
         if (command.needsOptStringArg())
         {
-           
         }
         if (command.getType() == AnalyzeType.EPLIST)
         {
-            
         }
         if (command.needsFileArg())
         {
@@ -475,7 +473,6 @@ public final class AnalyzeDialog
             if (fileArg == null)
                 return;
             command.setFileArg(fileArg);
-            return;
         }
         if (command.needsFileOpenArg())
         {
@@ -483,7 +480,6 @@ public final class AnalyzeDialog
             if (fileArg == null)
                 return;
             command.setFileOpenArg(fileArg);
-            return;
         }
         if (command.needsFileSaveArg())
         {
@@ -491,7 +487,6 @@ public final class AnalyzeDialog
             if (fileArg == null)
                 return;
             command.setFileSaveArg(fileArg);
-            return;
         }
         if (command.needsColorArg())
             command.setColorArg(getSelectedColor());

@@ -840,6 +840,7 @@ public final class HexGui
             break;
         case VAR:
             cb = new Runnable() { public void run() { cbVar(); } };
+            break;
         }            
         // if (c.equals("dfpn-get-bounds"))
         //     cb = new Runnable() { public void run() { cbDfpnDisplayBounds();} };
@@ -847,7 +848,9 @@ public final class HexGui
         //     cb = new Runnable() { public void run() { cbDisplayBookScores(); } };
         // else if (c.equals("eval-resist"))
         //     cb = new Runnable() { public void run() { cbEvalResist(); } };
-        Runnable callback = new GuiRunnable(cb);
+        Runnable callback = null;
+        if (cb != null)
+            callback = snew GuiRunnable(cb);
         sendCommand(cmd + "\n", callback);
     }
 
@@ -937,7 +940,6 @@ public final class HexGui
                     
                     try  {
                         m_white.sendCommand(cmd.str, cmd.callback);
-                        
                         if (cmd.callback != null) {
                             cmd.callback.run();
                         }
