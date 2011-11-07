@@ -1185,6 +1185,7 @@ public final class HexGui
         String str = m_white.getResponse();
         Vector<HexPoint> points = StringUtils.parsePointList(str, " ");
         m_guiboard.clearMarks();
+        m_guiboard.aboutToDirtyStones();
         HexColor color = m_tomove;
         for (int i = 0; i < points.size(); i++)
         {
@@ -1202,7 +1203,6 @@ public final class HexGui
 	String str = m_white.getResponse();
         Vector<Pair<String, String> > pairs =
             StringUtils.parseStringPairList(str);
-
         m_guiboard.clearMarks();
         for (int i=0; i<pairs.size(); i++)
         {
@@ -1220,7 +1220,6 @@ public final class HexGui
 	String str = m_white.getResponse();
         Vector<Pair<String, String> > pairs =
             StringUtils.parseStringPairList(str);
-
         m_guiboard.clearMarks();
         for (int i=0; i<pairs.size(); i++)
         {
