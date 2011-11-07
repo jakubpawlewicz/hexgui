@@ -550,8 +550,11 @@ public final class HexGui
 	    m_white = null;
 	    m_shell.dispose();
 	    m_shell = null;
-            m_analyzeDialog.dispose();
-            m_analyzeDialog = null;
+            if (m_analyzeDialog != null)
+            {
+                m_analyzeDialog.dispose();
+                m_analyzeDialog = null;
+            }
             m_program = null;
 	    m_menubar.setProgramConnected(false);
 	    m_toolbar.setProgramConnected(false);
