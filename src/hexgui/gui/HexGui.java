@@ -850,7 +850,7 @@ public final class HexGui
         //     cb = new Runnable() { public void run() { cbEvalResist(); } };
         Runnable callback = null;
         if (cb != null)
-            callback = snew GuiRunnable(cb);
+            callback = new GuiRunnable(cb);
         sendCommand(cmd + "\n", callback);
     }
 
@@ -939,7 +939,7 @@ public final class HexGui
                         lockGUI();
                     
                     try  {
-                        m_white.sendCommand(cmd.str, cmd.callback);
+                        m_white.sendCommand(cmd.str);
                         if (cmd.callback != null) {
                             cmd.callback.run();
                         }

@@ -50,11 +50,6 @@ public class HtpController
         m_waiting = false;
     }
     
-    public void sendCommand(String cmd) throws HtpError
-    {
-	sendCommand(cmd, null);
-    }
-
     public void interrupt()
     {
         System.out.println("Sending interrupt");
@@ -68,7 +63,7 @@ public class HtpController
         Note this method is synchronized, and so HtpController will
         process only a single command at a time.
     */
-    public synchronized void sendCommand(String cmd, Runnable callback) 
+    public synchronized void sendCommand(String cmd) 
         throws HtpError
     {
 	if (!m_connected) 
@@ -78,7 +73,7 @@ public class HtpController
 	m_out.print(cmd);
 	m_out.flush();
 	m_io.sentCommand(cmd);
-        handleResponse(callback);
+        handleResponse();
     }
 
     public boolean cmdInProgress() { return m_waiting; }
@@ -87,7 +82,7 @@ public class HtpController
 
     public String getResponse() { return m_response; }
 
-    private void handleResponse(Runnable callback) throws HtpError
+    private void handleResponse() throws HtpError
     {
         m_waiting = true;
 
