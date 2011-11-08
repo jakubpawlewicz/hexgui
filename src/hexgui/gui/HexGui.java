@@ -1314,24 +1314,26 @@ public final class HexGui
 
         //////////////////////////////////////
         // display variation
-        for (; i<tk.length; ++i) {
+        for (; i < tk.length; ++i) 
+        {
             String s = tk[i].trim();
             if (s.equals("VAR"))
                 break;
         }
-        if (i == tk.length) return;
+        if (i == tk.length) 
+            return;
         ++i; // skip "VAR";
 
         Vector<HexPoint> var = new Vector<HexPoint>();
         Vector<HexColor> col = new Vector<HexColor>();
-        for (; i<tk.length; ) {
+        for (; i < tk.length; ) 
+        {
             String s = tk[i].trim();
             if (s.equals("INFLUENCE"))
                 break;
             ++i; // skip 'B' and 'W'
 
             col.add((s.charAt(0) == 'B') ? HexColor.BLACK : HexColor.WHITE);
-
             HexPoint point = HexPoint.get(tk[i++].trim());
             var.add(point);
         }
@@ -1398,23 +1400,24 @@ public final class HexGui
 
         Vector<Pair<HexColor, HexPoint> > vr 
             =  StringUtils.parseVariation(fx.substring(var+3, label));
-
-        m_guiboard.setColor(vr.get(0).second, vr.get(0).first);
-        m_guiboard.setAlphaColor(vr.get(0).second, Color.green);
-        if (vr.size() >= 2) {
-            m_guiboard.setColor(vr.get(1).second, vr.get(1).first);
-            m_guiboard.setAlphaColor(vr.get(1).second, Color.red);
+        if (vr.size() > 0)
+        {
+            m_guiboard.setColor(vr.get(0).second, vr.get(0).first);
+            m_guiboard.setAlphaColor(vr.get(0).second, Color.green);
+            if (vr.size() >= 2) 
+            {
+                m_guiboard.setColor(vr.get(1).second, vr.get(1).first);
+                m_guiboard.setAlphaColor(vr.get(1).second, Color.red);
+            }
         }
-
         String label_str = fx.substring(label+5, text).trim();
         Vector<Pair<String, String> > labels =
             StringUtils.parseStringPairList(label_str);
-
-        for (int i=0; i<labels.size(); ++i) {
+        for (int i = 0; i < labels.size(); ++i) 
+        {
             HexPoint pt = HexPoint.get(labels.get(i).first);
             m_guiboard.setText(pt, labels.get(i).second);
         }
-    
         m_guiboard.repaint();
         m_statusbar.setMessage(fx.substring(text+5));
     }
@@ -1431,7 +1434,7 @@ public final class HexGui
 
         Vector<Pair<HexColor, HexPoint> > vr 
             =  StringUtils.parseVariation(fx.substring(var+3, label));
-        for (int i=0; i<vr.size(); ++i) 
+        for (int i = 0; i < vr.size(); ++i) 
         {
             m_guiboard.setColor(vr.get(i).second, vr.get(i).first);
             m_guiboard.setText(vr.get(i).second, Integer.toString(i+1));
@@ -1445,7 +1448,7 @@ public final class HexGui
 
         double contribution = 1.0;
         double progress = 0.0;
-        for (int i=0; i<levels.length; ++i)
+        for (int i = 0; i < levels.length; ++i)
         {
             String[] nums = levels[i].trim().split("/");
             int cur = Integer.decode(nums[0]).intValue();
@@ -1453,7 +1456,6 @@ public final class HexGui
             progress += contribution*cur/max;
             contribution *= 1.0/max;
         }
-        
         m_guiboard.repaint();
         m_statusbar.setMessage(fx.substring(text+5));
         m_statusbar.setProgress(progress);
@@ -1470,13 +1472,12 @@ public final class HexGui
 
         Vector<Pair<HexColor, HexPoint> > vr 
             =  StringUtils.parseVariation(fx.substring(var+3, label));
-        for (int i=0; i<vr.size(); ++i) 
+        for (int i = 0; i < vr.size(); ++i) 
         {
             m_guiboard.setColor(vr.get(i).second, vr.get(i).first);
             m_guiboard.setText(vr.get(i).second, Integer.toString(i+1));
             m_guiboard.setAlphaColor(vr.get(i).second, Color.blue);
         }
-
         String label_str = fx.substring(label+5, text).trim();
         showDfpnBounds(label_str);
 
@@ -1488,7 +1489,7 @@ public final class HexGui
     {
         Vector<Pair<String, String> > pairs =
             StringUtils.parseStringPairList(str);
-        for (int i=0; i<pairs.size(); i++)
+        for (int i = 0; i < pairs.size(); i++)
         {
 	    HexPoint point = HexPoint.get(pairs.get(i).first);
             String value = pairs.get(i).second;
@@ -1505,8 +1506,7 @@ public final class HexGui
     {
         Vector<Pair<String, String> > pairs =
             StringUtils.parseStringPairList(str);
-
-        for (int i=0; i<pairs.size(); i++)
+        for (int i = 0; i < pairs.size(); i++)
         {
 	    HexPoint point = HexPoint.get(pairs.get(i).first);
             String value = pairs.get(i).second;
