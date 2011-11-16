@@ -223,6 +223,32 @@ public final class HexGui
             sendCommand("param_dfpn use_guifx 1\n", null);
             sendCommand("dfpn-solve-state " + m_tomove + "\n", null);
         }
+        else if (cmd.equals("program_options"))
+        {
+            AnalyzeCommand command;
+            if (m_white_name.equalsIgnoreCase("Mohex"))
+            {
+                command = new AnalyzeCommand
+                    (new AnalyzeDefinition("param/blah/param_mohex"));
+                Runnable cb = new Runnable() 
+                    { public void run() { cbEditParameters(); } };
+                Runnable callback = new GuiRunnable(cb);
+                m_curAnalyzeCommand = command;
+                sendCommand(command.getCommand() + "\n", callback);
+            }
+            else if (m_white_name.equalsIgnoreCase("Wolve"))
+            {
+                command = new AnalyzeCommand
+                    (new AnalyzeDefinition("param/blah/param_wolve"));
+                Runnable cb = new Runnable() 
+                    { public void run() { cbEditParameters(); } };
+                Runnable callback = new GuiRunnable(cb);
+                m_curAnalyzeCommand = command;
+                sendCommand(command.getCommand() + "\n", callback);
+            }
+            else
+                ShowError.msg(this, "Unknown program!");
+        }
 	//
 	// unknown command
 	//

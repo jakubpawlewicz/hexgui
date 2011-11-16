@@ -88,6 +88,7 @@ public final class GuiToolBar
 	m_play.setEnabled(f);
         m_hint.setEnabled(f);
         m_solve.setEnabled(f);
+        m_program_options.setEnabled(f);
     }
     
     public void updateButtonStates(Node node)
@@ -134,6 +135,7 @@ public final class GuiToolBar
 
         m_hint.setEnabled(false);
         m_solve.setEnabled(false);
+        m_program_options.setEnabled(false);
 
         enableStopButton();
     }
@@ -155,6 +157,7 @@ public final class GuiToolBar
 
         m_hint.setEnabled(true);
         m_solve.setEnabled(true);
+        m_program_options.setEnabled(true);
        
         updateButtonStates(node);
     }
@@ -304,6 +307,12 @@ public final class GuiToolBar
                              "Solve State with DFPN", "Solve");
         m_toolBar.add(m_solve);
         m_solve.setEnabled(false);
+
+        m_program_options = makeButton("hexgui/images/program-options.png",
+                                       "program_options",
+                                       "Program Options", "Options");
+        m_toolBar.add(m_program_options);
+        m_program_options.setEnabled(false);
     }
 
     private JButton makeButton(String imageFile, String actionCommand,
@@ -387,7 +396,7 @@ public final class GuiToolBar
     private JButton m_tomove;
     private ImageIcon m_black_to_play, m_white_to_play;
 
-    private JButton m_solve, m_hint;
+    private JButton m_solve, m_hint, m_program_options;
 }
 
 //----------------------------------------------------------------------------
