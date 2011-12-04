@@ -1518,13 +1518,21 @@ public final class HexGui
         for (int i = 0; i < pairs.size(); i++)
         {
 	    HexPoint point = HexPoint.get(pairs.get(i).first);
-            String value = pairs.get(i).second;
-            m_guiboard.setText(point, value);
-            if (value.trim().equals("W"))
+            String value = pairs.get(i).second.trim();
+            if (value.charAt(0) == 'W')
+            {
                 m_guiboard.setAlphaColor(point, Color.green);
-            else if (value.trim().equals("L"))
+                if (value.length() > 1)
+                    value = value.substring(1);
+            }
+            else if (value.charAt(0) == 'L')
+            {
                 m_guiboard.setAlphaColor(point, Color.red);
-        }    
+                if (value.length() > 1)
+                    value = value.substring(1);
+            }
+            m_guiboard.setText(point, value);
+        }
     }
 
     /** Draws the inferior cells to the gui board. */
